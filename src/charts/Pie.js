@@ -26,11 +26,11 @@ var PieChart = React.createClass({
     fill(i) { return "url(#grad-" + i  +")" },
 
     color(i) {
-        var pallete = this.props.pallete || Colors.mix(this.props.color);
+        var pallete = this.props.pallete || Colors.mix(this.props.color || '#9ac7f7');
         return Colors.string(cyclic(pallete, i)); },
 
     lighten(i) {
-        var pallete = this.props.pallete || Colors.mix(this.props.color);
+        var pallete = this.props.pallete || Colors.mix(this.props.color || '#9ac7f7');
         return Colors.string(Colors.lighten(cyclic(pallete, i))); },
 
     expand(i) {
@@ -43,6 +43,9 @@ var PieChart = React.createClass({
     },
 
     render() {
+        var noDataMsg = this.props.noDataMessage || "No data available";
+        if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
+
         var chart = Pie({
             center: this.props.center || [0,0],
             r: this.props.r || 60,
@@ -67,19 +70,28 @@ var PieChart = React.createClass({
         var selected = _.find(this.props.data, function(c, i) {
             return coefficients[i] === 1;
         });
+
+        var legendClassName = "legend " + this.props.legendPosition;
+
         var table = selected ?
-            <div className="country-info">
+            <div className={legendClassName}>
                 <h4>{ selected.name }</h4>
                 <p><span className="label label-info">{ selected.population }</span></p>
             </div> : null
 
+        var width = 375;
+        var height = 400;
+        var style = this.props.style;
+        if (style !== undefined){
+            if (style.width !== undefined) width =style.width;
+            if (style.height !== undefined) height=style.height;
+        }
         return(
-            <div id="pie">
-                <svg width="375" height="400">
+            <div id="pie" className="pie">
+                <svg width={width} height={height}>
                     <g transform="translate(200, 200)">{ slices }</g>
                 </svg>
-
-          { table }
+            { table }
             </div>
         )}
 });

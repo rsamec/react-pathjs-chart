@@ -46,7 +46,21 @@ var App = React.createClass({
 		];
 
 		return (<div>
-			<Pie data={ countries } color='#9ac7f7' r={ 60 } R={ 140 } accessorKey="population"  />
+			<div>
+				<Pie data={ countries } legendPosition='topLeft' accessorKey="population"  />
+			</div>
+			<div>
+				<Pie data={ countries } legendPosition='topRight' accessorKey="population"  />
+			</div>
+
+			<div>
+				<Pie data={ countries } legendPosition='bottomLeft' accessorKey="population"  />
+			</div>
+
+			<div>
+				<Pie data={ countries } legendPosition='bottomRight' accessorKey="population"  />
+			</div>
+
 			<Tree data={treeData} />
 			<SmoothLine data={stockData} xKey="date" yKey="value" />
 		</div>)

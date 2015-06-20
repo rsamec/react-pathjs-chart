@@ -52,3 +52,31 @@ label {
   font-style: italic;
   color: #999;
 }
+.pie {
+  position: relative;
+}
+.legend {
+  border: 1px solid #cccccc;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #eeeeee;
+  padding: 10px;
+  position: absolute;
+}
+.legend.topRight {
+  right: 0;
+  top: 0;
+}
+.legend.topLeft {
+  left: 0;
+  top: 0;
+}
+.legend.bottomLeft {
+  left: 0;
+  bottom: 0;
+}
+.legend.bottomRight {
+  right: 0;
+  bottom: 0;
+}
