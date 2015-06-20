@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pie,Tree,SmoothLine} from 'react-pathjs-chart';
+import {Pie,Tree,SmoothLine,SmoothLineVivus} from 'react-pathjs-chart';
 import treeData from './treeData.js';
 import stock from './stockData.js';
 
@@ -53,7 +53,7 @@ var App = React.createClass({
 				<Tree data={treeData} />
 			</div>
 			<div>
-				<SmoothLine data={stockData} xKey="date" yKey="value" />
+				<SmoothLineVivus data={stockData} xKey="date" yKey="value" />
 			</div>
 		</div>)
 	}
