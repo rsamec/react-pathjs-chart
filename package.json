@@ -1,9 +1,9 @@
 {
   "name": "react-pathjs-chart",
-  "version": "0.1.9",
+  "version": "0.0.1",
   "private": false,
-  "description": "Carousel movie selector - using www.themoviedb.org API",
-  "main": "lib/MovieSelect.js",
+  "description": "React components - charts (Pie,SmoothLine) and other components (Tree) using path-js.",
+  "main": "lib/Chart.js",
   "author": "Roman Samec (roman.samec2@gmail.com)",
   "license": "MIT",
   "homepage": "https://github.com/rsamec/react-pathjs-chart",
