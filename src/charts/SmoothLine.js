@@ -21,6 +21,9 @@ export default class SmoothLineChart extends React.Component {
         this.setState({ showAreas: true });
     }
     render () {
+        var noDataMsg = this.props.noDataMessage || "No data available";
+        if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
+
         var palette = this.props.palette ||  ["#3E90F0", "#7881C2", "#707B82"];
         var accessor = function(key) {  return function (x) {return x[key];} };
         var chart = SmoothLine({

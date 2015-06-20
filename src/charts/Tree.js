@@ -13,6 +13,9 @@ function children(x) {
 }
 export default class Tree extends React.Component {
     render() {
+        var noDataMsg = this.props.noDataMessage || "No data available";
+        if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
+
         var that = this;
 
         var tree = TreeEx({

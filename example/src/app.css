@@ -55,6 +55,17 @@ label {
 .pie {
   position: relative;
 }
+.pie text {
+  font-size: 10px;
+  cursor: pointer;
+  pointer-events: none;
+}
+.pie path {
+  cursor: pointer;
+}
+.pie path:hover {
+  opacity: 0.8;
+}
 .legend {
   border: 1px solid #cccccc;
   -moz-border-radius: 5px;
