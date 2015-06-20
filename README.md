@@ -1,17 +1,16 @@
 React Component Starter
 =======================
 
-These component offers react components - charts (Pie,SmoothLine) and other components (Tree) using [path-js](https://github.com/andreaferretti/paths-js).
+These component offers react components - charts (Pie,SmoothLine) and other components (Tree) using [paths-js](https://github.com/andreaferretti/paths-js).
 
-All credits go to [path-js](https://github.com/andreaferretti/paths-js-react-demo), it is based on clone of examples from [path-js](https://github.com/andreaferretti/paths-js-react-demo) and is extended so that it is easier to use it.
+All credits go to [paths-js-react-demo](https://github.com/andreaferretti/paths-js-react-demo), it is based on clone of these examples from [path-js](https://github.com/andreaferretti/paths-js-react-demo) and is extended so that it is easier to use it.
 
 +   instead of accessor function you can use string key to determine the accessor key in data
 +   wrapped to be used by package managers (npm, bower) or standalone package
 
-
 ## Demo & Examples
 
-Live demo: __LINK TO LIVE DEMO__
+[Live demo](http://rsamec.github.io/react-pathjs-chart/)
 
 To build the examples locally, run:
 
