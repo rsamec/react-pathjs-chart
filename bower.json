@@ -1,0 +1,29 @@
+{
+  "name": "react-pathjs-chart",
+  "main": "dist/react-pathjs-chart.min.js",
+  "version": "0.1.9",
+  "homepage": "https://github.com/rsamec/react-pathjs-chart",
+  "authors": [
+    "Roman Samec"
+  ],
+  "description": "Carousel movie selector - using www.themoviedb.org API",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "react",
+    "react-component"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".editorconfig",
+    ".gitignore",
+    "package.json",
+    "src",
+    "node_modules",
+    "example",
+    "test"
+  ]
+}

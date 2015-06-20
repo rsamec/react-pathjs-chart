@@ -1,0 +1,64 @@
+<!doctype html>
+<head>
+	<title>React Paths-js charts  component</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="app.css">
+	<style>
+		#pie svg {
+			float: left;
+			margin-left: -40px;
+		}
+
+		#pie text {
+			font-size: 10px;
+			cursor: pointer;
+			pointer-events: none;
+		}
+
+		#pie path {
+			cursor: pointer;
+		}
+
+		#pie path:hover {
+			opacity: 0.8;
+		}
+
+		#pie .country-info {
+			float: right;
+			padding: 10px;
+			border: 1px solid #cccccc;
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			border-radius: 5px;
+			background: #eeeeee;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Pie chart component</h1>
+		<h2><a href="http://github.com/rsamec/react-movie-select">View project on GitHub</a></h2>
+		<!-- the example app is rendered into this div -->
+		<div id="app"></div>
+		<!-- put any hints about your component example here -->
+		<div class="hint">
+			The example React app is rendered above.
+		</div>
+		<div class="footer">
+			Copyright &copy; Roman Samec 2015. MIT Licensed.
+		</div>
+	</div>
+	
+	<script src="common.js"></script>
+	<script src="bundle.js"></script>
+	<script src="app.js"></script>
+</body>

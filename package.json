@@ -1,0 +1,43 @@
+{
+  "name": "react-pathjs-chart",
+  "version": "0.1.9",
+  "private": false,
+  "description": "Carousel movie selector - using www.themoviedb.org API",
+  "main": "lib/MovieSelect.js",
+  "author": "Roman Samec (roman.samec2@gmail.com)",
+  "license": "MIT",
+  "homepage": "https://github.com/rsamec/react-pathjs-chart",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rsamec/react-pathjs-chart.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rsamec/react-pathjs-chart/issues"
+  },
+  "dependencies": {
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "underscore": "^1.8.3",
+    "vivus": "^0.2.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "react-component-gulp-tasks": "^0.7.0"
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ]
+  },
+  "browser": "lib/Chart.js",
+  "browserify-shim": {
+    "react": "global:React"
+  },
+  "scripts": {
+    "test": "echo \"no tests yet\" && exit 0"
+  },
+  "keywords": [
+    "react",
+    "react-component"
+  ]
+}
