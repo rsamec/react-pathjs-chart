@@ -47,10 +47,10 @@ var App = React.createClass({
 
 		return (<div>
 			<div>
-				<Pie data={ countries } legendPosition='topLeft' accessorKey="population"  />
+				<Pie data={ countries } color="#fc6433" legendPosition='topLeft' accessorKey="population"  />
 			</div>
 			<div>
-				<Pie data={ countries } legendPosition='topRight' accessorKey="population"  />
+				<Pie data={ countries } color="#20b8e4" legendPosition='topRight' accessorKey="population"  />
 			</div>
 
 			<div>

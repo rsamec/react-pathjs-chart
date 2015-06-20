@@ -87,7 +87,7 @@ var PieChart = React.createClass({
             if (style.height !== undefined) height=style.height;
         }
         return(
-            <div id="pie" className="pie">
+            <div className="pie">
                 <svg width={width} height={height}>
                     <g transform="translate(200, 200)">{ slices }</g>
                 </svg>
