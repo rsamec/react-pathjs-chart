@@ -64,9 +64,21 @@ var App = _react2['default'].createClass({
 		return _react2['default'].createElement(
 			'div',
 			null,
-			_react2['default'].createElement(_reactPathjsChart.Pie, { data: countries, color: '#9ac7f7', r: 60, R: 140, accessorKey: 'population' }),
-			_react2['default'].createElement(_reactPathjsChart.Tree, { data: _treeDataJs2['default'] }),
-			_react2['default'].createElement(_reactPathjsChart.SmoothLine, { data: stockData, xKey: 'date', yKey: 'value' })
+			_react2['default'].createElement(
+				'div',
+				null,
+				_react2['default'].createElement(_reactPathjsChart.Pie, { data: countries, color: '#fc6433', legendPosition: 'topLeft', accessorKey: 'population' })
+			),
+			_react2['default'].createElement(
+				'div',
+				null,
+				_react2['default'].createElement(_reactPathjsChart.Tree, { data: _treeDataJs2['default'] })
+			),
+			_react2['default'].createElement(
+				'div',
+				null,
+				_react2['default'].createElement(_reactPathjsChart.SmoothLineVivus, { data: stockData, xKey: 'date', yKey: 'value' })
+			)
 		);
 	}
 

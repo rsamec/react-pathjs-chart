@@ -1253,12 +1253,12 @@ var PieChart = _react2['default'].createClass({
     },
 
     color: function color(i) {
-        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color);
+        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color || '#9ac7f7');
         return _palleteColorsJs2['default'].string(cyclic(pallete, i));
     },
 
     lighten: function lighten(i) {
-        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color);
+        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color || '#9ac7f7');
         return _palleteColorsJs2['default'].string(_palleteColorsJs2['default'].lighten(cyclic(pallete, i)));
     },
 
@@ -1272,6 +1272,13 @@ var PieChart = _react2['default'].createClass({
     },
 
     render: function render() {
+        var noDataMsg = this.props.noDataMessage || 'No data available';
+        if (this.props.data === undefined) return _react2['default'].createElement(
+            'span',
+            null,
+            noDataMsg
+        );
+
         var chart = Pie({
             center: this.props.center || [0, 0],
             r: this.props.r || 60,
@@ -1302,9 +1309,12 @@ var PieChart = _react2['default'].createClass({
         var selected = _underscore2['default'].find(this.props.data, function (c, i) {
             return coefficients[i] === 1;
         });
+
+        var legendClassName = 'legend ' + this.props.legendPosition;
+
         var table = selected ? _react2['default'].createElement(
             'div',
-            { className: 'country-info' },
+            { className: legendClassName },
             _react2['default'].createElement(
                 'h4',
                 null,
@@ -1321,12 +1331,19 @@ var PieChart = _react2['default'].createClass({
             )
         ) : null;
 
+        var width = 375;
+        var height = 400;
+        var style = this.props.style;
+        if (style !== undefined) {
+            if (style.width !== undefined) width = style.width;
+            if (style.height !== undefined) height = style.height;
+        }
         return _react2['default'].createElement(
             'div',
-            { id: 'pie' },
+            { className: 'pie' },
             _react2['default'].createElement(
                 'svg',
-                { width: '375', height: '400' },
+                { width: width, height: height },
                 _react2['default'].createElement(
                     'g',
                     { transform: 'translate(200, 200)' },
@@ -1342,7 +1359,7 @@ exports['default'] = PieChart;
 module.exports = exports['default'];
 
 
-},{"../animate.js":12,"../pallete/Colors.js":16,"paths-js/pie":7,"react":undefined,"underscore":undefined}],14:[function(require,module,exports){
+},{"../animate.js":12,"../pallete/Colors.js":17,"paths-js/pie":7,"react":undefined,"underscore":undefined}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1367,10 +1384,6 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
 var SmoothLine = require('paths-js/smooth-line');
 
 var SmoothLineChart = (function (_React$Component) {
@@ -1378,29 +1391,21 @@ var SmoothLineChart = (function (_React$Component) {
         _classCallCheck(this, SmoothLineChart);
 
         _get(Object.getPrototypeOf(SmoothLineChart.prototype), 'constructor', this).call(this, props);
-        this.state = { showAreas: false };
+        this.state = { showAreas: true };
     }
 
     _inherits(SmoothLineChart, _React$Component);
 
     _createClass(SmoothLineChart, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
-                start: 'autostart',
-                selfDestroy: true
-            }, this.addAreas.bind(this));
-        }
-    }, {
-        key: 'addAreas',
-        value: function addAreas() {
-            this.setState({ showAreas: true });
-        }
-    }, {
         key: 'render',
         value: function render() {
+            var noDataMsg = this.props.noDataMessage || 'No data available';
+            if (this.props.data === undefined) return _react2['default'].createElement(
+                'span',
+                null,
+                noDataMsg
+            );
+
             var palette = this.props.palette || ['#3E90F0', '#7881C2', '#707B82'];
             var accessor = function accessor(key) {
                 return function (x) {
@@ -1442,7 +1447,76 @@ exports['default'] = SmoothLineChart;
 module.exports = exports['default'];
 
 
-},{"paths-js/smooth-line":9,"react":undefined,"underscore":undefined,"vivus":undefined}],15:[function(require,module,exports){
+},{"paths-js/smooth-line":9,"react":undefined,"underscore":undefined}],15:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vivus = require('vivus');
+
+var _vivus2 = _interopRequireDefault(_vivus);
+
+var _SmoothLineJs = require('./SmoothLine.js');
+
+var _SmoothLineJs2 = _interopRequireDefault(_SmoothLineJs);
+
+var SmoothLine = require('paths-js/smooth-line');
+
+var SmoothLineVivusChart = (function (_SmoothLineChart) {
+    function SmoothLineVivusChart(props) {
+        _classCallCheck(this, SmoothLineVivusChart);
+
+        _get(Object.getPrototypeOf(SmoothLineVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = { showAreas: false };
+    }
+
+    _inherits(SmoothLineVivusChart, _SmoothLineChart);
+
+    _createClass(SmoothLineVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.addAreas.bind(this));
+        }
+    }, {
+        key: 'addAreas',
+        value: function addAreas() {
+            this.setState({ showAreas: true });
+        }
+    }]);
+
+    return SmoothLineVivusChart;
+})(_SmoothLineJs2['default']);
+
+exports['default'] = SmoothLineVivusChart;
+module.exports = exports['default'];
+
+
+},{"./SmoothLine.js":14,"paths-js/smooth-line":9,"react":undefined,"underscore":undefined,"vivus":undefined}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1489,6 +1563,13 @@ var Tree = (function (_React$Component) {
     _createClass(Tree, [{
         key: 'render',
         value: function render() {
+            var noDataMsg = this.props.noDataMessage || 'No data available';
+            if (this.props.data === undefined) return _react2['default'].createElement(
+                'span',
+                null,
+                noDataMsg
+            );
+
             var that = this;
 
             var tree = TreeEx({
@@ -1556,7 +1637,7 @@ exports['default'] = Tree;
 module.exports = exports['default'];
 
 
-},{"paths-js/tree":10,"react":undefined,"underscore":undefined}],16:[function(require,module,exports){
+},{"paths-js/tree":10,"react":undefined,"underscore":undefined}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1662,8 +1743,12 @@ var _chartsSmoothLineJs = require('./charts/SmoothLine.js');
 
 var _chartsSmoothLineJs2 = _interopRequireDefault(_chartsSmoothLineJs);
 
-exports['default'] = { Pie: _chartsPieJs2['default'], Tree: _chartsTreeJs2['default'], SmoothLine: _chartsSmoothLineJs2['default'] };
+var _chartsSmoothLineVivusJs = require('./charts/SmoothLineVivus.js');
+
+var _chartsSmoothLineVivusJs2 = _interopRequireDefault(_chartsSmoothLineVivusJs);
+
+exports['default'] = { Pie: _chartsPieJs2['default'], Tree: _chartsTreeJs2['default'], SmoothLine: _chartsSmoothLineJs2['default'], SmoothLineVivus: _chartsSmoothLineVivusJs2['default'] };
 module.exports = exports['default'];
 
 
-},{"./charts/Pie.js":13,"./charts/SmoothLine.js":14,"./charts/Tree.js":15}]},{},[]);
+},{"./charts/Pie.js":13,"./charts/SmoothLine.js":14,"./charts/SmoothLineVivus.js":15,"./charts/Tree.js":16}]},{},[]);
