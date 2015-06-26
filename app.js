@@ -290,8 +290,8 @@ var App = _react2['default'].createClass({
                         _react2['default'].createElement(
                             'td',
                             null,
-                            _react2['default'].createElement(_reactPathjsChart.SmoothLineVivus, { data: data, xKey: 'x', yKey: 'y', width: 600, height: 600,
-                                options: this.state.data.options })
+                            _react2['default'].createElement(_reactPathjsChart.SmoothLineVivus, { data: data, xKey: 'x', yKey: 'y', width: 600, height: 600
+                            })
                         ),
                         _react2['default'].createElement(
                             'td',
