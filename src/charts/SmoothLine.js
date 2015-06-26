@@ -69,10 +69,11 @@ export default class SmoothLineChart extends React.Component {
         var xOrient = chart.options.axisX.orient || 'bottom';
 
         var xTicks =_.map(axis.x.ticks, function (c, i) {
+             var label = options.axisX.labelComponent !== undefined? React.cloneElement(options.axisX.labelComponent,{value:c}):c;
              return (<g key={ i } transform={"translate(" + chart.xscale(c) + "," +  axis.y.item.min + ")"}>
                     {options.axisX.showTicks ? <circle r="2" cx="0" cy="0" stroke="grey" fill="grey"/> : null}
                     {options.axisX.showLabels ?
-                        <text transform="translate(-5, 20)" textAnchor="start">{c}</text> : null}
+                        <text transform="translate(-5, 20)" textAnchor="start">{label}</text> : null}
                 </g>)
         });
 
@@ -81,11 +82,12 @@ export default class SmoothLineChart extends React.Component {
         //var x = sign * 50;
         //var y = sign * 10
         var yTicks = _.map(axis.y.ticks, function (c, i) {
+            var label = options.axisY.labelComponent !== undefined? React.cloneElement(options.axisY.labelComponent,{value:c}):c;
             return (
                 <g key={ i } transform={"translate(" + axis.x.item.min + "," +  chart.yscale(c) + ")"}>
                     {options.axisY.showTicks ? <circle r="2" cx="0" cy="0" stroke="grey" fill="grey"/> : null}
                     {options.axisY.showLabels ?
-                        <text transform="translate(-5, 0)" textAnchor="end">{React.cloneElement(options.axisY.labelComponent,{value:c}) || c }</text> : null}
+                        <text transform="translate(-5, 0)" textAnchor="end">{label}</text> : null}
                 </g>)
         });
 

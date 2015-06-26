@@ -1493,6 +1493,7 @@ var SmoothLineChart = (function (_React$Component) {
             var xOrient = chart.options.axisX.orient || 'bottom';
 
             var xTicks = _underscore2['default'].map(axis.x.ticks, function (c, i) {
+                var label = options.axisX.labelComponent !== undefined ? _react2['default'].cloneElement(options.axisX.labelComponent, { value: c }) : c;
                 return _react2['default'].createElement(
                     'g',
                     { key: i, transform: 'translate(' + chart.xscale(c) + ',' + axis.y.item.min + ')' },
@@ -1500,7 +1501,7 @@ var SmoothLineChart = (function (_React$Component) {
                     options.axisX.showLabels ? _react2['default'].createElement(
                         'text',
                         { transform: 'translate(-5, 20)', textAnchor: 'start' },
-                        c
+                        label
                     ) : null
                 );
             });
@@ -1510,6 +1511,7 @@ var SmoothLineChart = (function (_React$Component) {
             //var x = sign * 50;
             //var y = sign * 10
             var yTicks = _underscore2['default'].map(axis.y.ticks, function (c, i) {
+                var label = options.axisY.labelComponent !== undefined ? _react2['default'].cloneElement(options.axisY.labelComponent, { value: c }) : c;
                 return _react2['default'].createElement(
                     'g',
                     { key: i, transform: 'translate(' + axis.x.item.min + ',' + chart.yscale(c) + ')' },
@@ -1517,7 +1519,7 @@ var SmoothLineChart = (function (_React$Component) {
                     options.axisY.showLabels ? _react2['default'].createElement(
                         'text',
                         { transform: 'translate(-5, 0)', textAnchor: 'end' },
-                        _react2['default'].cloneElement(options.axisY.labelComponent, { value: c }) || c
+                        label
                     ) : null
                 );
             });

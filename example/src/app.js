@@ -1,43 +1,17 @@
 import React from 'react';
 import BindToMixin from 'react-binding';
 import {FormattedNumber} from 'react-intl';
-
+import _ from 'underscore';
 import {Pie,Tree,SmoothLine,SmoothLineVivus} from 'react-pathjs-chart';
 import treeData from './treeData.js';
-import stock from './stockData.js';
 
-import _ from 'underscore';
-
-var parseDate = function (str) {
-    var split = str.split(' ');
-    var month = split[0];
-    var year = split[1];
-    var months = {
-        Jan: 0,
-        Feb: 1,
-        Mar: 2,
-        Apr: 3,
-        May: 4,
-        Jun: 5,
-        Jul: 6,
-        Aug: 7,
-        Sep: 8,
-        Oct: 9,
-        Nov: 10,
-        Dec: 11
-    };
-    var m = months[month];
-    var d = new Date();
-    d.setMonth(m);
-    d.setYear(parseInt(year, 10) - 1900);
-    return d.getTime();
-};
-
-var mapData = function (items) {
-    return _.map(items, function (item) {
-        return {"value": item.value, "date": parseDate(item.date)}
-    })
-};
+var countries = [
+    {name: 'Italy', population: 59859996},
+    {name: 'Mexico', population: 118395054},
+    {name: 'France', population: 65806000},
+    {name: 'Argentina', population: 40117096},
+    {name: 'Japan', population: 127290000}
+];
 
 var xs = _.range(-10, 11, 1);
 
@@ -186,13 +160,6 @@ var App = React.createClass({
         };
     },
     render() {
-        var countries = [
-            {name: 'Italy', population: 59859996},
-            {name: 'Mexico', population: 118395054},
-            {name: 'France', population: 65806000},
-            {name: 'Argentina', population: 40117096},
-            {name: 'Japan', population: 127290000}
-        ];
         var binding = this.bindToState('data', 'options');
         var data = [mocnina(this.state.data.n)]
         return (<div>
