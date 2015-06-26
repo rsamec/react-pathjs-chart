@@ -12,6 +12,7 @@ var pkg = JSON.parse(require('fs').readFileSync('./package.json'));
 var dependencies = [];
 Object.keys(pkg.dependencies).forEach(function(i) {
 	if (i !== 'reactify') dependencies.push(i);
+	//if (i === 'react') dependencies.push('react/addons');
 });
 
 module.exports = {

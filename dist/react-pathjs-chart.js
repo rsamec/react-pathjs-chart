@@ -1392,7 +1392,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../animate.js":13,"../pallete/Colors.js":18,"paths-js/pie":7,"underscore":undefined}],15:[function(require,module,exports){
+},{"../animate.js":13,"../pallete/Colors.js":19,"paths-js/pie":7,"underscore":undefined}],15:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1419,6 +1419,9 @@ var _underscore = require('underscore');
 var _underscore2 = _interopRequireDefault(_underscore);
 
 var SmoothLine = require('paths-js/smooth-line');
+var Axis = require('../component/Axis');
+
+var Path = require('paths-js/path');
 
 var SmoothLineChart = (function (_React$Component) {
     function SmoothLineChart(props) {
@@ -1440,6 +1443,10 @@ var SmoothLineChart = (function (_React$Component) {
                 noDataMsg
             );
 
+            var options = this.props.options;
+            var width = this.props.width || 450;
+            var height = this.props.height || 350;
+
             var palette = this.props.palette || ['#3E90F0', '#7881C2', '#707B82'];
             var accessor = function accessor(key) {
                 return function (x) {
@@ -1450,25 +1457,102 @@ var SmoothLineChart = (function (_React$Component) {
                 data: this.props.data,
                 xaccessor: accessor(this.props.xKey),
                 yaccessor: accessor(this.props.yKey),
-                width: this.props.width || 450,
-                height: this.props.height || 350,
+                width: width,
+                height: height,
                 closed: false
             });
+
+            //add right + left
+            if (options.margin !== undefined) width += (options.margin.right || 0) + (options.margin.left || 0);
+            //add top + bottom
+            if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
+
+            var axis = new Axis(chart, options);
+
+            var transparent = { opacity: 0.5 };
+
             var lines = _underscore2['default'].map(chart.curves, function (c, i) {
                 return _react2['default'].createElement('path', { d: c.line.path.print(), stroke: palette[i], fill: 'none' });
             });
             var areas = _underscore2['default'].map(chart.curves, function (c, i) {
-                var transparent = { opacity: 0.5 };
+                //var transparent = { opacity: 0.5 };
                 return _react2['default'].createElement('path', { d: c.area.path.print(), style: transparent, stroke: 'none', fill: palette[i] });
             });
+
+            //var points = _.map(chart.curves[0].item, function (c, i) {
+            //    return (
+            //    <g key={i} transform={"translate(" + chart.xscale(c.x) + "," +  chart.yscale(c.y) + ")"}>
+            //        <circle r="2" cx="0" cy="0" stroke="grey" fill="grey"/>
+            //        <text transform="translate(-5, 0)" textAnchor="end">{c}</text>
+            //    </g>)
+            //});
+
+            var xOrient = chart.options.axisX.orient || 'bottom';
+
+            var xTicks = _underscore2['default'].map(axis.x.ticks, function (c, i) {
+                return _react2['default'].createElement(
+                    'g',
+                    { key: i, transform: 'translate(' + chart.xscale(c) + ',' + axis.y.item.min + ')' },
+                    options.axisX.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
+                    options.axisX.showLabels ? _react2['default'].createElement(
+                        'text',
+                        { transform: 'translate(-5, 20)', textAnchor: 'start' },
+                        c
+                    ) : null
+                );
+            });
+
+            //var yOrient = chart.options.axisY.orient || 'bottom';
+            //var xSign = yOrient === "top" || yOrient == "left" ? -1:1;
+            //var x = sign * 50;
+            //var y = sign * 10
+            var yTicks = _underscore2['default'].map(axis.y.ticks, function (c, i) {
+                return _react2['default'].createElement(
+                    'g',
+                    { key: i, transform: 'translate(' + axis.x.item.min + ',' + chart.yscale(c) + ')' },
+                    options.axisY.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
+                    options.axisY.showLabels ? _react2['default'].createElement(
+                        'text',
+                        { transform: 'translate(-5, 0)', textAnchor: 'end' },
+                        _react2['default'].cloneElement(options.axisY.labelComponent, { value: c }) || c
+                    ) : null
+                );
+            });
+
+            var xGridLines = options.axisX.showLines ? _underscore2['default'].map(axis.x.lines, function (c, i) {
+                return _react2['default'].createElement('path', { d: c.print(), style: transparent, stroke: '#3E90F0', fill: 'none' });
+            }) : [];
+            var yGridLines = options.axisY.showLines ? _underscore2['default'].map(axis.y.lines, function (c, i) {
+                return _react2['default'].createElement('path', { d: c.print(), style: transparent, stroke: '#3E90F0', fill: 'none' });
+            }) : [];
+            //
+            //var children = [this.state.showAreas ? areas : null,lines,points,xTicks,yTicks,
+            //    //options.axisX.showAxis ? <path d={axis.x.path.print()} style={ transparent } stroke="#3E90F0" fill="none"/> : null,
+            //    //options.axisX.showAxis ? <path d={axis.y.path.print()} style={ transparent } stroke="#3E90F0" fill="none"/> : null,
+            //    xGridLines,yGridLines];
+            //
+            //children = _.filter(children,function(item){return item !== null});
+            //var obj = _.object(_map(_.range(0, children.length),function(e,i){return "key" + i}),children);
+            //var fragment = React.addons.createFragment(obj);
+
+            //margins
+            var y = options.margin !== undefined ? options.margin.top || 0 : 0;
+            var x = options.margin !== undefined ? options.margin.left || 0 : 0;
+
             return _react2['default'].createElement(
                 'svg',
-                { ref: 'vivus', width: '500', height: '400' },
+                { ref: 'vivus', width: width, height: height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(30, 0)' },
+                    { transform: 'translate(' + x + ',' + y + ')' },
                     this.state.showAreas ? areas : null,
-                    lines
+                    lines,
+                    options.axisX.showAxis ? _react2['default'].createElement('path', { d: axis.x.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3, fill: 'none' }) : null,
+                    options.axisY.showAxis ? _react2['default'].createElement('path', { d: axis.y.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3, fill: 'none' }) : null,
+                    xTicks,
+                    yTicks,
+                    xGridLines,
+                    yGridLines
                 )
             );
         }
@@ -1482,7 +1566,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"paths-js/smooth-line":9,"underscore":undefined}],16:[function(require,module,exports){
+},{"../component/Axis":18,"paths-js/path":6,"paths-js/smooth-line":9,"underscore":undefined}],16:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1677,6 +1761,151 @@ module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"paths-js/tree":10,"underscore":undefined}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var Path = require('paths-js/path');
+
+var Axis = (function () {
+    function Axis(chart, options) {
+        _classCallCheck(this, Axis);
+
+        chart.options = options;
+
+        var axis = this.getAxis(chart);
+        this.x = axis.x;
+        this.y = axis.y;
+    }
+
+    _createClass(Axis, [{
+        key: 'getAxis',
+        value: function getAxis(chart) {
+
+            var xAxis = Axis.getMaxAndMin(chart, 'x');
+            var yAxis = Axis.getMaxAndMin(chart, 'y');
+
+            var xTickInterval = chart.options.axisX.tickCount || 10;
+            var yTickInterval = chart.options.axisY.tickCount || 10;
+
+            var xTicks = chart.options.axisX.tickValues !== undefined ? _underscore2['default'].map(chart.options.axisX.tickValues, function (v) {
+                return v.value;
+            }) : Axis.getTickValues(xAxis, xTickInterval);
+            var yTicks = chart.options.axisY.tickValues !== undefined ? _underscore2['default'].map(chart.options.axisY.tickValues, function (v) {
+                return v.value;
+            }) : Axis.getTickValues(yAxis, yTickInterval);
+
+            var fixedX = chart.options.axisY.zeroAxis ? chart.xscale(0) : xAxis.min;
+            var fixedY = chart.options.axisX.zeroAxis ? chart.yscale(0) : yAxis.min;
+
+            var xStart = { x: xAxis.min, y: fixedY };
+            var yStart = { x: fixedX, y: yAxis.min };
+            var xEnd = { x: xAxis.max, y: fixedY };
+            var yEnd = { x: fixedX, y: yAxis.max };
+
+            var margin = chart.options.margin;
+            if (margin !== undefined) {
+                yEnd.y -= margin.top || 0;
+                xEnd.x += margin.right || 0;
+                yStart.y += margin.bottom || 0;
+                xStart.x -= margin.left || 0;
+            }
+
+            return {
+                x: {
+                    item: xAxis,
+                    path: Path().moveto(xStart).lineto(xEnd).closepath(),
+                    ticks: xTicks,
+                    lines: _underscore2['default'].map(xTicks, function (c) {
+                        var lineStart = { x: chart.xscale(c), y: yAxis.min };
+                        return Path().moveto(lineStart).lineto(lineStart.x, yAxis.max);
+                    })
+                },
+                y: {
+                    item: yAxis,
+                    path: Path().moveto(yStart).lineto(yEnd).closepath(),
+                    ticks: yTicks,
+                    lines: _underscore2['default'].map(yTicks, function (c) {
+                        var lineStart = { x: xAxis.min, y: chart.yscale(c) };
+                        return Path().moveto(lineStart).lineto(xAxis.max, lineStart.y);
+                    })
+                }
+            };
+        }
+    }], [{
+        key: 'getMaxAndMin',
+        value: function getMaxAndMin(chart, key) {
+            var maxValue = 0;
+            var minValue = 0;
+            _underscore2['default'].each(chart.curves, function (serie) {
+                var values = _underscore2['default'].map(serie.item, function (item) {
+                    return item[key];
+                });
+
+                var max = _underscore2['default'].max(values);
+                if (max > maxValue) maxValue = max;
+                var min = _underscore2['default'].min(values);
+                if (min < minValue) minValue = min;
+            });
+            return {
+                minValue: minValue,
+                maxValue: maxValue,
+                min: key === 'x' ? chart.xscale(minValue) : chart.yscale(minValue),
+                max: key === 'x' ? chart.xscale(maxValue) : chart.yscale(maxValue)
+            };
+        }
+    }, {
+        key: 'getTickValues',
+
+        //static calcStepSize(range, targetSteps)
+        //{
+        //    // calculate an initial guess at step size
+        //    var tempStep = range / targetSteps;
+        //
+        //    // get the magnitude of the step size
+        //    var mag = Math.floor(Math.log(tempStep) /  Math.log(10));
+        //    var magPow = Math.pow(10, mag);
+        //
+        //    // calculate most significant digit of the new step size
+        //    var magMsd = Math.round(tempStep / magPow + 0.5);
+        //
+        //    // promote the MSD to either 1, 2, or 5
+        //    if (magMsd > 5.0)
+        //        magMsd = 10.0;
+        //    else if (magMsd > 2.0)
+        //        magMsd = 5.0;
+        //    else if (magMsd > 1.0)
+        //        magMsd = 2.0;
+        //
+        //    return magMsd * magPow;
+        //}
+
+        value: function getTickValues(axis, tickCount) {
+            var tickStep = Math.round((axis.maxValue - axis.minValue) / tickCount, 0);
+            return _underscore2['default'].range(axis.minValue, axis.maxValue + 1, tickStep);
+        }
+    }]);
+
+    return Axis;
+})();
+
+exports['default'] = Axis;
+module.exports = exports['default'];
+
+
+},{"paths-js/path":6,"underscore":undefined}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
