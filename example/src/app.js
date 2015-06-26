@@ -178,7 +178,7 @@ var App = React.createClass({
             data: {
                 n:3,
                 options: {
-                    margin: {top:20, left: 60, bottom: 50},
+                    margin: {top:20, left: 60, bottom: 50,right:20},
                     axisX: _.clone(defaultAxis),
                     axisY: _.extend(defaultAxis,{labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>})
                 }

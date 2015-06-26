@@ -16,7 +16,10 @@ export default class SmoothLineChart extends React.Component {
         var noDataMsg = this.props.noDataMessage || "No data available";
         if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
 
-        var options = this.props.options;
+        var options = this.props.options || {};
+        if (options.axisX === undefined) options.axisX = {};
+        if (options.axisY === undefined) options.axisY = {};
+
         var width = this.props.width || 450;
         var height = this.props.height || 350;
 
