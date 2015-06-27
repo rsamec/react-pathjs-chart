@@ -13,16 +13,7 @@ var countries = [
     {name: 'Japan', population: 127290000}
 ];
 
-var pokemon = [
-    { hp: 45, attack: 49, defense: 49, sp_attack: 65, sp_defense: 65, speed: 45 },
-    { name: "Ivysaur", hp: 60, attack: 62, defense: 63, sp_attack: 80, sp_defense: 80, speed: 60 },
-    { name: "Venusaur", hp: 80, attack: 82, defense: 83, sp_attack: 100, sp_defense: 100, speed: 80 },
-    { name: "Kakuna", hp: 45, attack: 25, defense: 50, sp_attack: 25, sp_defense: 25, speed: 35 },
-    { name: "Charmeleon", hp: 58, attack: 64, defense: 58, sp_attack: 80, sp_defense: 65, speed: 80 },
-    { name: "Squirtle", hp: 44, attack: 48, defense: 65, sp_attack: 50, sp_defense: 64, speed: 43 },
-    { name: "Blastoise", hp: 79, attack: 83, defense: 100, sp_attack: 85, sp_defense: 105, speed: 78 },
-    { name: "Butterfree", hp: 60, attack: 45, defense: 50, sp_attack: 90, sp_defense: 80, speed: 70 }
-]
+var activity = [{ speed: 45, balance: 49, explosives: 49, energy: 65, flexibility: 65, agility: 45,endurance:30 }]
 
 var xs = _.range(-10, 11, 1);
 
@@ -201,7 +192,7 @@ var App = React.createClass({
                     <Tree data={treeData}/>
                 </Panel>
                 <Panel header="Radar">
-                    <Radar data={[pokemon[0]]} fill="#fc6433" stroke="#fc1413" width={300} height={300} r={100} max={100} center={[150,150]}  />
+                    <Radar data={activity} fill="#fc6433" stroke="#fc1413" width={300} height={300} r={100} max={100} center={[150,150]}  />
                 </Panel>
             </div>
         )
