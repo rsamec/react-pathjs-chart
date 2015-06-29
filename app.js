@@ -25,6 +25,15 @@ var _treeDataJs2 = _interopRequireDefault(_treeDataJs);
 
 var countries = [{ name: 'Italy', population: 59859996 }, { name: 'Mexico', population: 118395054 }, { name: 'France', population: 65806000 }, { name: 'Argentina', population: 40117096 }, { name: 'Japan', population: 127290000 }];
 
+var addName = function addName(name) {
+    return function (item) {
+        item['name'] = name;
+        return item;
+    };
+};
+
+var barData = [_underscore2['default'].map([{ v: 10 }, { v: 20 }, { v: 30 }, { v: 40 }], addName('apple')), _underscore2['default'].map([{ v: 30 }, { v: 50 }, { v: 40 }, { v: 20 }], addName('banana')), _underscore2['default'].map([{ v: 10 }, { v: 60 }, { v: 10 }, { v: 60 }], addName('grape'))];
+
 var activity = [{ speed: 45, balance: 49, explosives: 49, energy: 65, flexibility: 65, agility: 45, endurance: 30 }];
 
 var xs = _underscore2['default'].range(-10, 11, 1);
@@ -176,7 +185,8 @@ var TickValues = _react2['default'].createClass({
                         return _react2['default'].createElement(
                             'td',
                             null,
-                            _react2['default'].createElement(NumberInput, { style: { width: 30, display: 'inline' }, key: index, valueLink: this.bindTo(item, 'value') })
+                            _react2['default'].createElement(NumberInput, { style: { width: 30, display: 'inline' }, key: index,
+                                valueLink: this.bindTo(item, 'value') })
                         );
                     }, this)
                 )
@@ -202,7 +212,8 @@ var AxisOptions = _react2['default'].createClass({
             _react2['default'].createElement(CheckBoxInput, { label: 'show lines', valueLink: this.bindTo(this.props.axis, 'showLines') }),
             _react2['default'].createElement(CheckBoxInput, { label: 'show labels', valueLink: this.bindTo(this.props.axis, 'showLabels') }),
             _react2['default'].createElement(CheckBoxInput, { label: 'show ticks', valueLink: this.bindTo(this.props.axis, 'showTicks') }),
-            _react2['default'].createElement(NumberInput, { label: 'tick number: ', style: { width: 50 }, valueLink: this.bindTo(this.props.axis, 'tickCount') }),
+            _react2['default'].createElement(NumberInput, { label: 'tick number: ', style: { width: 50 },
+                valueLink: this.bindTo(this.props.axis, 'tickCount') }),
             _react2['default'].createElement(
                 'label',
                 null,
@@ -225,21 +236,28 @@ var App = _react2['default'].createClass({
                 options: {
                     margin: { top: 20, left: 60, bottom: 50, right: 20 },
                     axisX: _underscore2['default'].clone(defaultAxis),
-                    axisY: _underscore2['default'].extend(defaultAxis, { labelComponent: _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 1000, style: 'currency', currency: 'USD' }) })
+                    axisY: _underscore2['default'].extend(defaultAxis, {
+                        labelComponent: _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 1000, style: 'currency', currency: 'USD' })
+                    })
+                },
+                barOptions: {
+                    margin: { top: 20, left: 20, bottom: 50, right: 20 },
+                    axisY: { showAxis: true, showLines: true, showTicks: true, showLabels: true },
+                    axisX: { showAxis: true, showLines: true, showTicks: true, showLabels: true }
                 }
             }
         };
     },
     render: function render() {
-        var binding = this.bindToState('data', 'options');
+        var lineOptions = this.bindToState('data', 'options');
         var data = [mocnina(this.state.data.n)];
-
+        var barOptions = this.bindToState('data', 'barOptions');
         return _react2['default'].createElement(
             'div',
             null,
             _react2['default'].createElement(
                 Panel,
-                { header: 'SmoothLine' },
+                { header: 'SmoothLine chart' },
                 _react2['default'].createElement(
                     'table',
                     null,
@@ -249,8 +267,8 @@ var App = _react2['default'].createClass({
                         _react2['default'].createElement(
                             'td',
                             null,
-                            ' ',
-                            _react2['default'].createElement(NumberInput, { label: 'exponent:', style: { width: 50 }, valueLink: this.bindToState('data', 'n') })
+                            _react2['default'].createElement(NumberInput, { label: 'exponent:', style: { width: 50 },
+                                valueLink: this.bindToState('data', 'n') })
                         )
                     ),
                     _react2['default'].createElement(
@@ -265,27 +283,59 @@ var App = _react2['default'].createClass({
                         _react2['default'].createElement(
                             'td',
                             { style: { paddingLeft: 10 } },
-                            _react2['default'].createElement(Margins, { margin: this.bindTo(binding, 'margin') }),
-                            _react2['default'].createElement(AxisOptions, { name: 'Axis X', axis: this.bindTo(binding, 'axisX') }),
-                            _react2['default'].createElement(AxisOptions, { name: 'Axis Y', axis: this.bindTo(binding, 'axisY') })
+                            _react2['default'].createElement(Margins, { margin: this.bindTo(lineOptions, 'margin') }),
+                            _react2['default'].createElement(AxisOptions, { name: 'Axis X', axis: this.bindTo(lineOptions, 'axisX') }),
+                            _react2['default'].createElement(AxisOptions, { name: 'Axis Y', axis: this.bindTo(lineOptions, 'axisY') })
                         )
                     )
                 )
             ),
             _react2['default'].createElement(
                 Panel,
-                { header: 'Pie' },
+                { header: 'Bar chart' },
+                _react2['default'].createElement(
+                    'table',
+                    null,
+                    _react2['default'].createElement(
+                        'tr',
+                        null,
+                        _react2['default'].createElement(
+                            'td',
+                            null,
+                            _react2['default'].createElement(_reactPathjsChart.Bar, { data: barData, color: '#fc6433', width: 600, height: 300, accessorKey: 'v', gutter: 30,
+                                options: this.state.data.barOptions })
+                        ),
+                        _react2['default'].createElement(
+                            'td',
+                            { style: { paddingLeft: 10 } },
+                            _react2['default'].createElement(Margins, { margin: this.bindTo(barOptions, 'margin') }),
+                            _react2['default'].createElement(
+                                'h4',
+                                null,
+                                'Axis X'
+                            ),
+                            _react2['default'].createElement(CheckBoxInput, { label: 'show axis', valueLink: this.bindTo(barOptions, 'axisX.showAxis') }),
+                            _react2['default'].createElement(CheckBoxInput, { label: 'show labels', valueLink: this.bindTo(barOptions, 'axisX.showLabels') }),
+                            _react2['default'].createElement(AxisOptions, { name: 'Axis Y', axis: this.bindTo(barOptions, 'axisY') })
+                        )
+                    )
+                )
+            ),
+            _react2['default'].createElement(
+                Panel,
+                { header: 'Pie chart' },
                 _react2['default'].createElement(_reactPathjsChart.Pie, { data: countries, color: '#fc6433', legendPosition: 'topLeft', accessorKey: 'population' })
             ),
             _react2['default'].createElement(
                 Panel,
-                { header: 'Tree' },
+                { header: 'Tree chart' },
                 _react2['default'].createElement(_reactPathjsChart.Tree, { data: _treeDataJs2['default'] })
             ),
             _react2['default'].createElement(
                 Panel,
-                { header: 'Radar' },
-                _react2['default'].createElement(_reactPathjsChart.Radar, { data: activity, fill: '#fc6433', stroke: '#fc1413', width: 300, height: 300, r: 100, max: 100, center: [150, 150] })
+                { header: 'Radar chart' },
+                _react2['default'].createElement(_reactPathjsChart.Radar, { data: activity, fill: '#fc6433', stroke: '#fc1413', width: 300, height: 300, r: 100, max: 100,
+                    center: [150, 150] })
             )
         );
     }
