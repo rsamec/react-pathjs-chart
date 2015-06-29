@@ -11,6 +11,26 @@ export default class SmoothLineChart extends React.Component {
         super(props);
         this.state = {showAreas: true};
     }
+    getMaxAndMin(chart, key) {
+        var maxValue = 0;
+        var minValue = 0;
+        _.each(chart.curves, function (serie) {
+            var values = _.map(serie.item, function (item) {
+                return item[key]
+            });
+
+            var max = _.max(values);
+            if (max > maxValue) maxValue = max;
+            var min = _.min(values);
+            if (min < minValue) minValue = min;
+        });
+        return {
+            minValue: minValue,
+            maxValue: maxValue,
+            min: key === "x" ? chart.xscale(minValue) : chart.yscale(minValue),
+            max: key === "x" ? chart.xscale(maxValue) : chart.yscale(maxValue)
+        }
+    }
 
     render() {
         var noDataMsg = this.props.noDataMessage || "No data available";
@@ -45,8 +65,11 @@ export default class SmoothLineChart extends React.Component {
         //add top + bottom
         if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
 
-        var axis = new Axis(chart,options);
-
+        var ranges = {x:this.getMaxAndMin(chart,"x"),y:this.getMaxAndMin(chart,"y")};
+        var axis = {
+            x: new Axis(chart.xscale,options.axisX,ranges,options.margin,true).axis(),
+            y: new Axis(chart.yscale,options.axisY,ranges,options.margin,false).axis()
+        };
 
         var transparent = {opacity: 0.5};
 
@@ -66,7 +89,7 @@ export default class SmoothLineChart extends React.Component {
         //    </g>)
         //});
 
-        var xOrient = chart.options.axisX.orient || 'bottom';
+        //var xOrient = chart.options.axisX.orient || 'bottom';
 
         var xTicks =_.map(axis.x.ticks, function (c, i) {
              var label = options.axisX.labelComponent !== undefined? React.cloneElement(options.axisX.labelComponent,{value:c}):c;

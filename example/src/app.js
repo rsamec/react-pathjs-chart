@@ -2,7 +2,7 @@ import React from 'react';
 import BindToMixin from 'react-binding';
 import {FormattedNumber} from 'react-intl';
 import _ from 'underscore';
-import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar} from 'react-pathjs-chart';
+import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar} from 'react-pathjs-chart';
 import treeData from './treeData.js';
 
 var countries = [
@@ -13,19 +13,37 @@ var countries = [
     {name: 'Japan', population: 127290000}
 ];
 
-var activity = [{ speed: 45, balance: 49, explosives: 49, energy: 65, flexibility: 65, agility: 45,endurance:30 }]
+var addName = function (name) {
+    return function (item) {
+        item["name"] = name;
+        return item;
+    }
+}
+
+var barData = [
+    _.map([{v: 10}, {v: 20}, {v: 30}, {v: 40}], addName("apple")),
+    _.map([{v: 30}, {v: 50}, {v: 40}, {v: 20}], addName("banana")),
+    _.map([{v: 10}, {v: 60}, {v: 10}, {v: 60}], addName("grape"))
+
+];
+
+var activity = [{speed: 45, balance: 49, explosives: 49, energy: 65, flexibility: 65, agility: 45, endurance: 30}]
 
 var xs = _.range(-10, 11, 1);
 
-var polynom = function(a,b,c) {return _.map(xs, function (x) {
-    return {x: x, y: a * Math.pow(x, 2) + b * x + c}})
+var polynom = function (a, b, c) {
+    return _.map(xs, function (x) {
+        return {x: x, y: a * Math.pow(x, 2) + b * x + c}
+    })
 };
-var mocnina = function(n){return _.map(xs, function (x) {
-    return {x: x, y: Math.pow(x, n)}})
+var mocnina = function (n) {
+    return _.map(xs, function (x) {
+        return {x: x, y: Math.pow(x, n)}
+    })
 };
 
 
-var Panel =React.createClass({
+var Panel = React.createClass({
     render(){
         return (
             <div className="panel panel-default">
@@ -56,7 +74,7 @@ var NumberInput = React.createClass({
         var requestChange = function (e) {
             valueModel.value = parseInt(e.target.value, 10);
         };
-        var label = this.props.label? <label style={{minWidth:60}}>{this.props.label}</label>:null;
+        var label = this.props.label ? <label style={{minWidth:60}}>{this.props.label}</label> : null;
         return (
             <div>
                 {label}
@@ -105,9 +123,9 @@ var TickValues = React.createClass({
         var remove = function (item) {
             bindToArray.remove(item)
         };
-        var clear = function(){
-            this.bindTo(this.props.axis,'tickValues').value = undefined;///bindToArray.value = undefined;
-           // _.each(bindToArray.items,function(item){bindToArray.remove(item.value)});
+        var clear = function () {
+            this.bindTo(this.props.axis, 'tickValues').value = undefined;///bindToArray.value = undefined;
+            // _.each(bindToArray.items,function(item){bindToArray.remove(item.value)});
         }.bind(this);
         return (<div>
             <input type='button' value="add" onClick={add}/>
@@ -118,8 +136,9 @@ var TickValues = React.createClass({
 
                         return (
                             <td>
-                                <NumberInput style={{width:30,display:'inline'}} key={index} valueLink={this.bindTo(item,'value')}/>
-                             </td>)
+                                <NumberInput style={{width:30,display:'inline'}} key={index}
+                                             valueLink={this.bindTo(item,'value')}/>
+                            </td>)
                     }, this)}
                 </tr>
             </table>
@@ -138,7 +157,8 @@ var AxisOptions = React.createClass({
                 <CheckBoxInput label="show lines" valueLink={this.bindTo(this.props.axis,'showLines')}/>
                 <CheckBoxInput label="show labels" valueLink={this.bindTo(this.props.axis,'showLabels')}/>
                 <CheckBoxInput label="show ticks" valueLink={this.bindTo(this.props.axis,'showTicks')}/>
-                <NumberInput label="tick number: " style={{width:50}} valueLink={this.bindTo(this.props.axis,'tickCount')}/>
+                <NumberInput label="tick number: " style={{width:50}}
+                             valueLink={this.bindTo(this.props.axis,'tickCount')}/>
                 <label>custom tick values</label>
                 <TickValues axis={this.props.axis}/>
             </div>);
@@ -149,27 +169,35 @@ var AxisOptions = React.createClass({
 var App = React.createClass({
     mixins: [BindToMixin],
     getInitialState() {
-        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks:true,zeroAxis:true};
+        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true};
         return {
             data: {
-                n:3,
+                n: 3,
                 options: {
-                    margin: {top:20, left: 60, bottom: 50,right:20},
+                    margin: {top: 20, left: 60, bottom: 50, right: 20},
                     axisX: _.clone(defaultAxis),
-                    axisY: _.extend(defaultAxis,{labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>})
+                    axisY: _.extend(defaultAxis, {
+                        labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
+                    })
+                },
+                barOptions: {
+                    margin: {top: 20, left: 20, bottom: 50, right: 20},
+                    axisY: {showAxis: true, showLines: true, showTicks: true, showLabels: true},
+                    axisX: {showAxis: true, showLines: true, showTicks: true, showLabels: true}
                 }
             }
         };
     },
     render() {
-        var binding = this.bindToState('data', 'options');
+        var lineOptions = this.bindToState('data', 'options');
         var data = [mocnina(this.state.data.n)];
-
+        var barOptions = this.bindToState('data', 'barOptions')
         return (<div>
-                <Panel header="SmoothLine">
+                <Panel header="SmoothLine chart">
                     <table>
                         <tr>
-                            <td> <NumberInput label="exponent:" style={{width:50}} valueLink={this.bindToState('data','n')}/></td>
+                            <td><NumberInput label="exponent:" style={{width:50}}
+                                             valueLink={this.bindToState('data','n')}/></td>
                         </tr>
                         <tr>
                             <td>
@@ -178,22 +206,42 @@ var App = React.createClass({
                             </td>
 
                             <td style={{paddingLeft:10}}>
-                                <Margins margin={this.bindTo(binding,'margin')}/>
-                                <AxisOptions name="Axis X" axis={this.bindTo(binding,'axisX')}/>
-                                <AxisOptions name="Axis Y" axis={this.bindTo(binding,'axisY')}/>
+                                <Margins margin={this.bindTo(lineOptions,'margin')}/>
+                                <AxisOptions name="Axis X" axis={this.bindTo(lineOptions,'axisX')}/>
+                                <AxisOptions name="Axis Y" axis={this.bindTo(lineOptions,'axisY')}/>
                             </td>
                         </tr>
                     </table>
                 </Panel>
-                <Panel header="Pie">
+                <Panel header="Bar chart">
+                    <table>
+                        <tr>
+
+                            <td>
+                                <Bar data={barData} color="#fc6433" width={600} height={300} accessorKey="v" gutter={30}
+                                     options={this.state.data.barOptions}/>
+                            </td>
+                            <td style={{paddingLeft:10}}>
+                                <Margins margin={this.bindTo(barOptions,'margin')}/>
+                                <h4>Axis X</h4>
+                                <CheckBoxInput label="show axis" valueLink={this.bindTo(barOptions,'axisX.showAxis')}/>
+                                <CheckBoxInput label="show labels" valueLink={this.bindTo(barOptions,'axisX.showLabels')}/>
+                                <AxisOptions name="Axis Y" axis={this.bindTo(barOptions,'axisY')}/>
+                            </td>
+                        </tr>
+                    </table>
+                </Panel>
+                <Panel header="Pie chart">
                     <Pie data={ countries } color="#fc6433" legendPosition='topLeft' accessorKey="population"/>
                 </Panel>
-                <Panel header="Tree">
+                <Panel header="Tree chart">
                     <Tree data={treeData}/>
                 </Panel>
-                <Panel header="Radar">
-                    <Radar data={activity} fill="#fc6433" stroke="#fc1413" width={300} height={300} r={100} max={100} center={[150,150]}  />
+                <Panel header="Radar chart">
+                    <Radar data={activity} fill="#fc6433" stroke="#fc1413" width={300} height={300} r={100} max={100}
+                           center={[150,150]}/>
                 </Panel>
+
             </div>
         )
     }

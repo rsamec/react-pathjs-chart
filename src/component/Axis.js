@@ -2,35 +2,14 @@ import _ from 'underscore';
 var Path = require('paths-js/path');
 
 export default class Axis {
-    constructor(chart, options) {
-
-        chart.options = options;
-
-        var axis = this.getAxis(chart);
-        this.x= axis.x;
-        this.y = axis.y;
+    constructor(scale, options, ranges, margin, x) {
+        this.scale = scale;
+        this.options = options;
+        this.ranges = ranges;
+        this.margin = margin;
+        this.x = x;
     }
 
-    static getMaxAndMin(chart, key) {
-        var maxValue = 0;
-        var minValue = 0;
-        _.each(chart.curves, function (serie) {
-            var values = _.map(serie.item, function (item) {
-                return item[key]
-            });
-
-            var max = _.max(values);
-            if (max > maxValue) maxValue = max;
-            var min = _.min(values);
-            if (min < minValue) minValue = min;
-        });
-        return {
-            minValue: minValue,
-            maxValue: maxValue,
-            min: key === "x" ? chart.xscale(minValue) : chart.yscale(minValue),
-            max: key === "x" ? chart.xscale(maxValue) : chart.yscale(maxValue)
-        }
-    }
 
     //static calcStepSize(range, targetSteps)
     //{
@@ -60,52 +39,42 @@ export default class Axis {
         return _.range(axis.minValue, axis.maxValue + 1,tickStep);
     }
 
-    getAxis(chart) {
+    axis() {
 
-        var xAxis = Axis.getMaxAndMin(chart, "x");
-        var yAxis = Axis.getMaxAndMin(chart, "y");
+        var x = this.x;
 
-        var xTickInterval = chart.options.axisX.tickCount || 10;
-        var yTickInterval = chart.options.axisY.tickCount || 10;
+        var xAxis = this.ranges.x;
+        var yAxis = this.ranges.y;
+        var currentAxis = x?xAxis:yAxis;
 
-        var xTicks = chart.options.axisX.tickValues !== undefined? _.map(chart.options.axisX.tickValues,function(v){return v.value }): Axis.getTickValues(xAxis, xTickInterval);
-        var yTicks = chart.options.axisY.tickValues !== undefined? _.map(chart.options.axisY.tickValues,function(v){return v.value }): Axis.getTickValues(yAxis, yTickInterval);
+        var tickInterval = this.options.tickCount || 10;
 
-        var fixedX = chart.options.axisY.zeroAxis?chart.xscale(0):xAxis.min;
-        var fixedY = chart.options.axisX.zeroAxis?chart.yscale(0):yAxis.min;
+        var ticks = this.options.tickValues !== undefined? _.map(this.options.tickValues,function(v){return v.value }): Axis.getTickValues(currentAxis, tickInterval);
+        var fixed = this.options.zeroAxis?this.scale(0):x?yAxis.min:xAxis.min;
 
-        var xStart = {x: xAxis.min, y: fixedY};
-        var yStart = {x: fixedX, y: yAxis.min};
-        var xEnd = {x:xAxis.max,y: fixedY};
-        var yEnd = {x:fixedX,y: yAxis.max};
+        var start = {x: x?xAxis.min:fixed, y: x?fixed:yAxis.min};
+        var end = {x:x?xAxis.max:fixed,y: x?fixed:yAxis.max};
 
-        var margin = chart.options.margin;
+        var margin = this.margin;
         if (margin !== undefined){
-            yEnd.y -= margin.top || 0;
-            xEnd.x += margin.right || 0;
-            yStart.y += margin.bottom || 0;
-            xStart.x -= margin.left || 0;
+            if (x){
+                start.x -= margin.left || 0;
+                end.x += margin.right || 0;
+            }
+            else {
+                start.y += margin.bottom || 0;
+                end.y -= margin.top || 0;
+            }
         }
 
         return {
-            x: {
-                item:xAxis,
-                path: Path().moveto(xStart).lineto(xEnd).closepath(),
-                ticks: xTicks,
-                lines: _.map(xTicks, function (c) {
-                    var lineStart = {x: chart.xscale(c), y: yAxis.min};
-                    return Path().moveto(lineStart).lineto(lineStart.x, yAxis.max);
-                })
-            },
-            y: {
-                item:yAxis,
-                path: Path().moveto(yStart).lineto(yEnd).closepath(),
-                ticks: yTicks,
-                lines: _.map(yTicks, function (c) {
-                    var lineStart = {x: xAxis.min, y: chart.yscale(c)};
-                    return Path().moveto(lineStart).lineto(xAxis.max, lineStart.y);
-                })
-            }
+            item: currentAxis,
+            path: Path().moveto(start).lineto(end).closepath(),
+            ticks: ticks,
+            lines: _.map(ticks, function (c) {
+                var lineStart = {x: x ? this.scale(c) : xAxis.min, y: x ? yAxis.min : this.scale(c)};
+                return Path().moveto(lineStart).lineto(x ? lineStart.x : xAxis.max, x ? yAxis.max : lineStart.y);
+            },this)
         };
     }
 }
