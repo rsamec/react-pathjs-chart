@@ -212,6 +212,7 @@ var AxisOptions = _react2['default'].createClass({
             _react2['default'].createElement(CheckBoxInput, { label: 'show lines', valueLink: this.bindTo(this.props.axis, 'showLines') }),
             _react2['default'].createElement(CheckBoxInput, { label: 'show labels', valueLink: this.bindTo(this.props.axis, 'showLabels') }),
             _react2['default'].createElement(CheckBoxInput, { label: 'show ticks', valueLink: this.bindTo(this.props.axis, 'showTicks') }),
+            _react2['default'].createElement(TextInput, { label: 'orient', valueLink: this.bindTo(this.props.axis, 'orient') }),
             _react2['default'].createElement(NumberInput, { label: 'tick number: ', style: { width: 50 },
                 valueLink: this.bindTo(this.props.axis, 'tickCount') }),
             _react2['default'].createElement(
@@ -229,13 +230,13 @@ var App = _react2['default'].createClass({
 
     mixins: [_reactBinding2['default']],
     getInitialState: function getInitialState() {
-        var defaultAxis = { showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true };
+        var defaultAxis = { showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true, orient: 'left' };
         return {
             data: {
                 n: 3,
                 options: {
                     margin: { top: 20, left: 60, bottom: 50, right: 20 },
-                    axisX: _underscore2['default'].clone(defaultAxis),
+                    axisX: _underscore2['default'].extend(_underscore2['default'].clone(defaultAxis), { orient: 'bottom' }),
                     axisY: _underscore2['default'].extend(defaultAxis, {
                         labelComponent: _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 1000, style: 'currency', currency: 'USD' })
                     })
