@@ -157,6 +157,7 @@ var AxisOptions = React.createClass({
                 <CheckBoxInput label="show lines" valueLink={this.bindTo(this.props.axis,'showLines')}/>
                 <CheckBoxInput label="show labels" valueLink={this.bindTo(this.props.axis,'showLabels')}/>
                 <CheckBoxInput label="show ticks" valueLink={this.bindTo(this.props.axis,'showTicks')}/>
+                <TextInput label="orient" valueLink={this.bindTo(this.props.axis,'orient')}/>
                 <NumberInput label="tick number: " style={{width:50}}
                              valueLink={this.bindTo(this.props.axis,'tickCount')}/>
                 <label>custom tick values</label>
@@ -169,13 +170,13 @@ var AxisOptions = React.createClass({
 var App = React.createClass({
     mixins: [BindToMixin],
     getInitialState() {
-        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true};
+        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true, orient:'left'};
         return {
             data: {
                 n: 3,
                 options: {
                     margin: {top: 20, left: 60, bottom: 50, right: 20},
-                    axisX: _.clone(defaultAxis),
+                    axisX: _.extend(_.clone(defaultAxis),{orient:'bottom'}),
                     axisY: _.extend(defaultAxis, {
                         labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
                     })

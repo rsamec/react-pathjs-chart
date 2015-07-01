@@ -1,12 +1,14 @@
 React Component Starter
 =======================
 
-These component offers react components - charts (Pie,SmoothLine) and other components (Tree) using [paths-js](https://github.com/andreaferretti/paths-js).
+These component offers react components - charts (Pie,SmoothLine,Bar, Tree) using [paths-js](https://github.com/andreaferretti/paths-js).
 
-All credits go to [paths-js-react-demo](https://github.com/andreaferretti/paths-js-react-demo), it is based on clone of these examples from [path-js](https://github.com/andreaferretti/paths-js-react-demo) and is extended so that it is easier to use it.
+It is based on clone of these examples from [path-js](https://github.com/andreaferretti/paths-js-react-demo) and is extended so that it is easier to use it.
 
 +   instead of accessor function you can use string key to determine the accessor key in data
++   axis,ticks, formats support
 +   wrapped to be used by package managers (npm, bower) or standalone package
+
 
 ## Demo & Examples
 
@@ -38,10 +40,12 @@ npm install react-pathjs-chart --save
 
 
 ```
-import {Pie,Tree,SmoothLine} from 'react-pathjs-chart';
+import {Pie,Tree,Bar, SmoothLine, SmoothLineVivus} from 'react-pathjs-chart';
 
 <Pie data={ countries } color='#9ac7f7' r={ 60 } R={ 140 } accessorKey="population"  />
-<SmoothLine data={stockData} xKey="date" yKey="value" />
+<Bar data={barData} color="#fc6433" width={600} height={300} accessorKey="v" gutter={30} />
+<SmoothLine data={lineData} xKey="date" yKey="value" />
+<SmoothLineVivus data={lineData} xKey="x" yKey="y" width={600} height={600} />
 <Tree data={treeData} />
 
 ```

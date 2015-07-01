@@ -1630,15 +1630,8 @@ var BarChart = _react2['default'].createClass({
         //add top + bottom
         if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
 
-        var ranges = { x: { minValue: 0, maxValue: 200, min: 0, max: width }, y: this.getMaxAndMin(values, chart.scale) };
+        var chartArea = { x: { minValue: 0, maxValue: 200, min: 0, max: width }, y: this.getMaxAndMin(values, chart.scale) };
 
-        var axis = {
-            x: new Axis(chart.scale, options.axisX, ranges, options.margin, true).axis(),
-            y: new Axis(chart.scale, options.axisY, ranges, options.margin, false).axis()
-        };
-        //        var axis = new Axis(chart,options);
-
-        var self = this;
         var lines = chart.curves.map(function (c, i) {
             return _react2['default'].createElement(
                 'g',
@@ -1646,31 +1639,11 @@ var BarChart = _react2['default'].createClass({
                 _react2['default'].createElement('path', { d: c.line.path.print(), stroke: 'none', fill: this.color(i % 3) }),
                 options.axisX.showLabels ? _react2['default'].createElement(
                     'text',
-                    { transform: 'translate(' + c.line.centroid[0] + ',' + (axis.y.item.min + 25) + ')rotate(45)', textAnchor: 'middle' },
+                    { transform: 'translate(' + c.line.centroid[0] + ',' + (chartArea.y.min + 25) + ')rotate(45)', textAnchor: 'middle' },
                     c.item.name
                 ) : null
             );
         }, this);
-
-        var yTicks = _underscore2['default'].map(axis.y.ticks, function (c, i) {
-            var label = options.axisY.labelComponent !== undefined ? _react2['default'].cloneElement(options.axisY.labelComponent, { value: c }) : c;
-            return _react2['default'].createElement(
-                'g',
-                { key: i, transform: 'translate(' + axis.x.item.min + ',' + chart.scale(c) + ')' },
-                options.axisY.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
-                options.axisY.showLabels ? _react2['default'].createElement(
-                    'text',
-                    { transform: 'translate(-5, 0)', textAnchor: 'end' },
-                    label
-                ) : null
-            );
-        });
-
-        var transparent = { opacity: 0.5 };
-
-        var yGridLines = options.axisY.showLines ? _underscore2['default'].map(axis.y.lines, function (c, i) {
-            return _react2['default'].createElement('path', { d: c.print(), style: transparent, stroke: '#3E90F0', fill: 'none' });
-        }) : [];
 
         //margins
         var y = options.margin !== undefined ? options.margin.top || 0 : 0;
@@ -1685,13 +1658,8 @@ var BarChart = _react2['default'].createClass({
                 _react2['default'].createElement(
                     'g',
                     { transform: 'translate(' + x + ',' + y + ')' },
-                    yGridLines,
-                    yTicks,
-                    lines,
-                    options.axisX.showAxis ? _react2['default'].createElement('path', { d: axis.x.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3,
-                        fill: 'none' }) : null,
-                    options.axisY.showAxis ? _react2['default'].createElement('path', { d: axis.y.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3,
-                        fill: 'none' }) : null
+                    _react2['default'].createElement(Axis, { scale: chart.scale, options: options.axisY, chartArea: chartArea }),
+                    lines
                 )
             )
         );
@@ -2092,10 +2060,10 @@ var SmoothLineChart = (function (_React$Component) {
             //add top + bottom
             if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
 
-            var ranges = { x: this.getMaxAndMin(chart, 'x'), y: this.getMaxAndMin(chart, 'y') };
-            var axis = {
-                x: new Axis(chart.xscale, options.axisX, ranges, options.margin, true).axis(),
-                y: new Axis(chart.yscale, options.axisY, ranges, options.margin, false).axis()
+            var chartArea = {
+                x: this.getMaxAndMin(chart, 'x'),
+                y: this.getMaxAndMin(chart, 'y'),
+                margin: options.margin
             };
 
             var transparent = { opacity: 0.5 };
@@ -2107,64 +2075,6 @@ var SmoothLineChart = (function (_React$Component) {
                 //var transparent = { opacity: 0.5 };
                 return _react2['default'].createElement('path', { d: c.area.path.print(), style: transparent, stroke: 'none', fill: palette[i] });
             });
-
-            //var points = _.map(chart.curves[0].item, function (c, i) {
-            //    return (
-            //    <g key={i} transform={"translate(" + chart.xscale(c.x) + "," +  chart.yscale(c.y) + ")"}>
-            //        <circle r="2" cx="0" cy="0" stroke="grey" fill="grey"/>
-            //        <text transform="translate(-5, 0)" textAnchor="end">{c}</text>
-            //    </g>)
-            //});
-
-            //var xOrient = chart.options.axisX.orient || 'bottom';
-
-            var xTicks = _underscore2['default'].map(axis.x.ticks, function (c, i) {
-                var label = options.axisX.labelComponent !== undefined ? _react2['default'].cloneElement(options.axisX.labelComponent, { value: c }) : c;
-                return _react2['default'].createElement(
-                    'g',
-                    { key: i, transform: 'translate(' + chart.xscale(c) + ',' + axis.y.item.min + ')' },
-                    options.axisX.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
-                    options.axisX.showLabels ? _react2['default'].createElement(
-                        'text',
-                        { transform: 'translate(-5, 20)', textAnchor: 'start' },
-                        label
-                    ) : null
-                );
-            });
-
-            //var yOrient = chart.options.axisY.orient || 'bottom';
-            //var xSign = yOrient === "top" || yOrient == "left" ? -1:1;
-            //var x = sign * 50;
-            //var y = sign * 10
-            var yTicks = _underscore2['default'].map(axis.y.ticks, function (c, i) {
-                var label = options.axisY.labelComponent !== undefined ? _react2['default'].cloneElement(options.axisY.labelComponent, { value: c }) : c;
-                return _react2['default'].createElement(
-                    'g',
-                    { key: i, transform: 'translate(' + axis.x.item.min + ',' + chart.yscale(c) + ')' },
-                    options.axisY.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
-                    options.axisY.showLabels ? _react2['default'].createElement(
-                        'text',
-                        { transform: 'translate(-5, 0)', textAnchor: 'end' },
-                        label
-                    ) : null
-                );
-            });
-
-            var xGridLines = options.axisX.showLines ? _underscore2['default'].map(axis.x.lines, function (c, i) {
-                return _react2['default'].createElement('path', { d: c.print(), style: transparent, stroke: '#3E90F0', fill: 'none' });
-            }) : [];
-            var yGridLines = options.axisY.showLines ? _underscore2['default'].map(axis.y.lines, function (c, i) {
-                return _react2['default'].createElement('path', { d: c.print(), style: transparent, stroke: '#3E90F0', fill: 'none' });
-            }) : [];
-            //
-            //var children = [this.state.showAreas ? areas : null,lines,points,xTicks,yTicks,
-            //    //options.axisX.showAxis ? <path d={axis.x.path.print()} style={ transparent } stroke="#3E90F0" fill="none"/> : null,
-            //    //options.axisX.showAxis ? <path d={axis.y.path.print()} style={ transparent } stroke="#3E90F0" fill="none"/> : null,
-            //    xGridLines,yGridLines];
-            //
-            //children = _.filter(children,function(item){return item !== null});
-            //var obj = _.object(_map(_.range(0, children.length),function(e,i){return "key" + i}),children);
-            //var fragment = React.addons.createFragment(obj);
 
             //margins
             var y = options.margin !== undefined ? options.margin.top || 0 : 0;
@@ -2178,12 +2088,8 @@ var SmoothLineChart = (function (_React$Component) {
                     { transform: 'translate(' + x + ',' + y + ')' },
                     this.state.showAreas ? areas : null,
                     lines,
-                    options.axisX.showAxis ? _react2['default'].createElement('path', { d: axis.x.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3, fill: 'none' }) : null,
-                    options.axisY.showAxis ? _react2['default'].createElement('path', { d: axis.y.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3, fill: 'none' }) : null,
-                    xTicks,
-                    yTicks,
-                    xGridLines,
-                    yGridLines
+                    _react2['default'].createElement(Axis, { scale: chart.xscale, options: options.axisX, chartArea: chartArea }),
+                    _react2['default'].createElement(Axis, { scale: chart.yscale, options: options.axisY, chartArea: chartArea })
                 )
             );
         }
@@ -2392,17 +2298,26 @@ module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"paths-js/tree":15,"underscore":undefined}],25:[function(require,module,exports){
+(function (global){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+
+var _react2 = _interopRequireDefault(_react);
 
 var _underscore = require('underscore');
 
@@ -2410,40 +2325,41 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 var Path = require('paths-js/path');
 
-var Axis = (function () {
-    function Axis(scale, options, ranges, margin, x) {
-        _classCallCheck(this, Axis);
+var AxisStruct = (function () {
+    function AxisStruct(scale, options, chartArea, horizontal) {
+        _classCallCheck(this, AxisStruct);
 
         this.scale = scale;
         this.options = options;
-        this.ranges = ranges;
-        this.margin = margin;
-        this.x = x;
+        this.chartArea = chartArea;
+        this.margin = chartArea.margin;
+        this.horizontal = horizontal;
     }
 
-    _createClass(Axis, [{
+    _createClass(AxisStruct, [{
         key: 'axis',
         value: function axis() {
 
-            var x = this.x;
+            var horizontal = this.horizontal;
 
-            var xAxis = this.ranges.x;
-            var yAxis = this.ranges.y;
-            var currentAxis = x ? xAxis : yAxis;
+            var xAxis = this.chartArea.x;
+            var yAxis = this.chartArea.y;
+            var currentAxis = horizontal ? xAxis : yAxis;
 
             var tickInterval = this.options.tickCount || 10;
 
             var ticks = this.options.tickValues !== undefined ? _underscore2['default'].map(this.options.tickValues, function (v) {
                 return v.value;
-            }) : Axis.getTickValues(currentAxis, tickInterval);
-            var fixed = this.options.zeroAxis ? this.scale(0) : x ? yAxis.min : xAxis.min;
+            }) : AxisStruct.getTickValues(currentAxis, tickInterval);
 
-            var start = { x: x ? xAxis.min : fixed, y: x ? fixed : yAxis.min };
-            var end = { x: x ? xAxis.max : fixed, y: x ? fixed : yAxis.max };
+            var fixed = this.options.zeroAxis ? this.scale(0) : horizontal ? yAxis.min : xAxis.min;
+
+            var start = { x: horizontal ? xAxis.min : fixed, y: horizontal ? fixed : yAxis.min };
+            var end = { x: horizontal ? xAxis.max : fixed, y: horizontal ? fixed : yAxis.max };
 
             var margin = this.margin;
             if (margin !== undefined) {
-                if (x) {
+                if (horizontal) {
                     start.x -= margin.left || 0;
                     end.x += margin.right || 0;
                 } else {
@@ -2457,8 +2373,8 @@ var Axis = (function () {
                 path: Path().moveto(start).lineto(end).closepath(),
                 ticks: ticks,
                 lines: _underscore2['default'].map(ticks, function (c) {
-                    var lineStart = { x: x ? this.scale(c) : xAxis.min, y: x ? yAxis.min : this.scale(c) };
-                    return Path().moveto(lineStart).lineto(x ? lineStart.x : xAxis.max, x ? yAxis.max : lineStart.y);
+                    var lineStart = { x: horizontal ? this.scale(c) : xAxis.min, y: horizontal ? yAxis.min : this.scale(c) };
+                    return Path().moveto(lineStart).lineto(horizontal ? lineStart.x : xAxis.max, horizontal ? yAxis.max : lineStart.y);
                 }, this)
             };
         }
@@ -2494,13 +2410,83 @@ var Axis = (function () {
         }
     }]);
 
-    return Axis;
+    return AxisStruct;
 })();
+
+var Axis = (function (_React$Component) {
+    function Axis(props) {
+        _classCallCheck(this, Axis);
+
+        _get(Object.getPrototypeOf(Axis.prototype), 'constructor', this).call(this, props);
+    }
+
+    _inherits(Axis, _React$Component);
+
+    _createClass(Axis, [{
+        key: 'render',
+        value: function render() {
+            var chartArea = this.props.chartArea;
+            var options = this.props.options;
+            var scale = this.props.scale;
+            var horizontal = options.orient === 'top' || options.orient === 'bottom';
+
+            var axis = new AxisStruct(this.props.scale, this.props.options, chartArea, horizontal).axis();
+
+            var translate = function translate(c) {
+                var pair = horizontal ? [scale(c), chartArea.y.min] : [chartArea.x.min, scale(c)];
+                return 'translate(' + pair[0] + ',' + pair[1] + ')';
+            };
+
+            var transparent = { opacity: 0.5 };
+            var textAnchor = 'start';
+            if (options.orient === 'top' || options.orient === 'bottom') textAnchor = 'middle';
+            if (options.orient === 'left') textAnchor = 'end';
+            if (options.orient === 'right') textAnchor = 'start';
+
+            var xy = [0, 0];
+            if (options.orient === 'top') xy = [0, -5];
+            if (options.orient === 'bottom') xy = [0, 20];
+            if (options.orient === 'left') xy = [-5, 0];
+            if (options.orient === 'right') xy = [5, 0];
+
+            var textTransform = 'translate(' + xy[0] + ',' + xy[1] + ')';
+
+            var ticks = _underscore2['default'].map(axis.ticks, function (c, i) {
+                var label = options.labelComponent !== undefined ? _react2['default'].cloneElement(options.labelComponent, { value: c }) : c;
+                return _react2['default'].createElement(
+                    'g',
+                    { key: i, transform: translate(c) },
+                    options.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
+                    options.showLabels ? _react2['default'].createElement(
+                        'text',
+                        { transform: textTransform, textAnchor: textAnchor },
+                        label
+                    ) : null
+                );
+            });
+
+            var gridLines = options.showLines ? _underscore2['default'].map(axis.lines, function (c, i) {
+                return _react2['default'].createElement('path', { d: c.print(), style: transparent, stroke: '#3E90F0', fill: 'none' });
+            }) : [];
+
+            return _react2['default'].createElement(
+                'g',
+                null,
+                options.showAxis ? _react2['default'].createElement('path', { d: axis.path.print(), style: transparent, stroke: '#3E90F0', strokeWidth: 3, fill: 'none' }) : null,
+                ticks,
+                gridLines
+            );
+        }
+    }]);
+
+    return Axis;
+})(_react2['default'].Component);
 
 exports['default'] = Axis;
 module.exports = exports['default'];
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"paths-js/path":7,"underscore":undefined}],26:[function(require,module,exports){
 "use strict";
 

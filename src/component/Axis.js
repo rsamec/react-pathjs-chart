@@ -1,13 +1,15 @@
+import React from 'react';
 import _ from 'underscore';
+
 var Path = require('paths-js/path');
 
-export default class Axis {
-    constructor(scale, options, ranges, margin, x) {
+class AxisStruct {
+    constructor(scale, options, chartArea, horizontal) {
         this.scale = scale;
         this.options = options;
-        this.ranges = ranges;
-        this.margin = margin;
-        this.x = x;
+        this.chartArea = chartArea;
+        this.margin = chartArea.margin;
+        this.horizontal = horizontal;
     }
 
 
@@ -41,23 +43,24 @@ export default class Axis {
 
     axis() {
 
-        var x = this.x;
+        var horizontal = this.horizontal;
 
-        var xAxis = this.ranges.x;
-        var yAxis = this.ranges.y;
-        var currentAxis = x?xAxis:yAxis;
+        var xAxis = this.chartArea.x;
+        var yAxis = this.chartArea.y;
+        var currentAxis = horizontal?xAxis:yAxis;
 
         var tickInterval = this.options.tickCount || 10;
 
-        var ticks = this.options.tickValues !== undefined? _.map(this.options.tickValues,function(v){return v.value }): Axis.getTickValues(currentAxis, tickInterval);
-        var fixed = this.options.zeroAxis?this.scale(0):x?yAxis.min:xAxis.min;
+        var ticks = this.options.tickValues !== undefined? _.map(this.options.tickValues,function(v){return v.value }): AxisStruct.getTickValues(currentAxis, tickInterval);
 
-        var start = {x: x?xAxis.min:fixed, y: x?fixed:yAxis.min};
-        var end = {x:x?xAxis.max:fixed,y: x?fixed:yAxis.max};
+        var fixed = this.options.zeroAxis?this.scale(0):horizontal?yAxis.min:xAxis.min;
+
+        var start = {x: horizontal?xAxis.min:fixed, y: horizontal?fixed:yAxis.min};
+        var end = {x:horizontal?xAxis.max:fixed,y: horizontal?fixed:yAxis.max};
 
         var margin = this.margin;
         if (margin !== undefined){
-            if (x){
+            if (horizontal){
                 start.x -= margin.left || 0;
                 end.x += margin.right || 0;
             }
@@ -72,9 +75,63 @@ export default class Axis {
             path: Path().moveto(start).lineto(end).closepath(),
             ticks: ticks,
             lines: _.map(ticks, function (c) {
-                var lineStart = {x: x ? this.scale(c) : xAxis.min, y: x ? yAxis.min : this.scale(c)};
-                return Path().moveto(lineStart).lineto(x ? lineStart.x : xAxis.max, x ? yAxis.max : lineStart.y);
+                var lineStart = {x: horizontal ? this.scale(c) : xAxis.min, y: horizontal ? yAxis.min : this.scale(c)};
+                return Path().moveto(lineStart).lineto(horizontal ? lineStart.x : xAxis.max, horizontal ? yAxis.max : lineStart.y);
             },this)
         };
+    }
+}
+
+export default class Axis extends React.Component {
+    constructor(props){
+        super(props)
+    }
+    render(){
+        var chartArea = this.props.chartArea;
+        var options = this.props.options;
+        var scale = this.props.scale;
+        var horizontal = options.orient ==="top" || options.orient ==="bottom";
+
+        var axis = new AxisStruct(this.props.scale,this.props.options,chartArea,horizontal).axis();
+
+        var translate = function(c) {
+            var pair = horizontal?[scale(c),chartArea.y.min]:[chartArea.x.min,scale(c)];
+            return "translate(" + pair[0] + "," + pair[1] + ")";
+        };
+
+        var transparent = {opacity: 0.5};
+        var textAnchor = "start";
+        if (options.orient === "top" || options.orient === "bottom") textAnchor = "middle";
+        if (options.orient === "left") textAnchor = "end";
+        if (options.orient === "right") textAnchor = "start";
+
+        var xy = [0,0];
+        if (options.orient === "top")  xy = [0,-5];
+        if (options.orient === "bottom") xy = [0,20];
+        if (options.orient === "left")  xy = [-5,0];
+        if (options.orient === "right")  xy = [5,0];
+
+        var textTransform  = "translate(" + xy[0] + "," + xy[1] + ")";
+
+        var ticks =_.map(axis.ticks, function (c, i) {
+            var label = options.labelComponent !== undefined? React.cloneElement(options.labelComponent,{value:c}):c;
+            return (<g key={ i } transform={translate(c)}>
+                {options.showTicks ? <circle r="2" cx="0" cy="0" stroke="grey" fill="grey"/> : null}
+                {options.showLabels ?
+                    <text transform={textTransform} textAnchor={textAnchor}>{label}</text> : null}
+            </g>)
+        });
+
+
+        var gridLines = options.showLines ? _.map(axis.lines, function (c, i) {
+            return (<path d={c.print()} style={ transparent } stroke="#3E90F0" fill="none"/>)
+        }) : [];
+
+        return(<g>
+                {options.showAxis?<path d={axis.path.print()} style={ transparent } stroke="#3E90F0" strokeWidth={3} fill="none"/> : null}
+                {ticks}
+                {gridLines}
+            </g>);
+
     }
 }
