@@ -11,7 +11,7 @@ var pkg = JSON.parse(require('fs').readFileSync('./package.json'));
 // the build). Dependencies can be customised by hard-coding this array.
 var dependencies = [];
 Object.keys(pkg.dependencies).forEach(function(i) {
-	if (i !== 'reactify') dependencies.push(i);
+	if (i !== 'reactify' && i!== 'paths-js') dependencies.push(i);
 	//if (i === 'react') dependencies.push('react/addons');
 });
 
