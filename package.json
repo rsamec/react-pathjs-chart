@@ -15,6 +15,7 @@
     "url": "https://github.com/rsamec/react-pathjs-chart/issues"
   },
   "dependencies": {
+    "paths-js": "^0.3.4",
     "react": "^0.13.3",
     "reactify": "^1.1.1",
     "underscore": "^1.8.3",
@@ -23,7 +24,6 @@
   "devDependencies": {
     "gulp": "^3.8.10",
     "react-intl": "^1.2.0",
-    "paths-js": "^0.3.4",
     "react-binding": "^0.6.4",
     "react-component-gulp-tasks": "^0.7.0"
   },
