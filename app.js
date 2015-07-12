@@ -23,6 +23,10 @@ var _treeDataJs = require('./treeData.js');
 
 var _treeDataJs2 = _interopRequireDefault(_treeDataJs);
 
+var _scatterplotDataJs = require('./scatterplotData.js');
+
+var _scatterplotDataJs2 = _interopRequireDefault(_scatterplotDataJs);
+
 var countries = [{ name: 'Italy', population: 59859996 }, { name: 'Mexico', population: 118395054 }, { name: 'France', population: 65806000 }, { name: 'Argentina', population: 40117096 }, { name: 'Japan', population: 127290000 }];
 
 var addName = function addName(name) {
@@ -213,7 +217,7 @@ var AxisOptions = _react2['default'].createClass({
             _react2['default'].createElement(CheckBoxInput, { label: 'show labels', valueLink: this.bindTo(this.props.axis, 'showLabels') }),
             _react2['default'].createElement(CheckBoxInput, { label: 'show ticks', valueLink: this.bindTo(this.props.axis, 'showTicks') }),
             _react2['default'].createElement(TextInput, { label: 'orient', valueLink: this.bindTo(this.props.axis, 'orient') }),
-            _react2['default'].createElement(NumberInput, { label: 'tick number: ', style: { width: 50 },
+            _react2['default'].createElement(NumberInput, { label: 'tick interval: ', style: { width: 50 },
                 valueLink: this.bindTo(this.props.axis, 'tickCount') }),
             _react2['default'].createElement(
                 'label',
@@ -230,21 +234,27 @@ var App = _react2['default'].createClass({
 
     mixins: [_reactBinding2['default']],
     getInitialState: function getInitialState() {
-        var defaultAxis = { showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true, orient: 'left' };
+        var defaultAxis = { showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: false, orient: 'left' };
+        var options = {
+            margin: { top: 20, left: 60, bottom: 50, right: 20 },
+            axisX: _underscore2['default'].extend(_underscore2['default'].clone(defaultAxis), { orient: 'bottom' }),
+            axisY: _underscore2['default'].extend(defaultAxis, {
+                labelComponent: _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 1000, style: 'currency', currency: 'USD' })
+            })
+        };
         return {
             data: {
                 n: 3,
-                options: {
-                    margin: { top: 20, left: 60, bottom: 50, right: 20 },
-                    axisX: _underscore2['default'].extend(_underscore2['default'].clone(defaultAxis), { orient: 'bottom' }),
-                    axisY: _underscore2['default'].extend(defaultAxis, {
-                        labelComponent: _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 1000, style: 'currency', currency: 'USD' })
-                    })
-                },
+                options: options,
                 barOptions: {
                     margin: { top: 20, left: 20, bottom: 50, right: 20 },
                     axisY: { showAxis: true, showLines: true, showTicks: true, showLabels: true },
                     axisX: { showAxis: true, showLines: true, showTicks: true, showLabels: true }
+                },
+                scatterplotOptions: {
+                    margin: { top: 20, left: 60, bottom: 30, right: 90 },
+                    axisX: _underscore2['default'].clone(options.axisX),
+                    axisY: _underscore2['default'].clone(options.axisY)
                 }
             }
         };
@@ -253,6 +263,8 @@ var App = _react2['default'].createClass({
         var lineOptions = this.bindToState('data', 'options');
         var data = [mocnina(this.state.data.n)];
         var barOptions = this.bindToState('data', 'barOptions');
+        var scatterplotOptions = this.bindToState('data', 'scatterplotOptions');
+        var scatterplot_data = [_scatterplotDataJs2['default']];
         return _react2['default'].createElement(
             'div',
             null,
@@ -287,6 +299,31 @@ var App = _react2['default'].createClass({
                             _react2['default'].createElement(Margins, { margin: this.bindTo(lineOptions, 'margin') }),
                             _react2['default'].createElement(AxisOptions, { name: 'Axis X', axis: this.bindTo(lineOptions, 'axisX') }),
                             _react2['default'].createElement(AxisOptions, { name: 'Axis Y', axis: this.bindTo(lineOptions, 'axisY') })
+                        )
+                    )
+                )
+            ),
+            _react2['default'].createElement(
+                Panel,
+                { header: 'Scatterplot chart' },
+                _react2['default'].createElement(
+                    'table',
+                    null,
+                    _react2['default'].createElement(
+                        'tr',
+                        null,
+                        _react2['default'].createElement(
+                            'td',
+                            null,
+                            _react2['default'].createElement(_reactPathjsChart.Scatterplot, { data: scatterplot_data, xKey: 'episode', yKey: 'rating', width: 600, height: 600,
+                                options: this.state.data.scatterplotOptions })
+                        ),
+                        _react2['default'].createElement(
+                            'td',
+                            { style: { paddingLeft: 10 } },
+                            _react2['default'].createElement(Margins, { margin: this.bindTo(scatterplotOptions, 'margin') }),
+                            _react2['default'].createElement(AxisOptions, { name: 'Axis X', axis: this.bindTo(scatterplotOptions, 'axisX') }),
+                            _react2['default'].createElement(AxisOptions, { name: 'Axis Y', axis: this.bindTo(scatterplotOptions, 'axisY') })
                         )
                     )
                 )
@@ -345,7 +382,174 @@ var App = _react2['default'].createClass({
 _react2['default'].render(_react2['default'].createElement(App, null), document.getElementById('app'));
 
 
-},{"./treeData.js":2,"react":undefined,"react-binding":3,"react-intl":5,"react-pathjs-chart":undefined,"underscore":undefined}],2:[function(require,module,exports){
+},{"./scatterplotData.js":2,"./treeData.js":3,"react":undefined,"react-binding":4,"react-intl":6,"react-pathjs-chart":undefined,"underscore":undefined}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var data = [{
+    "episode": 1,
+    "title": "Pilot",
+    "rating": 9.18,
+    "rankers": 44
+}, {
+    "episode": 2,
+    "title": "Traces to Nowhere",
+    "rating": 8.69,
+    "rankers": 42
+}, {
+    "episode": 3,
+    "title": "Zen, or the Skill to Catch a Killer",
+    "rating": 9.18,
+    "rankers": 44
+}, {
+    "episode": 4,
+    "title": "Rest in Pain",
+    "rating": 8.74,
+    "rankers": 40
+}, {
+    "episode": 5,
+    "title": "The One-Armed Man",
+    "rating": 8.62,
+    "rankers": 39
+}, {
+    "episode": 6,
+    "title": "Cooper's Dreams",
+    "rating": 8.82,
+    "rankers": 41
+}, {
+    "episode": 7,
+    "title": "Realization Time",
+    "rating": 8.88,
+    "rankers": 41
+}, {
+    "episode": 8,
+    "title": "The Last Evening",
+    "rating": 9.22,
+    "rankers": 41
+}, {
+    "episode": 9,
+    "title": "May the Giant Be with You",
+    "rating": 9.12,
+    "rankers": 39
+}, {
+    "episode": 10,
+    "title": "Coma",
+    "rating": 8.92,
+    "rankers": 38
+}, {
+    "episode": 11,
+    "title": "The Man Behind Glass",
+    "rating": 8.63,
+    "rankers": 38
+}, {
+    "episode": 12,
+    "title": "Laura's Secret Diary",
+    "rating": 8.46,
+    "rankers": 36
+}, {
+    "episode": 13,
+    "title": "The Orchid's Curse",
+    "rating": 8.71,
+    "rankers": 36
+}, {
+    "episode": 14,
+    "title": "Demons",
+    "rating": 8.8,
+    "rankers": 36
+}, {
+    "episode": 15,
+    "title": "Lonely Souls",
+    "rating": 9.37,
+    "rankers": 40
+}, {
+    "episode": 16,
+    "title": "Drive with a Dead Girl",
+    "rating": 9.07,
+    "rankers": 38
+}, {
+    "episode": 17,
+    "title": "Arbitrary Law",
+    "rating": 9.43,
+    "rankers": 40
+}, {
+    "episode": 18,
+    "title": "Dispute Between Brothers",
+    "rating": 8.29,
+    "rankers": 35
+}, {
+    "episode": 19,
+    "title": "Masked Ball",
+    "rating": 8.02,
+    "rankers": 32
+}, {
+    "episode": 20,
+    "title": "The Black Widow",
+    "rating": 8.01,
+    "rankers": 30
+}, {
+    "episode": 21,
+    "title": "Checkmate",
+    "rating": 8.1,
+    "rankers": 30
+}, {
+    "episode": 22,
+    "title": "Double Play",
+    "rating": 8.16,
+    "rankers": 30
+}, {
+    "episode": 23,
+    "title": "Slaves and Masters",
+    "rating": 8.22,
+    "rankers": 30
+}, {
+    "episode": 24,
+    "title": "The Condemned Woman",
+    "rating": 8.68,
+    "rankers": 32
+}, {
+    "episode": 25,
+    "title": "Wounds and Scars",
+    "rating": 8.44,
+    "rankers": 31
+}, {
+    "episode": 26,
+    "title": "On the Wings of Love",
+    "rating": 8.49,
+    "rankers": 33
+}, {
+    "episode": 27,
+    "title": "Variations on Relations",
+    "rating": 8.61,
+    "rankers": 32
+}, {
+    "episode": 28,
+    "title": "The Path to the Black Lodge",
+    "rating": 8.93,
+    "rankers": 34
+}, {
+    "episode": 29,
+    "title": "Miss Twin Peaks",
+    "rating": 8.94,
+    "rankers": 32
+}, {
+    "episode": 30,
+    "title": "Beyond Life and Death",
+    "rating": 9.33,
+    "rankers": 37
+}, {
+    "episode": 31,
+    "title": "Twin Peaks: Fire Walk with Me",
+    "rating": 8.84,
+    "rankers": 30
+}];
+
+exports["default"] = data;
+module.exports = exports["default"];
+
+
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -378,7 +582,7 @@ exports["default"] = treeData;
 module.exports = exports["default"];
 
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * Two-way data binding for React.
  */
@@ -868,9 +1072,9 @@ function extractPrototype(clazz) {
 var BindToMixin = extractPrototype(DataBinding.BindToMixin);
 module.exports = BindToMixin;
 
-},{}],4:[function(require,module,exports){
-
 },{}],5:[function(require,module,exports){
+
+},{}],6:[function(require,module,exports){
 (function (global){
 /* jshint node:true */
 'use strict';
@@ -911,7 +1115,7 @@ if (oldReact) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./lib/locales":4,"./lib/react-intl":15,"react":undefined}],6:[function(require,module,exports){
+},{"./lib/locales":5,"./lib/react-intl":16,"react":undefined}],7:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -949,7 +1153,7 @@ var FormattedDate = src$react$$["default"].createClass({
 exports["default"] = FormattedDate;
 
 
-},{"../mixin":14,"../react":16}],7:[function(require,module,exports){
+},{"../mixin":15,"../react":17}],8:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -1011,7 +1215,7 @@ var FormattedHTMLMessage = src$react$$["default"].createClass({
 exports["default"] = FormattedHTMLMessage;
 
 
-},{"../escape":13,"../mixin":14,"../react":16}],8:[function(require,module,exports){
+},{"../escape":14,"../mixin":15,"../react":17}],9:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -1095,7 +1299,7 @@ var FormattedMessage = src$react$$["default"].createClass({
 exports["default"] = FormattedMessage;
 
 
-},{"../mixin":14,"../react":16}],9:[function(require,module,exports){
+},{"../mixin":15,"../react":17}],10:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -1134,7 +1338,7 @@ var FormattedNumber = src$react$$["default"].createClass({
 exports["default"] = FormattedNumber;
 
 
-},{"../mixin":14,"../react":16}],10:[function(require,module,exports){
+},{"../mixin":15,"../react":17}],11:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -1175,7 +1379,7 @@ var FormattedRelative = src$react$$["default"].createClass({
 exports["default"] = FormattedRelative;
 
 
-},{"../mixin":14,"../react":16}],11:[function(require,module,exports){
+},{"../mixin":15,"../react":17}],12:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -1213,13 +1417,13 @@ var FormattedTime = src$react$$["default"].createClass({
 exports["default"] = FormattedTime;
 
 
-},{"../mixin":14,"../react":16}],12:[function(require,module,exports){
+},{"../mixin":15,"../react":17}],13:[function(require,module,exports){
 // GENERATED FILE
 "use strict";
 exports["default"] = {"locale":"en","pluralRuleFunction":function (n,ord){var s=String(n).split("."),v0=!s[1],t0=Number(s[0])==n,n10=t0&&s[0].slice(-1),n100=t0&&s[0].slice(-2);if(ord)return n10==1&&n100!=11?"one":n10==2&&n100!=12?"two":n10==3&&n100!=13?"few":"other";return n==1&&v0?"one":"other"},"fields":{"year":{"displayName":"Year","relative":{"0":"this year","1":"next year","-1":"last year"},"relativeTime":{"future":{"one":"in {0} year","other":"in {0} years"},"past":{"one":"{0} year ago","other":"{0} years ago"}}},"month":{"displayName":"Month","relative":{"0":"this month","1":"next month","-1":"last month"},"relativeTime":{"future":{"one":"in {0} month","other":"in {0} months"},"past":{"one":"{0} month ago","other":"{0} months ago"}}},"day":{"displayName":"Day","relative":{"0":"today","1":"tomorrow","-1":"yesterday"},"relativeTime":{"future":{"one":"in {0} day","other":"in {0} days"},"past":{"one":"{0} day ago","other":"{0} days ago"}}},"hour":{"displayName":"Hour","relativeTime":{"future":{"one":"in {0} hour","other":"in {0} hours"},"past":{"one":"{0} hour ago","other":"{0} hours ago"}}},"minute":{"displayName":"Minute","relativeTime":{"future":{"one":"in {0} minute","other":"in {0} minutes"},"past":{"one":"{0} minute ago","other":"{0} minutes ago"}}},"second":{"displayName":"Second","relative":{"0":"now"},"relativeTime":{"future":{"one":"in {0} second","other":"in {0} seconds"},"past":{"one":"{0} second ago","other":"{0} seconds ago"}}}}};
 
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /* jshint esnext:true */
 
 /*
@@ -1250,7 +1454,7 @@ exports["default"] = function (str) {
 };
 
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* jshint esnext:true */
 
 // TODO: Use `import React from "react";` when external modules are supported.
@@ -1412,7 +1616,7 @@ exports["default"] = {
 };
 
 
-},{"./react":16,"intl-format-cache":17,"intl-messageformat":20,"intl-relativeformat":29}],15:[function(require,module,exports){
+},{"./react":17,"intl-format-cache":18,"intl-messageformat":21,"intl-relativeformat":30}],16:[function(require,module,exports){
 /* jshint esnext: true */
 
 "use strict";
@@ -1427,7 +1631,7 @@ __addLocaleData(src$en$$["default"]);
 exports.IntlMixin = src$mixin$$["default"], exports.FormattedDate = src$components$date$$["default"], exports.FormattedTime = src$components$time$$["default"], exports.FormattedRelative = src$components$relative$$["default"], exports.FormattedNumber = src$components$number$$["default"], exports.FormattedMessage = src$components$message$$["default"], exports.FormattedHTMLMessage = src$components$html$message$$["default"];
 
 
-},{"./components/date":6,"./components/html-message":7,"./components/message":8,"./components/number":9,"./components/relative":10,"./components/time":11,"./en":12,"./mixin":14,"intl-messageformat":20,"intl-relativeformat":29}],16:[function(require,module,exports){
+},{"./components/date":7,"./components/html-message":8,"./components/message":9,"./components/number":10,"./components/relative":11,"./components/time":12,"./en":13,"./mixin":15,"intl-messageformat":21,"intl-relativeformat":30}],17:[function(require,module,exports){
 /* global React */
 /* jshint esnext:true */
 
@@ -1438,13 +1642,13 @@ exports.IntlMixin = src$mixin$$["default"], exports.FormattedDate = src$componen
 exports["default"] = React;
 
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 exports = module.exports = require('./lib/memoizer')['default'];
 exports['default'] = exports;
 
-},{"./lib/memoizer":19}],18:[function(require,module,exports){
+},{"./lib/memoizer":20}],19:[function(require,module,exports){
 "use strict";
 
 // Purposely using the same implementation as the Intl.js `Intl` polyfill.
@@ -1487,7 +1691,7 @@ var objCreate = Object.create || function (proto, props) {
 exports.defineProperty = defineProperty, exports.objCreate = objCreate;
 
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 var src$es5$$ = require("./es5");
 exports["default"] = createFormatCache;
@@ -1564,7 +1768,7 @@ function orderedProps(obj) {
 }
 
 
-},{"./es5":18}],20:[function(require,module,exports){
+},{"./es5":19}],21:[function(require,module,exports){
 /* jshint node:true */
 
 'use strict';
@@ -1581,7 +1785,7 @@ require('./lib/locales');
 exports = module.exports = IntlMessageFormat;
 exports['default'] = exports;
 
-},{"./lib/locales":4,"./lib/main":25}],21:[function(require,module,exports){
+},{"./lib/locales":5,"./lib/main":26}],22:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -1791,7 +1995,7 @@ SelectFormat.prototype.getOption = function (value) {
 };
 
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -2056,13 +2260,13 @@ MessageFormat.prototype._resolveLocale = function (locales) {
 };
 
 
-},{"./compiler":21,"./es5":24,"./utils":26,"intl-messageformat-parser":27}],23:[function(require,module,exports){
+},{"./compiler":22,"./es5":25,"./utils":27,"intl-messageformat-parser":28}],24:[function(require,module,exports){
 // GENERATED FILE
 "use strict";
 exports["default"] = {"locale":"en","pluralRuleFunction":function (n,ord){var s=String(n).split("."),v0=!s[1],t0=Number(s[0])==n,n10=t0&&s[0].slice(-1),n100=t0&&s[0].slice(-2);if(ord)return n10==1&&n100!=11?"one":n10==2&&n100!=12?"two":n10==3&&n100!=13?"few":"other";return n==1&&v0?"one":"other"}};
 
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -2112,7 +2316,7 @@ var objCreate = Object.create || function (proto, props) {
 exports.defineProperty = defineProperty, exports.objCreate = objCreate;
 
 
-},{"./utils":26}],25:[function(require,module,exports){
+},{"./utils":27}],26:[function(require,module,exports){
 /* jslint esnext: true */
 
 "use strict";
@@ -2124,7 +2328,7 @@ src$core$$["default"].defaultLocale = 'en';
 exports["default"] = src$core$$["default"];
 
 
-},{"./core":22,"./en":23}],26:[function(require,module,exports){
+},{"./core":23,"./en":24}],27:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -2157,13 +2361,13 @@ function extend(obj) {
 exports.hop = hop;
 
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 exports = module.exports = require('./lib/parser')['default'];
 exports['default'] = exports;
 
-},{"./lib/parser":28}],28:[function(require,module,exports){
+},{"./lib/parser":29}],29:[function(require,module,exports){
 "use strict";
 
 exports["default"] = (function() {
@@ -3505,7 +3709,7 @@ exports["default"] = (function() {
 })();
 
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /* jshint node:true */
 
 'use strict';
@@ -3522,7 +3726,7 @@ require('./lib/locales');
 exports = module.exports = IntlRelativeFormat;
 exports['default'] = exports;
 
-},{"./lib/locales":4,"./lib/main":34}],30:[function(require,module,exports){
+},{"./lib/locales":5,"./lib/main":35}],31:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -3820,7 +4024,7 @@ RelativeFormat.prototype._selectUnits = function (diffReport) {
 };
 
 
-},{"./diff":31,"./es5":33,"intl-messageformat":20}],31:[function(require,module,exports){
+},{"./diff":32,"./es5":34,"intl-messageformat":21}],32:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -3867,9 +4071,9 @@ exports["default"] = function (from, to) {
 };
 
 
-},{}],32:[function(require,module,exports){
-arguments[4][12][0].apply(exports,arguments)
-},{"dup":12}],33:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"dup":13}],34:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -3945,6 +4149,6 @@ var dateNow = Date.now || function () {
 exports.defineProperty = defineProperty, exports.objCreate = objCreate, exports.arrIndexOf = arrIndexOf, exports.isArray = isArray, exports.dateNow = dateNow;
 
 
-},{}],34:[function(require,module,exports){
-arguments[4][25][0].apply(exports,arguments)
-},{"./core":30,"./en":32,"dup":25}]},{},[1]);
+},{}],35:[function(require,module,exports){
+arguments[4][26][0].apply(exports,arguments)
+},{"./core":31,"./en":33,"dup":26}]},{},[1]);
