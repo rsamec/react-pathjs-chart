@@ -1,15 +1,15 @@
 import React from 'react';
 import _ from 'underscore';
 
-var SmoothLine = require('paths-js/smooth-line');
+var Stock  = require('paths-js/stock');
 var Axis = require('../component/Axis');
 
 var Path = require('paths-js/path');
 
-export default class SmoothLineChart extends React.Component {
+export default class Scatterplot extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {showAreas: true};
+
     }
     getMaxAndMin(chart, key,scale) {
         var maxValue;
@@ -31,6 +31,14 @@ export default class SmoothLineChart extends React.Component {
             max:scale(maxValue)
         }
     }
+    onEnter(index,event) {
+        this.props.data[0][index].selected = true;
+        this.setState({data: this.props.data});
+    }
+    onLeave(index,event){
+        this.props.data[0][index].selected = false;
+        this.setState({data:this.props.data});
+    }
 
     render() {
         var noDataMsg = this.props.noDataMessage || "No data available";
@@ -51,7 +59,7 @@ export default class SmoothLineChart extends React.Component {
                 return x[key];
             }
         };
-        var chart = SmoothLine({
+        var chart = Stock({
             data: this.props.data,
             xaccessor: accessor(this.props.xKey),
             yaccessor: accessor(this.props.yKey),
@@ -73,13 +81,15 @@ export default class SmoothLineChart extends React.Component {
 
         var transparent = {opacity: 0.5};
 
-        var lines = _.map(chart.curves, function (c, i) {
-            return <path d={ c.line.path.print() } stroke={ palette[i] } fill="none"/>
-        });
-        var areas = _.map(chart.curves, function (c, i) {
-            //var transparent = { opacity: 0.5 };
-            return <path d={ c.area.path.print() } style={ transparent } stroke="none" fill={ palette[i] }/>
-        });
+        var points = _.map(chart.curves, function (c, i) {
+            return _.map(c.line.path.points(),function(p,j) {
+                var item = c.item[j];
+                return (<g transform={"translate(" + p[0] + "," + p[1] + ")"}>
+                    <circle r="5" cx="0" cy="0" stroke="blue" fill="white" onMouseEnter={this.onEnter.bind(this,j)} onMouseLeave={this.onLeave.bind(this,j)}/>
+                    {item.selected?<text transform="translate(15, 5)" text-anchor="start">{item.title}</text>:null}
+                </g>)
+            },this)
+        },this);
 
         //margins
         var y = options.margin !== undefined?options.margin.top || 0:0;
@@ -87,8 +97,7 @@ export default class SmoothLineChart extends React.Component {
 
         return <svg ref="vivus" width={width} height={height}>
             <g transform={"translate(" + x + "," + y + ")"}>
-                { this.state.showAreas ? areas : null }
-                { lines }
+                { points }
                 <Axis scale ={chart.xscale} options={options.axisX} chartArea={chartArea} />
                 <Axis scale ={chart.yscale} options={options.axisY} chartArea={chartArea} />
             </g>

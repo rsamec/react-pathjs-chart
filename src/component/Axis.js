@@ -13,31 +13,32 @@ class AxisStruct {
     }
 
 
-    //static calcStepSize(range, targetSteps)
-    //{
-    //    // calculate an initial guess at step size
-    //    var tempStep = range / targetSteps;
-    //
-    //    // get the magnitude of the step size
-    //    var mag = Math.floor(Math.log(tempStep) /  Math.log(10));
-    //    var magPow = Math.pow(10, mag);
-    //
-    //    // calculate most significant digit of the new step size
-    //    var magMsd = Math.round(tempStep / magPow + 0.5);
-    //
-    //    // promote the MSD to either 1, 2, or 5
-    //    if (magMsd > 5.0)
-    //        magMsd = 10.0;
-    //    else if (magMsd > 2.0)
-    //        magMsd = 5.0;
-    //    else if (magMsd > 1.0)
-    //        magMsd = 2.0;
-    //
-    //    return magMsd * magPow;
-    //}
+    static calcStepSize(range, targetSteps)
+    {
+        // calculate an initial guess at step size
+        var tempStep = range / targetSteps;
+
+        // get the magnitude of the step size
+        var mag = Math.floor(Math.log(tempStep) /  Math.log(10));
+        var magPow = Math.pow(10, mag);
+
+        // calculate most significant digit of the new step size
+        var magMsd = Math.round(tempStep / magPow + 0.5);
+
+        // promote the MSD to either 1, 2, or 5
+        if (magMsd > 5.0)
+            magMsd = 10.0;
+        else if (magMsd > 2.0)
+            magMsd = 5.0;
+        else if (magMsd > 1.0)
+            magMsd = 2.0;
+
+        return magMsd * magPow;
+    }
 
     static getTickValues(axis, tickCount) {
-        var tickStep = Math.round((axis.maxValue - axis.minValue) / tickCount, 0);
+        //var tickStep = Math.round((axis.maxValue - axis.minValue) / tickCount, 0);
+        var tickStep = AxisStruct.calcStepSize((axis.maxValue - axis.minValue),tickCount);
         return _.range(axis.minValue, axis.maxValue + 1,tickStep);
     }
 
@@ -51,7 +52,7 @@ class AxisStruct {
 
         var tickInterval = this.options.tickCount || 10;
 
-        var ticks = this.options.tickValues !== undefined? _.map(this.options.tickValues,function(v){return v.value }): AxisStruct.getTickValues(currentAxis, tickInterval);
+        var ticks = this.options.tickValues !== undefined? _.map(this.options.tickValues,function(v){return v.value }):AxisStruct.getTickValues(currentAxis, tickInterval);
 
         var fixed = this.options.zeroAxis?this.scale(0):horizontal?yAxis.min:xAxis.min;
 

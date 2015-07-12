@@ -2,8 +2,9 @@ import React from 'react';
 import BindToMixin from 'react-binding';
 import {FormattedNumber} from 'react-intl';
 import _ from 'underscore';
-import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar} from 'react-pathjs-chart';
+import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
 import treeData from './treeData.js';
+import scatterplotData from './scatterplotData.js';
 
 var countries = [
     {name: 'Italy', population: 59859996},
@@ -158,7 +159,7 @@ var AxisOptions = React.createClass({
                 <CheckBoxInput label="show labels" valueLink={this.bindTo(this.props.axis,'showLabels')}/>
                 <CheckBoxInput label="show ticks" valueLink={this.bindTo(this.props.axis,'showTicks')}/>
                 <TextInput label="orient" valueLink={this.bindTo(this.props.axis,'orient')}/>
-                <NumberInput label="tick number: " style={{width:50}}
+                <NumberInput label="tick interval: " style={{width:50}}
                              valueLink={this.bindTo(this.props.axis,'tickCount')}/>
                 <label>custom tick values</label>
                 <TickValues axis={this.props.axis}/>
@@ -170,21 +171,27 @@ var AxisOptions = React.createClass({
 var App = React.createClass({
     mixins: [BindToMixin],
     getInitialState() {
-        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: true, orient:'left'};
+        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: false, orient:'left'};
+        var options = {
+                margin: {top: 20, left: 60, bottom: 50, right:20},
+                axisX: _.extend(_.clone(defaultAxis),{orient:'bottom'}),
+                axisY: _.extend(defaultAxis, {
+                    labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
+                })
+            };
         return {
             data: {
                 n: 3,
-                options: {
-                    margin: {top: 20, left: 60, bottom: 50, right: 20},
-                    axisX: _.extend(_.clone(defaultAxis),{orient:'bottom'}),
-                    axisY: _.extend(defaultAxis, {
-                        labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
-                    })
-                },
+                options: options,
                 barOptions: {
                     margin: {top: 20, left: 20, bottom: 50, right: 20},
                     axisY: {showAxis: true, showLines: true, showTicks: true, showLabels: true},
                     axisX: {showAxis: true, showLines: true, showTicks: true, showLabels: true}
+                },
+                scatterplotOptions: {
+                    margin: {top: 20, left: 60, bottom: 30, right: 90},
+                    axisX: _.clone(options.axisX),
+                    axisY: _.clone(options.axisY)
                 }
             }
         };
@@ -192,7 +199,9 @@ var App = React.createClass({
     render() {
         var lineOptions = this.bindToState('data', 'options');
         var data = [mocnina(this.state.data.n)];
-        var barOptions = this.bindToState('data', 'barOptions')
+        var barOptions = this.bindToState('data', 'barOptions');
+        var scatterplotOptions = this.bindToState('data','scatterplotOptions');
+        var scatterplot_data = [scatterplotData];
         return (<div>
                 <Panel header="SmoothLine chart">
                     <table>
@@ -210,6 +219,22 @@ var App = React.createClass({
                                 <Margins margin={this.bindTo(lineOptions,'margin')}/>
                                 <AxisOptions name="Axis X" axis={this.bindTo(lineOptions,'axisX')}/>
                                 <AxisOptions name="Axis Y" axis={this.bindTo(lineOptions,'axisY')}/>
+                            </td>
+                        </tr>
+                    </table>
+                </Panel>
+                <Panel header="Scatterplot chart">
+                    <table>
+                        <tr>
+                            <td>
+                                <Scatterplot data={scatterplot_data} xKey="episode" yKey="rating" width={600} height={600}
+                                             options={this.state.data.scatterplotOptions}/>
+                            </td>
+
+                            <td style={{paddingLeft:10}}>
+                                <Margins margin={this.bindTo(scatterplotOptions,'margin')}/>
+                                <AxisOptions name="Axis X" axis={this.bindTo(scatterplotOptions,'axisX')}/>
+                                <AxisOptions name="Axis Y" axis={this.bindTo(scatterplotOptions,'axisY')}/>
                             </td>
                         </tr>
                     </table>
