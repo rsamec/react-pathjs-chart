@@ -1,7 +1,7 @@
 React Component Starter
 =======================
 
-These component offers react components - charts (Pie,SmoothLine,Bar, Tree) using [paths-js](https://github.com/andreaferretti/paths-js).
+These component offers react components - charts (Pie,SmoothLine,Bar,Scatterplot,Tree,Radar) using [paths-js](https://github.com/andreaferretti/paths-js).
 
 It is based on clone of these examples from [path-js](https://github.com/andreaferretti/paths-js-react-demo) and is extended so that it is easier to use it.
 
@@ -40,13 +40,15 @@ npm install react-pathjs-chart --save
 
 
 ```
-import {Pie,Tree,Bar, SmoothLine, SmoothLineVivus} from 'react-pathjs-chart';
+import {Pie,Tree,Bar, SmoothLine,SmoothLineVivus,Scatterplot,Radar} from 'react-pathjs-chart';
 
 <Pie data={ countries } color='#9ac7f7' r={ 60 } R={ 140 } accessorKey="population"  />
 <Bar data={barData} color="#fc6433" width={600} height={300} accessorKey="v" gutter={30} />
 <SmoothLine data={lineData} xKey="date" yKey="value" />
+<Scatterplot data={scatterplot_data} xKey="episode" yKey="rating" width={600} height={600} />
 <SmoothLineVivus data={lineData} xKey="x" yKey="y" width={600} height={600} />
 <Tree data={treeData} />
+<Radar data={activity} fill="#fc6433" stroke="#fc1413" width={300} height={300} r={100} max={100} />
 
 ```
 
