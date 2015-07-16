@@ -62,7 +62,7 @@ var PieChart = React.createClass({
                         <stop stopColor={ self.color(i) } offset="0%"/>
                         <stop stopColor={ self.lighten(i) } offset="100%"/>
                     </linearGradient>
-                    <path onClick={ self.expand(i) } d={ c.sector.path.print() } fill={ self.fill(i) } />
+                    <path onClick={ self.expand(i) } d={ c.sector.path.print() } fill={ self.color(i) } />
                     <text textAnchor="middle" transform={ self.translate(c.sector.centroid) }>{ c.item.name }</text>
                 </g>
             )

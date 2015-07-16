@@ -1380,7 +1380,7 @@ module.exports = (function () {
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-  value: true
+    value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -1405,19 +1405,24 @@ var _chartsSmoothLineJs = require('./charts/SmoothLine.js');
 
 var _chartsSmoothLineJs2 = _interopRequireDefault(_chartsSmoothLineJs);
 
-var _chartsSmoothLineVivusJs = require('./charts/SmoothLineVivus.js');
-
-var _chartsSmoothLineVivusJs2 = _interopRequireDefault(_chartsSmoothLineVivusJs);
+//import SmoothLineVivus from './charts/SmoothLineVivus.js';
 
 var _chartsScatterplotJs = require('./charts/Scatterplot.js');
 
 var _chartsScatterplotJs2 = _interopRequireDefault(_chartsScatterplotJs);
 
-exports['default'] = { Pie: _chartsPieJs2['default'], Tree: _chartsTreeJs2['default'], SmoothLine: _chartsSmoothLineJs2['default'], SmoothLineVivus: _chartsSmoothLineVivusJs2['default'], Radar: _chartsRadarJs2['default'], Bar: _chartsBarJs2['default'], Scatterplot: _chartsScatterplotJs2['default'] };
+exports['default'] = {
+    Pie: _chartsPieJs2['default'],
+    Tree: _chartsTreeJs2['default'],
+    SmoothLine: _chartsSmoothLineJs2['default'],
+    SmoothLineVivus: _chartsSmoothLineJs2['default'],
+    Radar: _chartsRadarJs2['default'],
+    Bar: _chartsBarJs2['default'],
+    Scatterplot: _chartsScatterplotJs2['default'] };
 module.exports = exports['default'];
 
 
-},{"./charts/Bar.js":20,"./charts/Pie.js":21,"./charts/Radar.js":22,"./charts/Scatterplot.js":23,"./charts/SmoothLine.js":24,"./charts/SmoothLineVivus.js":25,"./charts/Tree.js":26}],19:[function(require,module,exports){
+},{"./charts/Bar.js":20,"./charts/Pie.js":21,"./charts/Radar.js":22,"./charts/Scatterplot.js":23,"./charts/SmoothLine.js":24,"./charts/Tree.js":25}],19:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1729,7 +1734,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":27,"../pallete/Colors.js":28,"paths-js/bar":1,"underscore":undefined}],21:[function(require,module,exports){
+},{"../component/Axis":26,"../pallete/Colors.js":27,"paths-js/bar":1,"underscore":undefined}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1841,7 +1846,7 @@ var PieChart = _react2['default'].createClass({
                     _react2['default'].createElement('stop', { stopColor: self.color(i), offset: '0%' }),
                     _react2['default'].createElement('stop', { stopColor: self.lighten(i), offset: '100%' })
                 ),
-                _react2['default'].createElement('path', { onClick: self.expand(i), d: c.sector.path.print(), fill: self.fill(i) }),
+                _react2['default'].createElement('path', { onClick: self.expand(i), d: c.sector.path.print(), fill: self.color(i) }),
                 _react2['default'].createElement(
                     'text',
                     { textAnchor: 'middle', transform: self.translate(c.sector.centroid) },
@@ -1903,7 +1908,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../animate.js":19,"../pallete/Colors.js":28,"paths-js/pie":8,"underscore":undefined}],22:[function(require,module,exports){
+},{"../animate.js":19,"../pallete/Colors.js":27,"paths-js/pie":8,"underscore":undefined}],22:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2179,7 +2184,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":27,"paths-js/path":7,"paths-js/stock":15,"underscore":undefined}],24:[function(require,module,exports){
+},{"../component/Axis":26,"paths-js/path":7,"paths-js/stock":15,"underscore":undefined}],24:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2322,78 +2327,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":27,"paths-js/path":7,"paths-js/smooth-line":14,"underscore":undefined}],25:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _SmoothLineJs = require('./SmoothLine.js');
-
-var _SmoothLineJs2 = _interopRequireDefault(_SmoothLineJs);
-
-var SmoothLine = require('paths-js/smooth-line');
-
-var SmoothLineVivusChart = (function (_SmoothLineChart) {
-    function SmoothLineVivusChart(props) {
-        _classCallCheck(this, SmoothLineVivusChart);
-
-        _get(Object.getPrototypeOf(SmoothLineVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { showAreas: false };
-    }
-
-    _inherits(SmoothLineVivusChart, _SmoothLineChart);
-
-    _createClass(SmoothLineVivusChart, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
-                start: 'autostart',
-                selfDestroy: true
-            }, this.addAreas.bind(this));
-        }
-    }, {
-        key: 'addAreas',
-        value: function addAreas() {
-            this.setState({ showAreas: true });
-        }
-    }]);
-
-    return SmoothLineVivusChart;
-})(_SmoothLineJs2['default']);
-
-exports['default'] = SmoothLineVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./SmoothLine.js":24,"paths-js/smooth-line":14,"underscore":undefined,"vivus":undefined}],26:[function(require,module,exports){
+},{"../component/Axis":26,"paths-js/path":7,"paths-js/smooth-line":14,"underscore":undefined}],25:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2516,7 +2450,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"paths-js/tree":16,"underscore":undefined}],27:[function(require,module,exports){
+},{"paths-js/tree":16,"underscore":undefined}],26:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2701,7 +2635,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"paths-js/path":7,"underscore":undefined}],28:[function(require,module,exports){
+},{"paths-js/path":7,"underscore":undefined}],27:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
