@@ -1840,12 +1840,6 @@ var PieChart = _react2['default'].createClass({
             return _react2['default'].createElement(
                 'g',
                 { key: i, transform: self.move(c.sector.centroid, coefficients[i]) },
-                _react2['default'].createElement(
-                    'linearGradient',
-                    { id: self.grad(i) },
-                    _react2['default'].createElement('stop', { stopColor: self.color(i), offset: '0%' }),
-                    _react2['default'].createElement('stop', { stopColor: self.lighten(i), offset: '100%' })
-                ),
                 _react2['default'].createElement('path', { onClick: self.expand(i), d: c.sector.path.print(), fill: self.color(i) }),
                 _react2['default'].createElement(
                     'text',
@@ -2697,7 +2691,8 @@ var Colors = (function () {
     }, {
         key: "string",
         value: function string(c) {
-            return "rgb(" + Math.floor(c.r) + "," + Math.floor(c.g) + "," + Math.floor(c.b) + ")";
+            return this.rgbToHex(Math.floor(c.r), Math.floor(c.g), Math.floor(c.b));
+            //return "rgb(" + (Math.floor(c.r)) + "," + (Math.floor(c.g)) + "," + (Math.floor(c.b)) + ")";
         }
     }, {
         key: "hexToRgb",
@@ -2708,6 +2703,17 @@ var Colors = (function () {
                 g: parseInt(result[2], 16),
                 b: parseInt(result[3], 16)
             } : null;
+        }
+    }, {
+        key: "componentToHex",
+        value: function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+    }, {
+        key: "rgbToHex",
+        value: function rgbToHex(r, g, b) {
+            return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
         }
     }]);
 

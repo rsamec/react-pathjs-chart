@@ -58,10 +58,6 @@ var PieChart = React.createClass({
         var slices = chart.curves.map(function(c, i) {
             return (
                 <g key={ i } transform={ self.move(c.sector.centroid, coefficients[i]) }>
-                    <linearGradient id={ self.grad(i) }>
-                        <stop stopColor={ self.color(i) } offset="0%"/>
-                        <stop stopColor={ self.lighten(i) } offset="100%"/>
-                    </linearGradient>
                     <path onClick={ self.expand(i) } d={ c.sector.path.print() } fill={ self.color(i) } />
                     <text textAnchor="middle" transform={ self.translate(c.sector.centroid) }>{ c.item.name }</text>
                 </g>
