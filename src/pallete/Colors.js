@@ -23,6 +23,7 @@ class Colors {
 
     lighten(c){return this.multiply(1.2)(c)};
     darken(c){return this.multiply(0.8)(c)};
+    darkenColor(c) {return this.string(this.darken(this.hexToRgb(c)))}
 
     mix(color1) {
         var c1 = this.hexToRgb(color1);

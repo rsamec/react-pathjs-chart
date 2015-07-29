@@ -1,15 +1,18 @@
 import React from 'react';
 import _ from 'underscore';
+import Colors from '../pallete/Colors.js';
 import Options from '../component/Options.js';
 
-var Stock  = require('paths-js/stock');
 var Axis = require('../component/Axis');
 var Path = require('paths-js/path');
 
-export default class Scatterplot extends React.Component {
-    constructor(props) {
+function cyclic(coll, i) { return coll[i % coll.length]; }
+
+export default class LineChart extends React.Component {
+    constructor(props, chartType) {
         super(props);
-        this.state = {finished:true};
+        this.chartType = chartType;
+        this.state = {finished: true};
     }
     getMaxAndMin(chart, key,scale) {
         var maxValue;
@@ -31,13 +34,10 @@ export default class Scatterplot extends React.Component {
             max:scale(maxValue)
         }
     }
-    onEnter(index,event) {
-        this.props.data[0][index].selected = true;
-        this.setState({data: this.props.data});
-    }
-    onLeave(index,event){
-        this.props.data[0][index].selected = false;
-        this.setState({data:this.props.data});
+
+    color(i) {
+        var pallete = this.props.pallete || Colors.mix(this.props.options.color || '#9ac7f7');
+        return Colors.string(cyclic(pallete, i));
     }
 
     render() {
@@ -46,13 +46,13 @@ export default class Scatterplot extends React.Component {
 
         var options = new Options(this.props);
 
-        var palette = this.props.palette || ["#3E90F0", "#7881C2", "#707B82"];
+
         var accessor = function (key) {
             return function (x) {
                 return x[key];
             }
         };
-        var chart = Stock({
+        var chart = this.chartType({
             data: this.props.data,
             xaccessor: accessor(this.props.xKey),
             yaccessor: accessor(this.props.yKey),
@@ -68,23 +68,22 @@ export default class Scatterplot extends React.Component {
         };
 
         var transparent = {opacity: 0.5};
-        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0};
-        var points = _.map(chart.curves, function (c, i) {
-            return _.map(c.line.path.points(),function(p,j) {
-                var item = c.item[j];
-                return (<g transform={"translate(" + p[0] + "," + p[1] + ")"}>
-                    <circle cx={0} cy={0} r={5} style={fillOpacityStyle} stroke={options.stroke} fill={options.fill} onMouseEnter={this.onEnter.bind(this,j)} onMouseLeave={this.onLeave.bind(this,j)}/>
-                    {item.selected?<text transform="translate(15, 5)" text-anchor="start">{item.title}</text>:null}
-                </g>)
-            },this)
+
+        var lines = _.map(chart.curves, function (c, i) {
+            return <path d={ c.line.path.print() } stroke={ this.color(i) } fill="none"/>
+        },this);
+        var areas = _.map(chart.curves, function (c, i) {
+            //var transparent = { opacity: 0.5 };
+            return <path d={ c.area.path.print() } style={ transparent } stroke="none" fill={ this.color(i) }/>
         },this);
 
-        return (<svg ref="vivus" width={options.width} height={options.height}>
+        return <svg ref="vivus" width={options.width} height={options.height}>
             <g transform={"translate(" + options.margin.left + "," + options.margin.top + ")"}>
-                { points }
+                { this.state.finished ? areas : null }
+                { lines }
                 <Axis scale ={chart.xscale} options={options.axisX} chartArea={chartArea} />
                 <Axis scale ={chart.yscale} options={options.axisY} chartArea={chartArea} />
             </g>
-        </svg>);
+        </svg>
     }
 }

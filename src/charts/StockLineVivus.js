@@ -1,8 +1,8 @@
 import React from 'react';
 import Vivus from 'vivus';
-import SmoothLineChart from './SmoothLine.js';
+import StockLineChart from './StockLine.js';
 
-export default class SmoothLineVivusChart extends SmoothLineChart {
+export default class StockLineVivusChart extends StockLineChart {
     constructor(props){
         super(props);
         this.state = { finished: false };

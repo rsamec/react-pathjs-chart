@@ -1,8 +1,8 @@
 import React from 'react';
 import Vivus from 'vivus';
-import SmoothLineChart from './SmoothLine.js';
+import TreeChart from './Tree.js';
 
-export default class SmoothLineVivusChart extends SmoothLineChart {
+export default class TreeVivusChart extends TreeChart {
     constructor(props){
         super(props);
         this.state = { finished: false };
@@ -14,6 +14,7 @@ export default class SmoothLineVivusChart extends SmoothLineChart {
             start: 'autostart',
             selfDestroy: true
         }, this.finish.bind(this));
+
     }
     finish() {
         this.setState({ finished: true });

@@ -1,271 +1,208 @@
 import React from 'react';
 import BindToMixin from 'react-binding';
-import {FormattedNumber} from 'react-intl';
 import _ from 'underscore';
-import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
-import treeData from './treeData.js';
-import scatterplotData from './scatterplotData.js';
+import Json from 'react-json';
+import genie from 'genie'
+import ColorPicker from 'react-simple-colorpicker';
 
-var countries = [
-    {name: 'Italy', population: 59859996},
-    {name: 'Mexico', population: 118395054},
-    {name: 'France', population: 65806000},
-    {name: 'Argentina', population: 40117096},
-    {name: 'Japan', population: 127290000}
-];
+import SmoothLineChartDemo from './SmoothLineChartDemo.js';
+import StockLineChartDemo from './StockLineChartDemo.js';
+import ScatterPlotDemo from './ScatterPlotDemo.js';
+import BarChartDemo from './BarChartDemo.js';
+import PieChartDemo from './PieChartDemo.js';
+import TreeChartDemo from './TreeChartDemo.js';
+import RadarChartDemo from './RadarChartDemo.js';
 
-var addName = function (name) {
-    return function (item) {
-        item["name"] = name;
-        return item;
-    }
-}
+var patternsOptions = [
+'firstName',
+'lastName',
+'fullName',
+'zipCode',
+'zipCode5',
+'zipCode9',
+'city',
+'streetName',
+'streetAddress',
+'secondaryAddress',
+'brState',
+'brStateAbbr',
+'ukCounty',
+'ukCountry',
+'usState',
+'usStateAbbr',
+'latitude',
+'longitude',
+'phoneNumber',
+'email',
+'userName',
+'domainName',
+'domainWord',
+'ipAddress',
+'companyName',
+'companySuffix',
+'sentence',
+'paragraph'];
 
-var barData = [
-    _.map([{v: 10}, {v: 20}, {v: 30}, {v: 40}], addName("apple")),
-    _.map([{v: 30}, {v: 50}, {v: 40}, {v: 20}], addName("banana")),
-    _.map([{v: 10}, {v: 60}, {v: 10}, {v: 60}], addName("grape"))
-
-];
-
-var activity = [{speed: 45, balance: 49, explosives: 49, energy: 65, flexibility: 65, agility: 45, endurance: 30}]
-
-var xs = _.range(-10, 11, 1);
-
-var polynom = function (a, b, c) {
-    return _.map(xs, function (x) {
-        return {x: x, y: a * Math.pow(x, 2) + b * x + c}
-    })
+var colors = {
+    "turquoise"     : "#1ABC9C",
+    "green-sea"     : "#16A085",
+    "emerald"       : "#2ECC71",
+    "nephritis"     : "#27AE60",
+    "peter-river"   : "#3498DB",
+    "belize-hole"   : "#2980B9",
+    "amethyst"      : "#9B59B6",
+    "wisteria"      : "#8E44AD",
+    "wet-asphalt"   : "#34495E",
+    "midnight-blue" : "#2C3E50",
+    "sun-flower"    : "#F1C40F",
+    "orange"        : "#F39C12",
+    "carrot"        : "#E67E22",
+    "pumpkin"       : "#D35400",
+    "alizarin"      : "#E74C3C",
+    "pomegranate"   : "#C0392B",
+    "clouds"        : "#ECF0F1",
+    "silver"        : "#BDC3C7",
+    "concrete"      : "#95A5A6",
+    "asbestos"      : "#7F8C8D"
 };
-var mocnina = function (n) {
-    return _.map(xs, function (x) {
-        return {x: x, y: Math.pow(x, n)}
-    })
-};
 
+// Create the custom field type component
+var ColorPickerWrapper = React.createClass({
 
-var Panel = React.createClass({
-    render(){
-        return (
-            <div className="panel panel-default">
-                <div className="panel-heading">{this.props.header}</div>
-                <div className="panel-body">{this.props.children}</div>
-            </div>
-        )
-    }
-});
-var CheckBoxInput = React.createClass({
-    render(){
-        var valueModel = this.props.valueLink;
-        var requestChange = function (e) {
-            valueModel.value = e.target.checked;
-        };
-
-        return (
-            <div>
-                <input type='checkbox' checked={valueModel.value} onChange={requestChange}/>
-                <label>{this.props.label}</label>
-            </div>
-        )
-    }
-})
-var NumberInput = React.createClass({
-    render(){
-        var valueModel = this.props.valueLink;
-        var requestChange = function (e) {
-            valueModel.value = parseInt(e.target.value, 10);
-        };
-        var label = this.props.label ? <label style={{minWidth:60}}>{this.props.label}</label> : null;
-        return (
-            <div>
-                {label}
-                <input style={this.props.style} type='number' value={valueModel.value} onChange={requestChange}/>
-            </div>
-        )
-    }
-})
-var TextInput = React.createClass({
-    render(){
-        var valueModel = this.props.valueLink;
-        var requestChange = function (e) {
-            valueModel.value = e.target.value;
-        };
-
-        return (
-            <div>
-                <label>{this.props.label}</label>
-                <input style={this.props.style} type='text' value={valueModel.value} onChange={requestChange}/>
-            </div>
-        )
-    }
-})
-var Margins = React.createClass({
-    mixins: [BindToMixin],
-    render(){
-        return (
-            <div>
-                <h4>Chart Margin</h4>
-                <NumberInput label="top" style={{width:50}} valueLink={this.bindTo(this.props.margin,'top')}/>
-                <NumberInput label="right" style={{width:50}} valueLink={this.bindTo(this.props.margin,'right')}/>
-                <NumberInput label="bottom" style={{width:50}} valueLink={this.bindTo(this.props.margin,'bottom')}/>
-                <NumberInput label="left" style={{width:50}} valueLink={this.bindTo(this.props.margin,'left')}/>
-            </div>
-        )
-    }
-});
-
-var TickValues = React.createClass({
-    mixins: [BindToMixin],
-    render(){
-        var bindToArray = this.bindArrayTo(this.props.axis, 'tickValues');
-        var add = function () {
-            bindToArray.add({value: 0})
-        };
-        var remove = function (item) {
-            bindToArray.remove(item)
-        };
-        var clear = function () {
-            this.bindTo(this.props.axis, 'tickValues').value = undefined;///bindToArray.value = undefined;
-            // _.each(bindToArray.items,function(item){bindToArray.remove(item.value)});
-        }.bind(this);
-        return (<div>
-            <input type='button' value="add" onClick={add}/>
-            <input type='button' value="clear" onClick={clear}/>
-            <table>
-                <tr>
-                    {bindToArray.items.map(function (item, index) {
-
-                        return (
-                            <td>
-                                <NumberInput style={{width:30,display:'inline'}} key={index}
-                                             valueLink={this.bindTo(item,'value')}/>
-                            </td>)
-                    }, this)}
-                </tr>
-            </table>
-        </div>);
-    }
-});
-var AxisOptions = React.createClass({
-    mixins: [BindToMixin],
-    render(){
-        return (
-            <div>
-                <h4>{this.props.name}</h4>
-
-                <CheckBoxInput label="zero axis" valueLink={this.bindTo(this.props.axis,'zeroAxis')}/>
-                <CheckBoxInput label="show axis" valueLink={this.bindTo(this.props.axis,'showAxis')}/>
-                <CheckBoxInput label="show lines" valueLink={this.bindTo(this.props.axis,'showLines')}/>
-                <CheckBoxInput label="show labels" valueLink={this.bindTo(this.props.axis,'showLabels')}/>
-                <CheckBoxInput label="show ticks" valueLink={this.bindTo(this.props.axis,'showTicks')}/>
-                <TextInput label="orient" valueLink={this.bindTo(this.props.axis,'orient')}/>
-                <NumberInput label="tick interval: " style={{width:50}}
-                             valueLink={this.bindTo(this.props.axis,'tickCount')}/>
-                <label>custom tick values</label>
-                <TickValues axis={this.props.axis}/>
-            </div>);
-    }
-});
-
-
-var App = React.createClass({
-    mixins: [BindToMixin],
-    getInitialState() {
-        var defaultAxis = {showAxis: true, showLines: true, showLabels: true, showTicks: true, zeroAxis: false, orient:'left'};
-        var options = {
-                margin: {top: 20, left: 60, bottom: 50, right:20},
-                axisX: _.extend(_.clone(defaultAxis),{orient:'bottom'}),
-                axisY: _.extend(defaultAxis, {
-                    labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
+    render: function () {
+        var opts = this.props.settings.options || [];
+        return (<select value={this.props.value}  onChange={this.handleChange}>
+            {opts.map(function(opt,index){
+                    return React.DOM.option({value:opt.value},opt.label);
                 })
-            };
-        return {
-            data: {
-                n: 3,
-                options: options,
-                barOptions: {
-                    margin: {top: 20, left: 20, bottom: 50, right: 20},
-                    axisY: {showAxis: true, showLines: true, showTicks: true, showLabels: true},
-                    axisX: {showAxis: true, showLines: true, showTicks: true, showLabels: true}
-                },
-                scatterplotOptions: {
-                    margin: {top: 20, left: 60, bottom: 30, right: 90},
-                    axisX: _.clone(options.axisX),
-                    axisY: _.clone(options.axisY)
+            }
+         </select>)
+    },
+    handleChange: function (e) {
+        this.props.onUpdated(e.target.value);
+    }
+});
+
+Json.registerType('colorPicker',ColorPickerWrapper);
+
+
+// form: true
+// make objects not extensible,
+// fields not removable
+// and inputs always visible
+var settings = {
+    form: true,
+    fields: {
+        color:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
+        fill:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
+        stroke:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
+        legendPosition: {type: 'select', settings: {options: ['topLeft','topRight','bottomLeft','bottomRight']}},
+        axisY: {
+            fields: {orient: {type: 'select', settings: {options: ['left','right']}}}
+        },
+        axisX: {
+            fields: {orient: {type: 'select', settings: {options: ['top','bottom']}}}
+        },
+        data:{
+            fields:{
+                template:{
+                    fields:{
+                        title:{
+                            fields:{
+                                pattern:{ type:'select', settings:{options:patternsOptions}}
+                            }
+                        },
+                        name:{
+                            fields:{
+                                pattern:{ type:'select', settings:{options:patternsOptions}}
+                            }
+                        }
+                    }
                 }
             }
-        };
+        },
+        children:{
+            fields:{
+                template:{
+                    fields:{
+                        name:{
+                            fields:{
+                                pattern:{ type:'select', settings:{options:patternsOptions}}
+                            }
+                        },
+                        children:{
+                            fields: {
+                                template: {
+                                    fields: {
+                                        name: {
+                                            fields: {
+                                                pattern: {type: 'select', settings: {options: patternsOptions}}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+var Panel = React.createClass({
+    getInitialState(){
+        return {expanded: this.props.defaultExpanded}
     },
+    toogleExpanded(){
+        this.setState({expanded: !this.state.expanded});
+    },
+    render(){
+        var className = this.state.expanded ? "glyphicon-chevron-up" : "glyphicon-chevron-down";
+        className = "glyphicon " + className;
+        return (
+            <div className="panel panel-primary">
+                <div className="panel-heading" onClick={this.toogleExpanded}>
+                    <div className="row">
+                        <div className="col-md-11">{this.props.header}</div>
+                        <div className="col-md-1"><span className={className}></span></div>
+                    </div>
+                </div>
+                {this.state.expanded ? <div className="panel-body">{this.props.children}</div> : null}
+            </div>
+        )
+    }
+});
+var App = React.createClass({
+    mixins: [BindToMixin],
+    //getInitialState() {
+    //    //labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
+    //
+    //},
+
     render() {
-        var lineOptions = this.bindToState('data', 'options');
-        var data = [mocnina(this.state.data.n)];
-        var barOptions = this.bindToState('data', 'barOptions');
-        var scatterplotOptions = this.bindToState('data','scatterplotOptions');
-        var scatterplot_data = [scatterplotData];
         return (<div>
-                <Panel header="SmoothLine chart">
-                    <table>
-                        <tr>
-                            <td><NumberInput label="exponent:" style={{width:50}}
-                                             valueLink={this.bindToState('data','n')}/></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <SmoothLineVivus data={data} xKey="x" yKey="y" width={600} height={600}
-                                                 options={this.state.data.options}/>
-                            </td>
 
-                            <td style={{paddingLeft:10}}>
-                                <Margins margin={this.bindTo(lineOptions,'margin')}/>
-                                <AxisOptions name="Axis X" axis={this.bindTo(lineOptions,'axisX')}/>
-                                <AxisOptions name="Axis Y" axis={this.bindTo(lineOptions,'axisY')}/>
-                            </td>
-                        </tr>
-                    </table>
+                <Panel header="Stock line chart" defaultExpanded={true}>
+                    <StockLineChartDemo settings={settings}/>
                 </Panel>
-                <Panel header="Scatterplot chart">
-                    <table>
-                        <tr>
-                            <td>
-                                <Scatterplot data={scatterplot_data} xKey="episode" yKey="rating" width={600} height={600}
-                                             options={this.state.data.scatterplotOptions}/>
-                            </td>
-
-                            <td style={{paddingLeft:10}}>
-                                <Margins margin={this.bindTo(scatterplotOptions,'margin')}/>
-                                <AxisOptions name="Axis X" axis={this.bindTo(scatterplotOptions,'axisX')}/>
-                                <AxisOptions name="Axis Y" axis={this.bindTo(scatterplotOptions,'axisY')}/>
-                            </td>
-                        </tr>
-                    </table>
+                <Panel header="Smooth line chart" defaultExpanded={true}>
+                    <SmoothLineChartDemo settings={settings}/>
                 </Panel>
-                <Panel header="Bar chart">
-                    <table>
-                        <tr>
-
-                            <td>
-                                <Bar data={barData} color="#fc6433" width={600} height={300} accessorKey="v" gutter={30}
-                                     options={this.state.data.barOptions}/>
-                            </td>
-                            <td style={{paddingLeft:10}}>
-                                <Margins margin={this.bindTo(barOptions,'margin')}/>
-                                <h4>Axis X</h4>
-                                <CheckBoxInput label="show axis" valueLink={this.bindTo(barOptions,'axisX.showAxis')}/>
-                                <CheckBoxInput label="show labels" valueLink={this.bindTo(barOptions,'axisX.showLabels')}/>
-                                <AxisOptions name="Axis Y" axis={this.bindTo(barOptions,'axisY')}/>
-                            </td>
-                        </tr>
-                    </table>
+                <Panel header="Scatter plot chart" defaultExpanded={true}>
+                    <ScatterPlotDemo settings={settings}/>
                 </Panel>
-                <Panel header="Pie chart">
-                    <Pie data={ countries } color="#fc6433" legendPosition='topLeft' accessorKey="population"/>
+                <Panel header="Bar chart" defaultExpanded={true}>
+                    <BarChartDemo settings={settings}/>
                 </Panel>
-                <Panel header="Tree chart">
-                    <Tree data={treeData}/>
+                <Panel header="Pie chart" defaultExpanded={true}>
+                    <PieChartDemo settings={settings}/>
                 </Panel>
-                <Panel header="Radar chart">
-                    <Radar data={activity} fill="#fc6433" stroke="#fc1413" width={300} height={300} r={100} max={100}
-                           center={[150,150]}/>
+                <Panel header="Tree chart" defaultExpanded={true}>
+                    <TreeChartDemo settings={settings}/>
+                </Panel>
+                <Panel header="Radar chart" defaultExpanded={true}>
+                    <RadarChartDemo settings={settings}/>
                 </Panel>
 
             </div>

@@ -1,11 +1,14 @@
 import React from 'react';
 import Vivus from 'vivus';
-import SmoothLineChart from './SmoothLine.js';
+import PieChart from './Pie.js';
 
-export default class SmoothLineVivusChart extends SmoothLineChart {
+export default class PieVivusChart extends PieChart {
     constructor(props){
         super(props);
-        this.state = { finished: false };
+        this.state = {
+            expanded:this.defaultRange,
+            finished: false
+        };
     }
     componentDidMount() {
         new Vivus(this.refs.vivus.getDOMNode(), {
@@ -14,6 +17,7 @@ export default class SmoothLineVivusChart extends SmoothLineChart {
             start: 'autostart',
             selfDestroy: true
         }, this.finish.bind(this));
+
     }
     finish() {
         this.setState({ finished: true });

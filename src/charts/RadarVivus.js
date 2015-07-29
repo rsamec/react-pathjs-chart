@@ -1,8 +1,8 @@
 import React from 'react';
 import Vivus from 'vivus';
-import SmoothLineChart from './SmoothLine.js';
+import RadarChart from './Radar.js';
 
-export default class SmoothLineVivusChart extends SmoothLineChart {
+export default class RadarVivusChart extends RadarChart {
     constructor(props){
         super(props);
         this.state = { finished: false };
@@ -14,6 +14,7 @@ export default class SmoothLineVivusChart extends SmoothLineChart {
             start: 'autostart',
             selfDestroy: true
         }, this.finish.bind(this));
+
     }
     finish() {
         this.setState({ finished: true });
