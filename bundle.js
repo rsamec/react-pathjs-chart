@@ -1555,7 +1555,15 @@ Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
@@ -1568,6 +1576,10 @@ var _palleteColorsJs2 = _interopRequireDefault(_palleteColorsJs);
 var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
+
+var _componentOptionsJs = require('../component/Options.js');
+
+var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
 
 var Bar = require('paths-js/bar');
 
@@ -1587,389 +1599,172 @@ function color(key) {
     };
 };
 
-var BarChart = _react2['default'].createClass({
-    displayName: 'BarChart',
+var BarChart = (function (_React$Component) {
+    function BarChart(props) {
+        _classCallCheck(this, BarChart);
 
-    color: function color(i) {
-        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color || '#9ac7f7');
-        return _palleteColorsJs2['default'].string(cyclic(pallete, i));
-    },
-    getMaxAndMin: function getMaxAndMin(values, scale) {
-        var maxValue = 0;
-        var minValue = 0;
+        _get(Object.getPrototypeOf(BarChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: true };
+    }
 
-        var max = _underscore2['default'].max(values);
-        if (max > maxValue) maxValue = max;
-        var min = _underscore2['default'].min(values);
-        if (min < minValue) minValue = min;
+    _inherits(BarChart, _React$Component);
 
-        return {
-            minValue: minValue,
-            maxValue: maxValue,
-            min: scale(minValue),
-            max: scale(maxValue)
-        };
-    },
-    render: function render() {
-        var noDataMsg = this.props.noDataMessage || 'No data available';
-        if (this.props.data === undefined) return _react2['default'].createElement(
-            'span',
-            null,
-            noDataMsg
-        );
+    _createClass(BarChart, [{
+        key: 'color',
+        value: function color(i) {
+            var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.options.color || '#9ac7f7');
+            return _palleteColorsJs2['default'].string(cyclic(pallete, i));
+        }
+    }, {
+        key: 'getMaxAndMin',
+        value: function getMaxAndMin(values, scale) {
+            var maxValue = 0;
+            var minValue = 0;
 
-        var width = this.props.width || 200;
-        var height = this.props.height || 200;
+            var max = _underscore2['default'].max(values);
+            if (max > maxValue) maxValue = max;
+            var min = _underscore2['default'].min(values);
+            if (min < minValue) minValue = min;
 
-        var accessor = this.props.accessor || identity(this.props.accessorKey);
+            return {
+                minValue: minValue,
+                maxValue: maxValue,
+                min: scale(minValue),
+                max: scale(maxValue)
+            };
+        }
+    }, {
+        key: 'render',
 
-        var chart = Bar({
-            data: this.props.data,
-            gutter: this.props.gutter || 10,
-            width: width,
-            height: height,
-            accessor: accessor
-        });
-
-        var options = this.props.options || {};
-        if (options.axisX === undefined) options.axisX = {};
-        if (options.axisY === undefined) options.axisY = {};
-
-        var values = _underscore2['default'].map(chart.curves, function (curve) {
-            return accessor(curve.item);
-        });
-
-        //add right + left
-        if (options.margin !== undefined) width += (options.margin.right || 0) + (options.margin.left || 0);
-        //add top + bottom
-        if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
-
-        var chartArea = { x: { minValue: 0, maxValue: 200, min: 0, max: width }, y: this.getMaxAndMin(values, chart.scale) };
-
-        var lines = chart.curves.map(function (c, i) {
-            return _react2['default'].createElement(
-                'g',
+        //componentWillReceiveProps(nextProps) {
+        //    if (this.props.data !== nextProps.data) this.setState({ finished:false});
+        //}
+        value: function render() {
+            var noDataMsg = this.props.noDataMessage || 'No data available';
+            if (this.props.data === undefined) return _react2['default'].createElement(
+                'span',
                 null,
-                _react2['default'].createElement('path', { d: c.line.path.print(), stroke: 'none', fill: this.color(i % 3) }),
-                options.axisX.showLabels ? _react2['default'].createElement(
-                    'text',
-                    { transform: 'translate(' + c.line.centroid[0] + ',' + (chartArea.y.min + 25) + ')rotate(45)', textAnchor: 'middle' },
-                    c.item.name
-                ) : null
+                noDataMsg
             );
-        }, this);
 
-        //margins
-        var y = options.margin !== undefined ? options.margin.top || 0 : 0;
-        var x = options.margin !== undefined ? options.margin.left || 0 : 0;
+            var options = new _componentOptionsJs2['default'](this.props);
+            var accessor = this.props.accessor || identity(this.props.accessorKey);
 
-        return _react2['default'].createElement(
-            'div',
-            { className: 'bar' },
-            _react2['default'].createElement(
+            var chart = Bar({
+                data: this.props.data,
+                gutter: this.props.options.gutter || 10,
+                width: options.chartWidth,
+                height: options.chartHeight,
+                accessor: accessor
+            });
+
+            var values = _underscore2['default'].map(chart.curves, function (curve) {
+                return accessor(curve.item);
+            });
+
+            var chartArea = { x: { minValue: 0, maxValue: 200, min: 0, max: options.chartWidth }, y: this.getMaxAndMin(values, chart.scale) };
+
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
+            var lines = chart.curves.map(function (c, i) {
+                var color = this.color(i % 3);
+                var stroke = _palleteColorsJs2['default'].darkenColor(color);
+                return _react2['default'].createElement(
+                    'g',
+                    null,
+                    _react2['default'].createElement('path', { d: c.line.path.print(), style: fillOpacityStyle, stroke: stroke, fill: color }),
+                    options.axisX.showLabels ? _react2['default'].createElement(
+                        'text',
+                        { transform: 'translate(' + c.line.centroid[0] + ',' + (chartArea.y.min + 25) + ')rotate(45)', textAnchor: 'middle' },
+                        c.item.name
+                    ) : null
+                );
+            }, this);
+
+            return _react2['default'].createElement(
                 'svg',
-                { width: width, height: height },
+                { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + x + ',' + y + ')' },
+                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
                     _react2['default'].createElement(Axis, { scale: chart.scale, options: options.axisY, chartArea: chartArea }),
                     lines
                 )
-            )
-        );
-    }
-});
+            );
+        }
+    }]);
+
+    return BarChart;
+})(_react2['default'].Component);
 
 exports['default'] = BarChart;
+;
 module.exports = exports['default'];
 
 
-},{"../component/Axis":26,"../pallete/Colors.js":27,"paths-js/bar":1,"react":undefined,"underscore":undefined}],20:[function(require,module,exports){
+},{"../component/Axis":34,"../component/Options.js":35,"../pallete/Colors.js":36,"paths-js/bar":1,"react":undefined,"underscore":undefined}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _palleteColorsJs = require('../pallete/Colors.js');
+var _vivus = require('vivus');
 
-var _palleteColorsJs2 = _interopRequireDefault(_palleteColorsJs);
+var _vivus2 = _interopRequireDefault(_vivus);
 
-var _animateJs = require('../animate.js');
+var _BarJs = require('./Bar.js');
 
-var _animateJs2 = _interopRequireDefault(_animateJs);
+var _BarJs2 = _interopRequireDefault(_BarJs);
 
-var _underscore = require('underscore');
+var BarVivusChart = (function (_BarChart) {
+    function BarVivusChart(props) {
+        _classCallCheck(this, BarVivusChart);
 
-var _underscore2 = _interopRequireDefault(_underscore);
+        _get(Object.getPrototypeOf(BarVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: false };
+    }
 
-var Pie = require('paths-js/pie');
+    _inherits(BarVivusChart, _BarChart);
 
-function cyclic(coll, i) {
-    return coll[i % coll.length];
-}
-function identity(key) {
-    return function (x) {
-        return x[key];
-    };
-};
-function color(key) {
-    return function (x) {
-        return x[key];
-    };
-};
-
-var PieChart = _react2['default'].createClass({
-    displayName: 'PieChart',
-
-    mixins: [_animateJs2['default'].Mixin],
-    getInitialState: function getInitialState() {
-        return { expanded: [0, 0, 0, 0, 0] };
-    },
-
-    translate: function translate(p) {
-        return 'translate(' + p[0] + ',' + p[1] + ')';
-    },
-
-    move: function move(point, perc) {
-        return this.translate([point[0] * perc / 3, point[1] * perc / 3]);
-    },
-
-    grad: function grad(i) {
-        return 'grad-' + i;
-    },
-
-    fill: function fill(i) {
-        return 'url(#grad-' + i + ')';
-    },
-
-    color: function color(i) {
-        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color || '#9ac7f7');
-        return _palleteColorsJs2['default'].string(cyclic(pallete, i));
-    },
-
-    lighten: function lighten(i) {
-        var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.color || '#9ac7f7');
-        return _palleteColorsJs2['default'].string(_palleteColorsJs2['default'].lighten(cyclic(pallete, i)));
-    },
-
-    expand: function expand(i) {
-        var self = this;
-        return function () {
-            var target = [0, 0, 0, 0, 0];
-            target[i] = 1;
-            self.animateState({ expanded: target });
-        };
-    },
-
-    render: function render() {
-        var noDataMsg = this.props.noDataMessage || 'No data available';
-        if (this.props.data === undefined) return _react2['default'].createElement(
-            'span',
-            null,
-            noDataMsg
-        );
-
-        var chart = Pie({
-            center: this.props.center || [0, 0],
-            r: this.props.r || 60,
-            R: this.props.R || 140,
-            data: this.props.data,
-            accessor: this.props.accessor || identity(this.props.accessorKey)
-        });
-        var self = this;
-        var coefficients = this.state.expanded;
-        var slices = chart.curves.map(function (c, i) {
-            return _react2['default'].createElement(
-                'g',
-                { key: i, transform: self.move(c.sector.centroid, coefficients[i]) },
-                _react2['default'].createElement(
-                    'linearGradient',
-                    { id: self.grad(i) },
-                    _react2['default'].createElement('stop', { stopColor: self.color(i), offset: '0%' }),
-                    _react2['default'].createElement('stop', { stopColor: self.lighten(i), offset: '100%' })
-                ),
-                _react2['default'].createElement('path', { onClick: self.expand(i), d: c.sector.path.print(), fill: self.fill(i) }),
-                _react2['default'].createElement(
-                    'text',
-                    { textAnchor: 'middle', transform: self.translate(c.sector.centroid) },
-                    c.item.name
-                )
-            );
-        });
-        var selected = _underscore2['default'].find(this.props.data, function (c, i) {
-            return coefficients[i] === 1;
-        });
-
-        var legendClassName = 'legend ' + this.props.legendPosition;
-
-        var table = selected ? _react2['default'].createElement(
-            'div',
-            { className: legendClassName },
-            _react2['default'].createElement(
-                'h4',
-                null,
-                selected.name
-            ),
-            _react2['default'].createElement(
-                'p',
-                null,
-                _react2['default'].createElement(
-                    'span',
-                    { className: 'label label-info' },
-                    selected.population
-                )
-            )
-        ) : null;
-
-        var width = 375;
-        var height = 400;
-        var style = this.props.style;
-        if (style !== undefined) {
-            if (style.width !== undefined) width = style.width;
-            if (style.height !== undefined) height = style.height;
+    _createClass(BarVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.finish.bind(this));
         }
-        return _react2['default'].createElement(
-            'div',
-            { className: 'pie' },
-            _react2['default'].createElement(
-                'svg',
-                { width: width, height: height },
-                _react2['default'].createElement(
-                    'g',
-                    { transform: 'translate(200, 200)' },
-                    slices
-                )
-            ),
-            table
-        );
-    }
-});
+    }, {
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
+        }
+    }]);
 
-exports['default'] = PieChart;
+    return BarVivusChart;
+})(_BarJs2['default']);
+
+exports['default'] = BarVivusChart;
 module.exports = exports['default'];
 
 
-},{"../animate.js":18,"../pallete/Colors.js":27,"paths-js/pie":8,"react":undefined,"underscore":undefined}],21:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var Radar = require('paths-js/radar');
-
-function identity(key) {
-    return function (x) {
-        return x[key];
-    };
-};
-function accessKeys(keys) {
-    var a = {};
-    for (var i in keys) {
-        var key = keys[i];
-        a[key] = identity(key);
-    }
-    return a;
-}
-
-var RadarChart = _react2['default'].createClass({
-    displayName: 'RadarChart',
-
-    render: function render() {
-        var noDataMsg = this.props.noDataMessage || 'No data available';
-        if (this.props.data === undefined) return _react2['default'].createElement(
-            'span',
-            null,
-            noDataMsg
-        );
-
-        var x = this.props.width / 2;
-        var y = this.props.height / 2;
-        var radius = Math.min(x, y);
-
-        var center = this.props.center || [x, y];
-
-        var keys = Object.keys(this.props.data[0]);
-        var chart = Radar({
-            center: this.props.center || [x, y],
-            r: this.props.r || radius,
-            data: this.props.data,
-            accessor: this.props.accessor || accessKeys(keys),
-            max: this.props.max
-        });
-        var self = this;
-
-        var curves = chart.curves.map(function (c, i) {
-            return _react2['default'].createElement('path', { key: i, d: c.polygon.path.print(), fill: self.props.fill });
-        });
-
-        //var rings = chart.rings.map(function(r, i) {
-        //    return (<path key={ i } d={ r.path.print() } stroke={ self.props.stroke } />)
-        //});
-        var length = chart.rings.length;
-
-        var rings = chart.rings.map(function (r, i) {
-            if (i !== length - 1) {
-                return _react2['default'].createElement('path', { key: i, d: r.path.print(), stroke: self.props.stroke });
-            }
-        });
-        //
-        var labels = chart.rings[length - 1].path.points().map(function (p, i) {
-            return _react2['default'].createElement(
-                'g',
-                null,
-                _react2['default'].createElement('line', { x1: p[0], y1: p[1], x2: center[0], y2: center[1], stroke: 'gray' }),
-                _react2['default'].createElement(
-                    'text',
-                    { textAnchor: 'middle', fill: self.props.fill, transform: 'translate(' + Math.floor(p[0]) + ',' + Math.floor(p[1]) + ')' },
-                    keys[i]
-                )
-            );
-        });
-
-        var width = this.props.width || 200;
-        var height = this.props.height || 200;
-
-        return _react2['default'].createElement(
-            'div',
-            { className: 'radar' },
-            _react2['default'].createElement(
-                'svg',
-                { width: width, height: height },
-                labels,
-                _react2['default'].createElement(
-                    'g',
-                    { fill: 'none', stroke: 'none' },
-                    rings,
-                    _react2['default'].createElement(
-                        'g',
-                        { opacity: '0.6' },
-                        curves
-                    )
-                )
-            )
-        );
-    }
-});
-
-exports['default'] = RadarChart;
-module.exports = exports['default'];
-
-
-},{"paths-js/radar":10,"react":undefined}],22:[function(require,module,exports){
+},{"./Bar.js":19,"react":undefined,"vivus":undefined}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1994,9 +1789,629 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _palleteColorsJs = require('../pallete/Colors.js');
+
+var _palleteColorsJs2 = _interopRequireDefault(_palleteColorsJs);
+
+var _componentOptionsJs = require('../component/Options.js');
+
+var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
+
+var Axis = require('../component/Axis');
+var Path = require('paths-js/path');
+
+function cyclic(coll, i) {
+    return coll[i % coll.length];
+}
+
+var LineChart = (function (_React$Component) {
+    function LineChart(props, chartType) {
+        _classCallCheck(this, LineChart);
+
+        _get(Object.getPrototypeOf(LineChart.prototype), 'constructor', this).call(this, props);
+        this.chartType = chartType;
+        this.state = { finished: true };
+    }
+
+    _inherits(LineChart, _React$Component);
+
+    _createClass(LineChart, [{
+        key: 'getMaxAndMin',
+        value: function getMaxAndMin(chart, key, scale) {
+            var maxValue;
+            var minValue;
+            _underscore2['default'].each(chart.curves, function (serie) {
+                var values = _underscore2['default'].map(serie.item, function (item) {
+                    return item[key];
+                });
+
+                var max = _underscore2['default'].max(values);
+                if (maxValue === undefined || max > maxValue) maxValue = max;
+                var min = _underscore2['default'].min(values);
+                if (minValue === undefined || min < minValue) minValue = min;
+            });
+            return {
+                minValue: minValue,
+                maxValue: maxValue,
+                min: scale(minValue),
+                max: scale(maxValue)
+            };
+        }
+    }, {
+        key: 'color',
+        value: function color(i) {
+            var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.options.color || '#9ac7f7');
+            return _palleteColorsJs2['default'].string(cyclic(pallete, i));
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var noDataMsg = this.props.noDataMessage || 'No data available';
+            if (this.props.data === undefined) return _react2['default'].createElement(
+                'span',
+                null,
+                noDataMsg
+            );
+
+            var options = new _componentOptionsJs2['default'](this.props);
+
+            var accessor = function accessor(key) {
+                return function (x) {
+                    return x[key];
+                };
+            };
+            var chart = this.chartType({
+                data: this.props.data,
+                xaccessor: accessor(this.props.xKey),
+                yaccessor: accessor(this.props.yKey),
+                width: options.chartWidth,
+                height: options.chartHeight,
+                closed: false
+            });
+
+            var chartArea = {
+                x: this.getMaxAndMin(chart, this.props.xKey, chart.xscale),
+                y: this.getMaxAndMin(chart, this.props.yKey, chart.yscale),
+                margin: options.margin
+            };
+
+            var transparent = { opacity: 0.5 };
+
+            var lines = _underscore2['default'].map(chart.curves, function (c, i) {
+                return _react2['default'].createElement('path', { d: c.line.path.print(), stroke: this.color(i), fill: 'none' });
+            }, this);
+            var areas = _underscore2['default'].map(chart.curves, function (c, i) {
+                //var transparent = { opacity: 0.5 };
+                return _react2['default'].createElement('path', { d: c.area.path.print(), style: transparent, stroke: 'none', fill: this.color(i) });
+            }, this);
+
+            return _react2['default'].createElement(
+                'svg',
+                { ref: 'vivus', width: options.width, height: options.height },
+                _react2['default'].createElement(
+                    'g',
+                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    this.state.finished ? areas : null,
+                    lines,
+                    _react2['default'].createElement(Axis, { scale: chart.xscale, options: options.axisX, chartArea: chartArea }),
+                    _react2['default'].createElement(Axis, { scale: chart.yscale, options: options.axisY, chartArea: chartArea })
+                )
+            );
+        }
+    }]);
+
+    return LineChart;
+})(_react2['default'].Component);
+
+exports['default'] = LineChart;
+module.exports = exports['default'];
+
+
+},{"../component/Axis":34,"../component/Options.js":35,"../pallete/Colors.js":36,"paths-js/path":7,"react":undefined,"underscore":undefined}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _palleteColorsJs = require('../pallete/Colors.js');
+
+var _palleteColorsJs2 = _interopRequireDefault(_palleteColorsJs);
+
+var _animateJs = require('../animate.js');
+
+var _animateJs2 = _interopRequireDefault(_animateJs);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _componentOptionsJs = require('../component/Options.js');
+
+var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
+
+var Pie = require('paths-js/pie');
+
+function cyclic(coll, i) {
+    return coll[i % coll.length];
+}
+function identity(key) {
+    return function (x) {
+        return x[key];
+    };
+};
+function color(key) {
+    return function (x) {
+        return x[key];
+    };
+};
+
+var PieChart = (function (_React$Component) {
+    function PieChart(props) {
+        _classCallCheck(this, PieChart);
+
+        _get(Object.getPrototypeOf(PieChart.prototype), 'constructor', this).call(this, props);
+        this.animateState = _animateJs2['default'].Mixin.animateState;
+        this.state = {
+            expanded: this.defaultRange,
+            finished: true
+        };
+    }
+
+    _inherits(PieChart, _React$Component);
+
+    _createClass(PieChart, [{
+        key: 'translate',
+        value: function translate(p) {
+            return 'translate(' + p[0] + ',' + p[1] + ')';
+        }
+    }, {
+        key: 'move',
+        value: function move(point, perc) {
+            return this.translate([point[0] * perc / 3, point[1] * perc / 3]);
+        }
+    }, {
+        key: 'color',
+
+        //
+        //grad(i) { return "grad-" + i }
+        //
+        //fill(i) { return "url(#grad-" + i  +")" }
+
+        value: function color(i) {
+            var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.options.color || '#9ac7f7');
+            return _palleteColorsJs2['default'].string(cyclic(pallete, i));
+        }
+    }, {
+        key: 'lighten',
+        value: function lighten(i) {
+            var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.options.color || '#9ac7f7');
+            return _palleteColorsJs2['default'].string(_palleteColorsJs2['default'].lighten(cyclic(pallete, i)));
+        }
+    }, {
+        key: 'expand',
+        value: function expand(i) {
+            var self = this;
+
+            return function () {
+                var target = self.defaultRange;
+                target[i] = 1;
+                self.animateState({ expanded: target });
+                console.log('Target:' + target);
+                //self.setState({ expanded: target });
+            };
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var noDataMsg = this.props.noDataMessage || 'No data available';
+            if (this.props.data === undefined) return _react2['default'].createElement(
+                'span',
+                null,
+                noDataMsg
+            );
+
+            var options = new _componentOptionsJs2['default'](this.props);
+
+            var x = options.chartWidth / 2;
+            var y = options.chartHeight / 2;
+
+            var radius = Math.min(x, y);
+
+            var chart = Pie({
+                center: this.props.options.center || [0, 0],
+                r: this.props.options.r || radius / 2,
+                R: this.props.options.R || radius,
+                data: this.props.data,
+                accessor: this.props.accessor || identity(this.props.accessorKey)
+            });
+
+            var self = this;
+            var coefficients = this.state.expanded;
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
+
+            var slices = chart.curves.map(function (c, i) {
+                var fill = self.color(i);
+                var stroke = _palleteColorsJs2['default'].darkenColor(fill);
+                return _react2['default'].createElement(
+                    'g',
+                    { key: i, transform: self.move(c.sector.centroid, coefficients[i]) },
+                    _react2['default'].createElement('path', { onClick: self.expand(i), style: fillOpacityStyle, d: c.sector.path.print(), stroke: stroke, fill: fill }),
+                    _react2['default'].createElement(
+                        'text',
+                        { textAnchor: 'middle', transform: self.translate(c.sector.centroid) },
+                        c.item.name
+                    )
+                );
+            });
+            var selected = _underscore2['default'].find(this.props.data, function (c, i) {
+                return coefficients[i] === 1;
+            });
+
+            var legendClassName = 'legend ' + options.legendPosition;
+
+            var table = selected ? _react2['default'].createElement(
+                'div',
+                { className: legendClassName },
+                _react2['default'].createElement(
+                    'h4',
+                    null,
+                    selected.name
+                ),
+                _react2['default'].createElement(
+                    'p',
+                    null,
+                    _react2['default'].createElement(
+                        'span',
+                        { className: 'label label-info' },
+                        selected.population
+                    )
+                )
+            ) : null;
+
+            return _react2['default'].createElement(
+                'div',
+                { className: 'pie' },
+                _react2['default'].createElement(
+                    'svg',
+                    { ref: 'vivus', width: options.width, height: options.height },
+                    _react2['default'].createElement(
+                        'g',
+                        { transform: 'translate(' + (options.margin.left + x) + ',' + (options.margin.top + y) + ')' },
+                        slices
+                    )
+                ),
+                table
+            );
+        }
+    }, {
+        key: 'defaultRange',
+        get: function () {
+            return _underscore2['default'].map(Array(this.props.data && this.props.data.length), function () {
+                return 0;
+            });
+        }
+    }]);
+
+    return PieChart;
+})(_react2['default'].Component);
+
+exports['default'] = PieChart;
+;
+module.exports = exports['default'];
+
+
+},{"../animate.js":18,"../component/Options.js":35,"../pallete/Colors.js":36,"paths-js/pie":8,"react":undefined,"underscore":undefined}],23:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _vivus = require('vivus');
+
+var _vivus2 = _interopRequireDefault(_vivus);
+
+var _PieJs = require('./Pie.js');
+
+var _PieJs2 = _interopRequireDefault(_PieJs);
+
+var PieVivusChart = (function (_PieChart) {
+    function PieVivusChart(props) {
+        _classCallCheck(this, PieVivusChart);
+
+        _get(Object.getPrototypeOf(PieVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = {
+            expanded: this.defaultRange,
+            finished: false
+        };
+    }
+
+    _inherits(PieVivusChart, _PieChart);
+
+    _createClass(PieVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.finish.bind(this));
+        }
+    }, {
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
+        }
+    }]);
+
+    return PieVivusChart;
+})(_PieJs2['default']);
+
+exports['default'] = PieVivusChart;
+module.exports = exports['default'];
+
+
+},{"./Pie.js":22,"react":undefined,"vivus":undefined}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _componentOptionsJs = require('../component/Options.js');
+
+var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
+
+var Radar = require('paths-js/radar');
+
+function identity(key) {
+    return function (x) {
+        return x[key];
+    };
+};
+function accessKeys(keys) {
+    var a = {};
+    for (var i in keys) {
+        var key = keys[i];
+        a[key] = identity(key);
+    }
+    return a;
+}
+
+var RadarChart = (function (_React$Component) {
+    function RadarChart(props) {
+        _classCallCheck(this, RadarChart);
+
+        _get(Object.getPrototypeOf(RadarChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: true };
+    }
+
+    _inherits(RadarChart, _React$Component);
+
+    _createClass(RadarChart, [{
+        key: 'render',
+        value: function render() {
+            var noDataMsg = this.props.noDataMessage || 'No data available';
+            if (this.props.data === undefined) return _react2['default'].createElement(
+                'span',
+                null,
+                noDataMsg
+            );
+
+            var options = new _componentOptionsJs2['default'](this.props);
+
+            var x = options.chartWidth / 2;
+            var y = options.chartHeight / 2;
+            var radius = Math.min(x, y);
+
+            var center = this.props.center || [x, y];
+
+            var keys = Object.keys(this.props.data[0]);
+            var chart = Radar({
+                center: this.props.center || [x, y],
+                r: this.props.options.r || radius,
+                data: this.props.data,
+                accessor: this.props.accessor || accessKeys(keys),
+                max: this.props.options.max
+            });
+            var self = this;
+
+            var curves = chart.curves.map(function (c, i) {
+                return _react2['default'].createElement('path', { key: i, d: c.polygon.path.print(), fill: self.props.options.fill });
+            });
+
+            //var rings = chart.rings.map(function(r, i) {
+            //    return (<path key={ i } d={ r.path.print() } stroke={ self.props.stroke } />)
+            //});
+            var length = chart.rings.length;
+
+            var rings = chart.rings.map(function (r, i) {
+                if (i !== length - 1) {
+                    return _react2['default'].createElement('path', { key: i, d: r.path.print(), stroke: self.props.options.stroke });
+                }
+            });
+            //
+            var labels = chart.rings[length - 1].path.points().map(function (p, i) {
+                return _react2['default'].createElement(
+                    'g',
+                    null,
+                    _react2['default'].createElement('line', { x1: p[0], y1: p[1], x2: center[0], y2: center[1], stroke: 'gray' }),
+                    _react2['default'].createElement(
+                        'text',
+                        { textAnchor: 'middle', fill: self.props.options.fill,
+                            transform: 'translate(' + Math.floor(p[0]) + ',' + Math.floor(p[1]) + ')' },
+                        keys[i]
+                    )
+                );
+            });
+            return _react2['default'].createElement(
+                'svg',
+                { ref: 'vivus', width: options.width, height: options.height },
+                _react2['default'].createElement(
+                    'g',
+                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    labels,
+                    _react2['default'].createElement(
+                        'g',
+                        { fill: 'none', stroke: 'none' },
+                        rings,
+                        _react2['default'].createElement(
+                            'g',
+                            { opacity: '0.6' },
+                            this.state.finished ? curves : null
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return RadarChart;
+})(_react2['default'].Component);
+
+exports['default'] = RadarChart;
+;
+module.exports = exports['default'];
+
+
+},{"../component/Options.js":35,"paths-js/radar":10,"react":undefined}],25:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _vivus = require('vivus');
+
+var _vivus2 = _interopRequireDefault(_vivus);
+
+var _RadarJs = require('./Radar.js');
+
+var _RadarJs2 = _interopRequireDefault(_RadarJs);
+
+var RadarVivusChart = (function (_RadarChart) {
+    function RadarVivusChart(props) {
+        _classCallCheck(this, RadarVivusChart);
+
+        _get(Object.getPrototypeOf(RadarVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: false };
+    }
+
+    _inherits(RadarVivusChart, _RadarChart);
+
+    _createClass(RadarVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.finish.bind(this));
+        }
+    }, {
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
+        }
+    }]);
+
+    return RadarVivusChart;
+})(_RadarJs2['default']);
+
+exports['default'] = RadarVivusChart;
+module.exports = exports['default'];
+
+
+},{"./Radar.js":24,"react":undefined,"vivus":undefined}],26:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _componentOptionsJs = require('../component/Options.js');
+
+var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
+
 var Stock = require('paths-js/stock');
 var Axis = require('../component/Axis');
-
 var Path = require('paths-js/path');
 
 var Scatterplot = (function (_React$Component) {
@@ -2004,6 +2419,7 @@ var Scatterplot = (function (_React$Component) {
         _classCallCheck(this, Scatterplot);
 
         _get(Object.getPrototypeOf(Scatterplot.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: true };
     }
 
     _inherits(Scatterplot, _React$Component);
@@ -2052,12 +2468,7 @@ var Scatterplot = (function (_React$Component) {
                 noDataMsg
             );
 
-            var options = this.props.options || {};
-            if (options.axisX === undefined) options.axisX = {};
-            if (options.axisY === undefined) options.axisY = {};
-
-            var width = this.props.width || 450;
-            var height = this.props.height || 350;
+            var options = new _componentOptionsJs2['default'](this.props);
 
             var palette = this.props.palette || ['#3E90F0', '#7881C2', '#707B82'];
             var accessor = function accessor(key) {
@@ -2069,15 +2480,10 @@ var Scatterplot = (function (_React$Component) {
                 data: this.props.data,
                 xaccessor: accessor(this.props.xKey),
                 yaccessor: accessor(this.props.yKey),
-                width: width,
-                height: height,
+                width: options.chartWidth,
+                height: options.chartHeight,
                 closed: false
             });
-
-            //add right + left
-            if (options.margin !== undefined) width += (options.margin.right || 0) + (options.margin.left || 0);
-            //add top + bottom
-            if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
 
             var chartArea = {
                 x: this.getMaxAndMin(chart, this.props.xKey, chart.xscale),
@@ -2086,14 +2492,14 @@ var Scatterplot = (function (_React$Component) {
             };
 
             var transparent = { opacity: 0.5 };
-
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
             var points = _underscore2['default'].map(chart.curves, function (c, i) {
                 return _underscore2['default'].map(c.line.path.points(), function (p, j) {
                     var item = c.item[j];
                     return _react2['default'].createElement(
                         'g',
                         { transform: 'translate(' + p[0] + ',' + p[1] + ')' },
-                        _react2['default'].createElement('circle', { r: '5', cx: '0', cy: '0', stroke: 'blue', fill: 'white', onMouseEnter: this.onEnter.bind(this, j), onMouseLeave: this.onLeave.bind(this, j) }),
+                        _react2['default'].createElement('circle', { cx: 0, cy: 0, r: 5, style: fillOpacityStyle, stroke: options.stroke, fill: options.fill, onMouseEnter: this.onEnter.bind(this, j), onMouseLeave: this.onLeave.bind(this, j) }),
                         item.selected ? _react2['default'].createElement(
                             'text',
                             { transform: 'translate(15, 5)', 'text-anchor': 'start' },
@@ -2103,16 +2509,12 @@ var Scatterplot = (function (_React$Component) {
                 }, this);
             }, this);
 
-            //margins
-            var y = options.margin !== undefined ? options.margin.top || 0 : 0;
-            var x = options.margin !== undefined ? options.margin.left || 0 : 0;
-
             return _react2['default'].createElement(
                 'svg',
-                { ref: 'vivus', width: width, height: height },
+                { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + x + ',' + y + ')' },
+                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
                     points,
                     _react2['default'].createElement(Axis, { scale: chart.xscale, options: options.axisX, chartArea: chartArea }),
                     _react2['default'].createElement(Axis, { scale: chart.yscale, options: options.axisY, chartArea: chartArea })
@@ -2128,7 +2530,7 @@ exports['default'] = Scatterplot;
 module.exports = exports['default'];
 
 
-},{"../component/Axis":26,"paths-js/path":7,"paths-js/stock":15,"react":undefined,"underscore":undefined}],23:[function(require,module,exports){
+},{"../component/Axis":34,"../component/Options.js":35,"paths-js/path":7,"paths-js/stock":15,"react":undefined,"underscore":undefined}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2149,127 +2551,86 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _underscore = require('underscore');
+var _vivus = require('vivus');
 
-var _underscore2 = _interopRequireDefault(_underscore);
+var _vivus2 = _interopRequireDefault(_vivus);
 
-var SmoothLine = require('paths-js/smooth-line');
-var Axis = require('../component/Axis');
+var _ScatterplotJs = require('./Scatterplot.js');
 
-var Path = require('paths-js/path');
+var _ScatterplotJs2 = _interopRequireDefault(_ScatterplotJs);
 
-var SmoothLineChart = (function (_React$Component) {
-    function SmoothLineChart(props) {
-        _classCallCheck(this, SmoothLineChart);
+var ScatterplotVivusChart = (function (_ScatterplotChart) {
+    function ScatterplotVivusChart(props) {
+        _classCallCheck(this, ScatterplotVivusChart);
 
-        _get(Object.getPrototypeOf(SmoothLineChart.prototype), 'constructor', this).call(this, props);
-        this.state = { showAreas: true };
+        _get(Object.getPrototypeOf(ScatterplotVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: false };
     }
 
-    _inherits(SmoothLineChart, _React$Component);
+    _inherits(ScatterplotVivusChart, _ScatterplotChart);
 
-    _createClass(SmoothLineChart, [{
-        key: 'getMaxAndMin',
-        value: function getMaxAndMin(chart, key, scale) {
-            var maxValue;
-            var minValue;
-            _underscore2['default'].each(chart.curves, function (serie) {
-                var values = _underscore2['default'].map(serie.item, function (item) {
-                    return item[key];
-                });
-
-                var max = _underscore2['default'].max(values);
-                if (maxValue === undefined || max > maxValue) maxValue = max;
-                var min = _underscore2['default'].min(values);
-                if (minValue === undefined || min < minValue) minValue = min;
-            });
-            return {
-                minValue: minValue,
-                maxValue: maxValue,
-                min: scale(minValue),
-                max: scale(maxValue)
-            };
+    _createClass(ScatterplotVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.finish.bind(this));
         }
     }, {
-        key: 'render',
-        value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
-            if (this.props.data === undefined) return _react2['default'].createElement(
-                'span',
-                null,
-                noDataMsg
-            );
-
-            var options = this.props.options || {};
-            if (options.axisX === undefined) options.axisX = {};
-            if (options.axisY === undefined) options.axisY = {};
-
-            var width = this.props.width || 450;
-            var height = this.props.height || 350;
-
-            var palette = this.props.palette || ['#3E90F0', '#7881C2', '#707B82'];
-            var accessor = function accessor(key) {
-                return function (x) {
-                    return x[key];
-                };
-            };
-            var chart = SmoothLine({
-                data: this.props.data,
-                xaccessor: accessor(this.props.xKey),
-                yaccessor: accessor(this.props.yKey),
-                width: width,
-                height: height,
-                closed: false
-            });
-
-            //add right + left
-            if (options.margin !== undefined) width += (options.margin.right || 0) + (options.margin.left || 0);
-            //add top + bottom
-            if (options.margin !== undefined) height += (options.margin.top || 0) + (options.margin.bottom || 0);
-
-            var chartArea = {
-                x: this.getMaxAndMin(chart, this.props.xKey, chart.xscale),
-                y: this.getMaxAndMin(chart, this.props.yKey, chart.yscale),
-                margin: options.margin
-            };
-
-            var transparent = { opacity: 0.5 };
-
-            var lines = _underscore2['default'].map(chart.curves, function (c, i) {
-                return _react2['default'].createElement('path', { d: c.line.path.print(), stroke: palette[i], fill: 'none' });
-            });
-            var areas = _underscore2['default'].map(chart.curves, function (c, i) {
-                //var transparent = { opacity: 0.5 };
-                return _react2['default'].createElement('path', { d: c.area.path.print(), style: transparent, stroke: 'none', fill: palette[i] });
-            });
-
-            //margins
-            var y = options.margin !== undefined ? options.margin.top || 0 : 0;
-            var x = options.margin !== undefined ? options.margin.left || 0 : 0;
-
-            return _react2['default'].createElement(
-                'svg',
-                { ref: 'vivus', width: width, height: height },
-                _react2['default'].createElement(
-                    'g',
-                    { transform: 'translate(' + x + ',' + y + ')' },
-                    this.state.showAreas ? areas : null,
-                    lines,
-                    _react2['default'].createElement(Axis, { scale: chart.xscale, options: options.axisX, chartArea: chartArea }),
-                    _react2['default'].createElement(Axis, { scale: chart.yscale, options: options.axisY, chartArea: chartArea })
-                )
-            );
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
         }
     }]);
 
+    return ScatterplotVivusChart;
+})(_ScatterplotJs2['default']);
+
+exports['default'] = ScatterplotVivusChart;
+module.exports = exports['default'];
+
+
+},{"./Scatterplot.js":26,"react":undefined,"vivus":undefined}],28:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _LineJs = require('./Line.js');
+
+var _LineJs2 = _interopRequireDefault(_LineJs);
+
+var SmoothLine = require('paths-js/smooth-line');
+
+var SmoothLineChart = (function (_LineChart) {
+    function SmoothLineChart(props) {
+        _classCallCheck(this, SmoothLineChart);
+
+        _get(Object.getPrototypeOf(SmoothLineChart.prototype), 'constructor', this).call(this, props, SmoothLine);
+    }
+
+    _inherits(SmoothLineChart, _LineChart);
+
     return SmoothLineChart;
-})(_react2['default'].Component);
+})(_LineJs2['default']);
 
 exports['default'] = SmoothLineChart;
 module.exports = exports['default'];
 
 
-},{"../component/Axis":26,"paths-js/path":7,"paths-js/smooth-line":14,"react":undefined,"underscore":undefined}],24:[function(require,module,exports){
+},{"./Line.js":21,"paths-js/smooth-line":14}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2289,10 +2650,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
 
 var _vivus = require('vivus');
 
@@ -2302,14 +2659,12 @@ var _SmoothLineJs = require('./SmoothLine.js');
 
 var _SmoothLineJs2 = _interopRequireDefault(_SmoothLineJs);
 
-var SmoothLine = require('paths-js/smooth-line');
-
 var SmoothLineVivusChart = (function (_SmoothLineChart) {
     function SmoothLineVivusChart(props) {
         _classCallCheck(this, SmoothLineVivusChart);
 
         _get(Object.getPrototypeOf(SmoothLineVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { showAreas: false };
+        this.state = { finished: false };
     }
 
     _inherits(SmoothLineVivusChart, _SmoothLineChart);
@@ -2322,12 +2677,12 @@ var SmoothLineVivusChart = (function (_SmoothLineChart) {
                 duration: 200,
                 start: 'autostart',
                 selfDestroy: true
-            }, this.addAreas.bind(this));
+            }, this.finish.bind(this));
         }
     }, {
-        key: 'addAreas',
-        value: function addAreas() {
-            this.setState({ showAreas: true });
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
         }
     }]);
 
@@ -2338,7 +2693,44 @@ exports['default'] = SmoothLineVivusChart;
 module.exports = exports['default'];
 
 
-},{"./SmoothLine.js":23,"paths-js/smooth-line":14,"react":undefined,"underscore":undefined,"vivus":undefined}],25:[function(require,module,exports){
+},{"./SmoothLine.js":28,"react":undefined,"vivus":undefined}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _LineJs = require('./Line.js');
+
+var _LineJs2 = _interopRequireDefault(_LineJs);
+
+var StockLine = require('paths-js/stock');
+
+var StockLineChart = (function (_LineChart) {
+    function StockLineChart(props) {
+        _classCallCheck(this, StockLineChart);
+
+        _get(Object.getPrototypeOf(StockLineChart.prototype), 'constructor', this).call(this, props, StockLine);
+    }
+
+    _inherits(StockLineChart, _LineChart);
+
+    return StockLineChart;
+})(_LineJs2['default']);
+
+exports['default'] = StockLineChart;
+module.exports = exports['default'];
+
+
+},{"./Line.js":21,"paths-js/stock":15}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2346,6 +2738,71 @@ Object.defineProperty(exports, '__esModule', {
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _vivus = require('vivus');
+
+var _vivus2 = _interopRequireDefault(_vivus);
+
+var _StockLineJs = require('./StockLine.js');
+
+var _StockLineJs2 = _interopRequireDefault(_StockLineJs);
+
+var StockLineVivusChart = (function (_StockLineChart) {
+    function StockLineVivusChart(props) {
+        _classCallCheck(this, StockLineVivusChart);
+
+        _get(Object.getPrototypeOf(StockLineVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: false };
+    }
+
+    _inherits(StockLineVivusChart, _StockLineChart);
+
+    _createClass(StockLineVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.finish.bind(this));
+        }
+    }, {
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
+        }
+    }]);
+
+    return StockLineVivusChart;
+})(_StockLineJs2['default']);
+
+exports['default'] = StockLineVivusChart;
+module.exports = exports['default'];
+
+
+},{"./StockLine.js":30,"react":undefined,"vivus":undefined}],32:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -2361,7 +2818,7 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var TreeEx = require('paths-js/tree');
+var Tree = require('paths-js/tree');
 
 function children(x) {
     if (x.collapsed) {
@@ -2371,18 +2828,17 @@ function children(x) {
     }
 }
 
-var Tree = (function (_React$Component) {
-    function Tree() {
-        _classCallCheck(this, Tree);
+var TreeChart = (function (_React$Component) {
+    function TreeChart(props) {
+        _classCallCheck(this, TreeChart);
 
-        if (_React$Component != null) {
-            _React$Component.apply(this, arguments);
-        }
+        _get(Object.getPrototypeOf(TreeChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: true };
     }
 
-    _inherits(Tree, _React$Component);
+    _inherits(TreeChart, _React$Component);
 
-    _createClass(Tree, [{
+    _createClass(TreeChart, [{
         key: 'render',
         value: function render() {
             var noDataMsg = this.props.noDataMessage || 'No data available';
@@ -2392,19 +2848,24 @@ var Tree = (function (_React$Component) {
                 noDataMsg
             );
 
+            var options = this.props.options || {};
+            var width = options.width || 400;
+            var height = options.height || 400;
+
             var that = this;
 
-            var tree = TreeEx({
+            var tree = Tree({
                 data: this.props.data,
                 children: children,
-                width: 350,
-                height: 300
+                width: width - 150,
+                height: height - 100
             });
 
             var curves = _underscore2['default'].map(tree.curves, function (c) {
-                return _react2['default'].createElement('path', { d: c.connector.path.print(), fill: 'none', stroke: 'gray' });
+                return _react2['default'].createElement('path', { d: c.connector.path.print(), fill: 'none', stroke: options.stroke });
             });
 
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
             var nodes = _underscore2['default'].map(tree.nodes, function (n) {
                 var position = 'translate(' + n.point[0] + ',' + n.point[1] + ')';
 
@@ -2430,36 +2891,95 @@ var Tree = (function (_React$Component) {
                 return _react2['default'].createElement(
                     'g',
                     { transform: position },
-                    _react2['default'].createElement('circle', { fill: 'white', stroke: 'black', r: '5', cx: '0', cy: '0', onClick: toggle }),
+                    _react2['default'].createElement('circle', { style: fillOpacityStyle, fill: options.fill, stroke: options.stroke, r: '5', cx: '0', cy: '0', onClick: toggle }),
                     text
                 );
             });
 
             return _react2['default'].createElement(
-                'div',
-                { id: 'tree' },
+                'svg',
+                { ref: 'vivus', width: width, height: height },
                 _react2['default'].createElement(
-                    'svg',
-                    { width: '500', height: '380' },
-                    _react2['default'].createElement(
-                        'g',
-                        { transform: 'translate(80, 10)' },
-                        curves,
-                        nodes
-                    )
+                    'g',
+                    { transform: 'translate(80, 10)' },
+                    curves,
+                    nodes
                 )
             );
         }
     }]);
 
-    return Tree;
+    return TreeChart;
 })(_react2['default'].Component);
 
-exports['default'] = Tree;
+exports['default'] = TreeChart;
 module.exports = exports['default'];
 
 
-},{"paths-js/tree":16,"react":undefined,"underscore":undefined}],26:[function(require,module,exports){
+},{"paths-js/tree":16,"react":undefined,"underscore":undefined}],33:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _vivus = require('vivus');
+
+var _vivus2 = _interopRequireDefault(_vivus);
+
+var _TreeJs = require('./Tree.js');
+
+var _TreeJs2 = _interopRequireDefault(_TreeJs);
+
+var TreeVivusChart = (function (_TreeChart) {
+    function TreeVivusChart(props) {
+        _classCallCheck(this, TreeVivusChart);
+
+        _get(Object.getPrototypeOf(TreeVivusChart.prototype), 'constructor', this).call(this, props);
+        this.state = { finished: false };
+    }
+
+    _inherits(TreeVivusChart, _TreeChart);
+
+    _createClass(TreeVivusChart, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
+                type: 'delayed',
+                duration: 200,
+                start: 'autostart',
+                selfDestroy: true
+            }, this.finish.bind(this));
+        }
+    }, {
+        key: 'finish',
+        value: function finish() {
+            this.setState({ finished: true });
+        }
+    }]);
+
+    return TreeVivusChart;
+})(_TreeJs2['default']);
+
+exports['default'] = TreeVivusChart;
+module.exports = exports['default'];
+
+
+},{"./Tree.js":32,"react":undefined,"vivus":undefined}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2642,7 +3162,75 @@ exports['default'] = Axis;
 module.exports = exports['default'];
 
 
-},{"paths-js/path":7,"react":undefined,"underscore":undefined}],27:[function(require,module,exports){
+},{"paths-js/path":7,"react":undefined,"underscore":undefined}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+        value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var ChartOptions = (function () {
+        function ChartOptions(props) {
+                _classCallCheck(this, ChartOptions);
+
+                //var noDataMsg = this.props.noDataMessage || "No data available";
+                //if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
+                this.options = props.options || {};
+
+                this.chartWidth = this.options.width || 400;
+                this.chartHeight = this.options.height || 400;
+
+                //margins
+                //add right + left
+                this.width = this.chartWidth + (this.margin.right || 0) + (this.margin.left || 0);
+                //add top + bottom
+                this.height = this.chartHeight + (this.margin.top || 0) + (this.margin.bottom || 0);
+        }
+
+        _createClass(ChartOptions, [{
+                key: 'legendPosition',
+                get: function () {
+                        return this.options.legendPosition || 'topLeft';
+                }
+        }, {
+                key: 'axisX',
+                get: function () {
+                        return this.options.axisX || {};
+                }
+        }, {
+                key: 'axisY',
+                get: function () {
+                        return this.options.axisY || {};
+                }
+        }, {
+                key: 'margin',
+                get: function () {
+                        return this.options.margin || {};
+                }
+        }, {
+                key: 'stroke',
+                get: function () {
+                        return this.options.stroke;
+                }
+        }, {
+                key: 'fill',
+                get: function () {
+                        return this.options.fill;
+                }
+        }]);
+
+        return ChartOptions;
+})();
+
+exports['default'] = ChartOptions;
+module.exports = exports['default'];
+
+
+},{}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2694,6 +3282,11 @@ var Colors = (function () {
             return this.multiply(0.8)(c);
         }
     }, {
+        key: "darkenColor",
+        value: function darkenColor(c) {
+            return this.string(this.darken(this.hexToRgb(c)));
+        }
+    }, {
         key: "mix",
         value: function mix(color1) {
             var c1 = this.hexToRgb(color1);
@@ -2704,7 +3297,8 @@ var Colors = (function () {
     }, {
         key: "string",
         value: function string(c) {
-            return "rgb(" + Math.floor(c.r) + "," + Math.floor(c.g) + "," + Math.floor(c.b) + ")";
+            return this.rgbToHex(Math.floor(c.r), Math.floor(c.g), Math.floor(c.b));
+            //return "rgb(" + (Math.floor(c.r)) + "," + (Math.floor(c.g)) + "," + (Math.floor(c.b)) + ")";
         }
     }, {
         key: "hexToRgb",
@@ -2715,6 +3309,17 @@ var Colors = (function () {
                 g: parseInt(result[2], 16),
                 b: parseInt(result[3], 16)
             } : null;
+        }
+    }, {
+        key: "componentToHex",
+        value: function componentToHex(c) {
+            var hex = c.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+    }, {
+        key: "rgbToHex",
+        value: function rgbToHex(r, g, b) {
+            return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
         }
     }]);
 
@@ -2728,44 +3333,70 @@ module.exports = exports["default"];
 
 
 },{}],"react-pathjs-chart":[function(require,module,exports){
+//import Pie from './charts/Pie.js';
+//import Tree from './charts/Tree.js';
+//import Radar from './charts/Radar.js';
+//import Bar from './charts/Bar.js';
+//import SmoothLine from './charts/SmoothLine.js';
+//import StockLine from './charts/StockLine.js';
+//import Scatterplot from './charts/Scatterplot.js';
+
+//export default {
+//    Pie:Pie,
+//    Tree:Tree,
+//    SmoothLine:SmoothLine,
+//    StockLine:StockLine,
+//    Radar:Radar,
+//    Bar:Bar,
+//    Scatterplot:Scatterplot
+//};
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-  value: true
+    value: true
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _chartsPieJs = require('./charts/Pie.js');
-
-var _chartsPieJs2 = _interopRequireDefault(_chartsPieJs);
-
-var _chartsTreeJs = require('./charts/Tree.js');
-
-var _chartsTreeJs2 = _interopRequireDefault(_chartsTreeJs);
-
-var _chartsRadarJs = require('./charts/Radar.js');
-
-var _chartsRadarJs2 = _interopRequireDefault(_chartsRadarJs);
-
-var _chartsBarJs = require('./charts/Bar.js');
-
-var _chartsBarJs2 = _interopRequireDefault(_chartsBarJs);
-
-var _chartsSmoothLineJs = require('./charts/SmoothLine.js');
-
-var _chartsSmoothLineJs2 = _interopRequireDefault(_chartsSmoothLineJs);
 
 var _chartsSmoothLineVivusJs = require('./charts/SmoothLineVivus.js');
 
 var _chartsSmoothLineVivusJs2 = _interopRequireDefault(_chartsSmoothLineVivusJs);
 
-var _chartsScatterplotJs = require('./charts/Scatterplot.js');
+var _chartsStockLineVivusJs = require('./charts/StockLineVivus.js');
 
-var _chartsScatterplotJs2 = _interopRequireDefault(_chartsScatterplotJs);
+var _chartsStockLineVivusJs2 = _interopRequireDefault(_chartsStockLineVivusJs);
 
-exports['default'] = { Pie: _chartsPieJs2['default'], Tree: _chartsTreeJs2['default'], SmoothLine: _chartsSmoothLineJs2['default'], SmoothLineVivus: _chartsSmoothLineVivusJs2['default'], Radar: _chartsRadarJs2['default'], Bar: _chartsBarJs2['default'], Scatterplot: _chartsScatterplotJs2['default'] };
+var _chartsBarVivusJs = require('./charts/BarVivus.js');
+
+var _chartsBarVivusJs2 = _interopRequireDefault(_chartsBarVivusJs);
+
+var _chartsPieVivusJs = require('./charts/PieVivus.js');
+
+var _chartsPieVivusJs2 = _interopRequireDefault(_chartsPieVivusJs);
+
+var _chartsRadarVivusJs = require('./charts/RadarVivus.js');
+
+var _chartsRadarVivusJs2 = _interopRequireDefault(_chartsRadarVivusJs);
+
+var _chartsTreeVivusJs = require('./charts/TreeVivus.js');
+
+var _chartsTreeVivusJs2 = _interopRequireDefault(_chartsTreeVivusJs);
+
+var _chartsScatterplotVivusJs = require('./charts/ScatterplotVivus.js');
+
+var _chartsScatterplotVivusJs2 = _interopRequireDefault(_chartsScatterplotVivusJs);
+
+exports['default'] = {
+    Pie: _chartsPieVivusJs2['default'],
+    Tree: _chartsTreeVivusJs2['default'],
+    SmoothLine: _chartsSmoothLineVivusJs2['default'],
+    StockLine: _chartsStockLineVivusJs2['default'],
+    Radar: _chartsRadarVivusJs2['default'],
+    Bar: _chartsBarVivusJs2['default'],
+    Scatterplot: _chartsScatterplotVivusJs2['default']
+};
 module.exports = exports['default'];
 
 
-},{"./charts/Bar.js":19,"./charts/Pie.js":20,"./charts/Radar.js":21,"./charts/Scatterplot.js":22,"./charts/SmoothLine.js":23,"./charts/SmoothLineVivus.js":24,"./charts/Tree.js":25}]},{},[]);
+},{"./charts/BarVivus.js":20,"./charts/PieVivus.js":23,"./charts/RadarVivus.js":25,"./charts/ScatterplotVivus.js":27,"./charts/SmoothLineVivus.js":29,"./charts/StockLineVivus.js":31,"./charts/TreeVivus.js":33}]},{},[]);
