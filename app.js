@@ -25,7 +25,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var BarDemo = (function () {
     function BarDemo() {
@@ -92,13 +94,24 @@ var BarDemo = (function () {
                 margin: { top: 20, left: 20, bottom: 50, right: 20 },
                 color: '#2980B9',
                 gutter: 20,
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200,
+                    fillTransition: 3
+                },
                 axisX: {
                     showAxis: true,
                     showLines: true,
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'bottom'
+                    orient: 'bottom',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 },
                 axisY: {
                     showAxis: true,
@@ -106,7 +119,13 @@ var BarDemo = (function () {
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'left'
+                    orient: 'left',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 }
             };
         }
@@ -132,13 +151,13 @@ var BarChartDemo = (function (_ChartDemo) {
     _inherits(BarChartDemo, _ChartDemo);
 
     return BarChartDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = BarChartDemo;
 ;
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],2:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -169,72 +188,9 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 var _reactBootstrap = require('react-bootstrap');
 
-var _reactPathjsChart = require('react-pathjs-chart');
+var _reactIntl = require('react-intl');
 
-var ChartOptions = _react2['default'].createClass({
-    displayName: 'ChartOptions',
-
-    getInitialState: function getInitialState() {
-        return { show: true };
-    },
-    toogleShowData: function toogleShowData() {
-        this.setState({ show: !this.state.show });
-    },
-    render: function render() {
-        return _react2['default'].createElement(
-            _reactBootstrap.TabbedArea,
-            { bsStyle: 'tabs', defaultActiveKey: 2 },
-            _react2['default'].createElement(
-                _reactBootstrap.TabPane,
-                { eventKey: 1, tab: 'Data' },
-                _react2['default'].createElement(
-                    'div',
-                    null,
-                    _react2['default'].createElement(
-                        'div',
-                        { className: 'row', style: { marginTop: 20 } },
-                        _react2['default'].createElement(
-                            'div',
-                            { className: 'col-md-8' },
-                            _react2['default'].createElement(
-                                'h4',
-                                null,
-                                'Data template'
-                            )
-                        ),
-                        _react2['default'].createElement(
-                            'div',
-                            { className: 'col-md-4' },
-                            _react2['default'].createElement(
-                                _reactBootstrap.Button,
-                                { bsStyle: 'primary', onClick: this.props.regenerateData },
-                                'Regenerate data'
-                            )
-                        )
-                    ),
-                    _react2['default'].createElement('hr', null),
-                    _react2['default'].createElement(_reactJson2['default'], { value: this.props.template, settings: this.props.settings, onChange: this.props.templateChanged }),
-                    _react2['default'].createElement(
-                        _reactBootstrap.Button,
-                        { bsStyle: 'link', onClick: this.toogleShowData },
-                        this.state.show ? 'hide' : 'show',
-                        ' data json'
-                    ),
-                    this.state.show ? _react2['default'].createElement(
-                        'pre',
-                        { style: { width: '100%', height: 200 } },
-                        JSON.stringify(this.props.data, null, 2)
-                    ) : null
-                )
-            ),
-            _react2['default'].createElement(
-                _reactBootstrap.TabPane,
-                { eventKey: 2, tab: 'Options' },
-                _react2['default'].createElement(_reactJson2['default'], { value: this.props.options, settings: this.props.settings, onChange: this.props.optionsChanged })
-            )
-        );
-    }
-});
+_underscore2['default'].mixin(require('underscore.deepclone'));
 
 var ChartDemo = (function (_React$Component) {
     function ChartDemo(props, chartType, demo) {
@@ -243,6 +199,7 @@ var ChartDemo = (function (_React$Component) {
         _get(Object.getPrototypeOf(ChartDemo.prototype), 'constructor', this).call(this, props);
 
         this.state = {
+            show: false,
             dataTemplate: demo.dataTemplate,
             data: demo.generateData(demo.dataTemplate),
             options: demo.options
@@ -265,37 +222,99 @@ var ChartDemo = (function (_React$Component) {
             this.setState({ options: value });
         }
     }, {
-        key: 'regenerateData',
-        value: function regenerateData(e) {
-            this.setState({
-                data: this.generateData(this.state.dataTemplate),
-                finished: false
-            });
+        key: 'regenerate',
+        value: function regenerate(e) {
+            this.setState({ data: this.generateData(this.state.dataTemplate) });
+        }
+    }, {
+        key: 'replay',
+        value: function replay(e) {
+            this.setState({ replay: !this.state.replay });
+        }
+    }, {
+        key: 'toogleShowData',
+        value: function toogleShowData() {
+            this.setState({ show: !this.state.show });
         }
     }, {
         key: 'render',
         value: function render() {
-            var tdStyle = { paddingLeft: 10, verticalAlign: 'top' };
-            var chartProps = _underscore2['default'].extend({ data: this.state.data, options: this.state.options }, this.chartDemo.props);
+            var tdStyle = { paddingLeft: 10, paddingTop: 10, verticalAlign: 'top' };
+            var options = _underscore2['default'].deepClone(this.state.options);
+            if (options.axisX !== undefined) options.axisX.labelComponent = _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 0, style: 'decimal', maximumFractionDigits: 2 });
+            if (options.axisY !== undefined) options.axisY.labelComponent = _react2['default'].createElement(_reactIntl.FormattedNumber, { value: 0, style: 'decimal', maximumFractionDigits: 2 });
+            //
+            var chartProps = _underscore2['default'].extend({
+                data: this.state.data,
+                options: options,
+                replay: this.state.replay
+            }, this.chartDemo.props);
             var chart = _react2['default'].createElement(this.chartType, chartProps);
             return _react2['default'].createElement(
-                'table',
-                null,
+                'div',
+                { className: 'row' },
                 _react2['default'].createElement(
-                    'tr',
-                    null,
+                    'div',
+                    { className: 'col-md-8' },
                     _react2['default'].createElement(
-                        'td',
-                        { style: tdStyle },
-                        chart
+                        'div',
+                        { className: 'row' },
+                        _react2['default'].createElement('div', { className: 'col-md-9' }),
+                        _react2['default'].createElement(
+                            'div',
+                            { className: 'col-md-1' },
+                            _react2['default'].createElement(
+                                _reactBootstrap.Button,
+                                { bsStyle: 'primary',
+                                    onClick: this.replay.bind(this) },
+                                'replay'
+                            )
+                        ),
+                        _react2['default'].createElement(
+                            'div',
+                            { className: 'col-md-2' },
+                            _react2['default'].createElement(
+                                _reactBootstrap.Button,
+                                { bsStyle: 'primary', onClick: this.regenerate.bind(this) },
+                                'regenerate'
+                            )
+                        )
                     ),
+                    chart
+                ),
+                _react2['default'].createElement(
+                    'div',
+                    { className: 'col-md-4' },
                     _react2['default'].createElement(
-                        'td',
-                        { style: tdStyle },
-                        _react2['default'].createElement(ChartOptions, { template: this.state.dataTemplate, templateChanged: this.templateChanged.bind(this),
-                            data: this.state.data, regenerateData: this.regenerateData.bind(this),
-                            options: this.state.options, optionsChanged: this.optionsChanged.bind(this),
-                            settings: this.props.settings })
+                        _reactBootstrap.TabbedArea,
+                        { bsStyle: 'tabs', defaultActiveKey: 2 },
+                        _react2['default'].createElement(
+                            _reactBootstrap.TabPane,
+                            { eventKey: 1, tab: 'Data' },
+                            _react2['default'].createElement(
+                                'div',
+                                null,
+                                _react2['default'].createElement(_reactJson2['default'], { value: this.state.dataTemplate, settings: this.props.settings,
+                                    onChange: this.templateChanged.bind(this) }),
+                                _react2['default'].createElement(
+                                    _reactBootstrap.Button,
+                                    { bsStyle: 'link', onClick: this.toogleShowData.bind(this) },
+                                    this.state.show ? 'hide' : 'show',
+                                    ' data json'
+                                ),
+                                this.state.show ? _react2['default'].createElement(
+                                    'pre',
+                                    { style: { width: '100%', height: 200 } },
+                                    JSON.stringify(this.state.data, null, 2)
+                                ) : null
+                            )
+                        ),
+                        _react2['default'].createElement(
+                            _reactBootstrap.TabPane,
+                            { eventKey: 2, tab: 'Options' },
+                            _react2['default'].createElement(_reactJson2['default'], { value: this.state.options, settings: this.props.settings,
+                                onChange: this.optionsChanged.bind(this) })
+                        )
                     )
                 )
             );
@@ -305,11 +324,11 @@ var ChartDemo = (function (_React$Component) {
     return ChartDemo;
 })(_react2['default'].Component);
 
-exports.ChartDemo = ChartDemo;
-exports['default'] = ChartOptions;
+exports['default'] = ChartDemo;
+module.exports = exports['default'];
 
 
-},{"react":undefined,"react-bootstrap":92,"react-json":161,"react-pathjs-chart":undefined,"underscore":undefined}],3:[function(require,module,exports){
+},{"react":undefined,"react-bootstrap":92,"react-intl":161,"react-json":192,"underscore":undefined,"underscore.deepclone":218}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -336,7 +355,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var PieDemo = (function () {
     function PieDemo() {
@@ -377,7 +398,18 @@ var PieDemo = (function () {
                 color: '#2980B9',
                 r: 100,
                 R: 200,
-                legendPosition: 'topLeft'
+                legendPosition: 'topLeft',
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200,
+                    fillTransition: 3
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    fontWeight: true,
+                    fill: '#ECF0F1'
+                }
             };
         }
     }, {
@@ -402,13 +434,13 @@ var PieChartDemo = (function (_ChartDemo) {
     _inherits(PieChartDemo, _ChartDemo);
 
     return PieChartDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = PieChartDemo;
 ;
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],4:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -435,7 +467,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var RadarDemo = (function () {
     function RadarDemo() {
@@ -491,7 +525,17 @@ var RadarDemo = (function () {
                 r: 300,
                 max: 150,
                 fill: '#2980B9',
-                stroke: '#2980B9'
+                stroke: '#2980B9',
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    fontWeight: true,
+                    fill: '#34495E'
+                }
             };
         }
     }, {
@@ -516,13 +560,13 @@ var RadarChartDemo = (function (_ChartDemo) {
     _inherits(RadarChartDemo, _ChartDemo);
 
     return RadarChartDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = RadarChartDemo;
 ;
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],5:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -549,7 +593,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var _underscore = require('underscore');
 
@@ -601,13 +647,29 @@ var PlotDemo = (function () {
                 margin: { top: 40, left: 60, bottom: 30, right: 30 },
                 fill: '#2980B9',
                 stroke: '#3E90F0',
+                animate: {
+                    type: 'delayed',
+                    duration: 200
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    fontWeight: true,
+                    fill: '#34495E'
+                },
                 axisX: {
                     showAxis: true,
                     showLines: true,
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'bottom'
+                    orient: 'bottom',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 },
                 axisY: {
                     showAxis: true,
@@ -615,7 +677,13 @@ var PlotDemo = (function () {
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'left'
+                    orient: 'left',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 }
             };
         }
@@ -662,14 +730,14 @@ var ScatterPlotDemo = (function (_ChartDemo) {
     _inherits(ScatterPlotDemo, _ChartDemo);
 
     return ScatterPlotDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = ScatterPlotDemo;
 ;
 module.exports = exports['default'];
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined,"underscore":undefined,"underscore.deepclone":198}],6:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined,"underscore":undefined,"underscore.deepclone":218}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -696,7 +764,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var _underscore = require('underscore');
 
@@ -736,13 +806,23 @@ var SmoothLineDemo = (function () {
                 height: 600,
                 color: '#2980B9',
                 margin: { top: 40, left: 60, bottom: 50, right: 20 },
+                animate: {
+                    type: 'delayed',
+                    duration: 200
+                },
                 axisX: {
                     showAxis: true,
                     showLines: true,
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'bottom'
+                    orient: 'bottom',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 },
                 axisY: {
                     showAxis: true,
@@ -750,7 +830,13 @@ var SmoothLineDemo = (function () {
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'left'
+                    orient: 'left',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 }
             };
         }
@@ -776,13 +862,13 @@ var SmoothLineChartDemo = (function (_ChartDemo) {
     _inherits(SmoothLineChartDemo, _ChartDemo);
 
     return SmoothLineChartDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = SmoothLineChartDemo;
 ;
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined,"underscore":undefined}],7:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined,"underscore":undefined}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -809,7 +895,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var _underscore = require('underscore');
 
@@ -872,13 +960,24 @@ var StockLineDemo = (function () {
                 height: 600,
                 color: '#2980B9',
                 margin: { top: 40, left: 60, bottom: 50, right: 20 },
+                animate: {
+                    type: 'delayed',
+                    duration: 200
+                },
                 axisX: {
                     showAxis: true,
                     showLines: true,
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'bottom'
+                    orient: 'bottom',
+                    tickValues: [],
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 },
                 axisY: {
                     showAxis: true,
@@ -886,7 +985,14 @@ var StockLineDemo = (function () {
                     showLabels: true,
                     showTicks: true,
                     zeroAxis: false,
-                    orient: 'left'
+                    orient: 'left',
+                    tickValues: [],
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        fontWeight: true,
+                        fill: '#34495E'
+                    }
                 }
             };
         }
@@ -912,13 +1018,13 @@ var StockLineChartDemo = (function (_ChartDemo) {
     _inherits(StockLineChartDemo, _ChartDemo);
 
     return StockLineChartDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = StockLineChartDemo;
 ;
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined,"underscore":undefined}],8:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined,"underscore":undefined}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -945,7 +1051,9 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _ChartOptionsJs = require('./ChartOptions.js');
+var _ChartDemoJs = require('./ChartDemo.js');
+
+var _ChartDemoJs2 = _interopRequireDefault(_ChartDemoJs);
 
 var TreeDemo = (function () {
     function TreeDemo() {
@@ -987,11 +1095,23 @@ var TreeDemo = (function () {
         key: 'options',
         get: function () {
             return {
-                margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                margin: { top: 20, left: 50, right: 80, bottom: 20 },
                 width: 600,
                 height: 600,
                 fill: '#2980B9',
-                stroke: '#3E90F0'
+                stroke: '#3E90F0',
+                r: 5,
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200,
+                    fillTransition: 3
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    fontWeight: true,
+                    fill: '#34495E'
+                }
             };
         }
     }, {
@@ -1016,13 +1136,13 @@ var TreeChartDemo = (function (_ChartDemo) {
     _inherits(TreeChartDemo, _ChartDemo);
 
     return TreeChartDemo;
-})(_ChartOptionsJs.ChartDemo);
+})(_ChartDemoJs2['default']);
 
 exports['default'] = TreeChartDemo;
 ;
 
 
-},{"./ChartOptions.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],9:[function(require,module,exports){
+},{"./ChartDemo.js":2,"genie":10,"react":undefined,"react-pathjs-chart":undefined}],9:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -1047,9 +1167,7 @@ var _genie = require('genie');
 
 var _genie2 = _interopRequireDefault(_genie);
 
-var _reactSimpleColorpicker = require('react-simple-colorpicker');
-
-var _reactSimpleColorpicker2 = _interopRequireDefault(_reactSimpleColorpicker);
+var _reactBootstrap = require('react-bootstrap');
 
 var _SmoothLineChartDemoJs = require('./SmoothLineChartDemo.js');
 
@@ -1104,6 +1222,84 @@ var colors = {
     'asbestos': '#7F8C8D'
 };
 
+var fontFamilies = ['Arial', 'Verdana', 'Helvetica', 'Times New Roman', 'Courier New', 'Papyrus'];
+
+var TickValues = _react2['default'].createClass({
+    displayName: 'TickValues',
+
+    mixins: [_reactBinding2['default']],
+    onChange: function onChange() {
+        if (this.props.onChange !== undefined) this.props.onChange();
+    },
+    add: function add() {
+        this.props.tickValues.add({ value: 0 });
+        this.onChange();
+    },
+    remove: function remove(item) {
+        this.props.tickValues.remove(item);
+        this.onChange();
+    },
+    clear: function clear() {
+
+        var source = this.props.tickValues.sourceObject;
+        source.splice(0, source.length);
+        this.props.tickValues.notifyChange();
+
+        this.onChange();
+    },
+
+    render: function render() {
+        var items = this.props.tickValues.items;
+        return _react2['default'].createElement(
+            'div',
+            null,
+            _react2['default'].createElement('input', { type: 'button', value: 'add', onClick: this.add }),
+            _react2['default'].createElement('input', { type: 'button', value: 'clear', onClick: this.clear }),
+            _react2['default'].createElement(
+                'table',
+                null,
+                _react2['default'].createElement(
+                    'tr',
+                    null,
+                    items.map(function (item, index) {
+                        var valueLink = this.bindTo(item, 'value');
+                        var handleChange = (function (e) {
+                            valueLink.value = e.target.value;
+                            this.onChange();
+                        }).bind(this);
+                        return _react2['default'].createElement(
+                            'td',
+                            null,
+                            _react2['default'].createElement('input', { type: 'number', style: { width: 50, display: 'inline' }, key: index,
+                                value: valueLink.value, onChange: handleChange })
+                        );
+                    }, this)
+                )
+            )
+        );
+    }
+});
+// Create the custom field type component
+var TickValuesWrapper = _react2['default'].createClass({
+    displayName: 'TickValuesWrapper',
+
+    mixins: [_reactBinding2['default']],
+    getInitialState: function getInitialState() {
+        return { tickValues: _underscore2['default'].map(this.props.value, function (item) {
+                return _underscore2['default'].clone(item);
+            }) };
+    },
+    render: function render() {
+        var bindToArray = this.bindArrayToState('tickValues');
+        return _react2['default'].createElement(TickValues, { tickValues: bindToArray, onChange: this.handleChange });
+    },
+    handleChange: function handleChange() {
+        this.props.onUpdated(this.state.tickValues);
+    }
+});
+
+_reactJson2['default'].registerType('tickValues', TickValuesWrapper);
+
 // Create the custom field type component
 var ColorPickerWrapper = _react2['default'].createClass({
     displayName: 'ColorPickerWrapper',
@@ -1125,6 +1321,26 @@ var ColorPickerWrapper = _react2['default'].createClass({
 
 _reactJson2['default'].registerType('colorPicker', ColorPickerWrapper);
 
+var labelOptions = {
+    fields: {
+        fontFamily: {
+            type: 'select', settings: {
+                options: _underscore2['default'].map(fontFamilies, function (key, value) {
+                    return { value: key, label: key };
+                })
+            }
+        },
+        fill: {
+            type: 'colorPicker', settings: {
+                options: _underscore2['default'].map(colors, function (key, value) {
+                    return { value: key, label: value };
+                })
+            }
+        }
+
+    }
+};
+
 // form: true
 // make objects not extensible,
 // fields not removable
@@ -1139,14 +1355,26 @@ var settings = {
                     return { value: key, label: value };
                 }) } },
         stroke: { type: 'colorPicker', settings: { options: _underscore2['default'].map(colors, function (key, value) {
-                    return { value: key, label: value };
+                    return { value: key, label: key };
                 }) } },
         legendPosition: { type: 'select', settings: { options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] } },
+        label: labelOptions,
+        animate: {
+            fields: { type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } } } },
+
         axisY: {
-            fields: { orient: { type: 'select', settings: { options: ['left', 'right'] } } }
+            fields: {
+                orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                tickValues: { type: 'tickValues' },
+                label: labelOptions
+            }
         },
         axisX: {
-            fields: { orient: { type: 'select', settings: { options: ['top', 'bottom'] } } }
+            fields: {
+                orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                tickValues: { type: 'tickValues' },
+                label: labelOptions
+            }
         },
         data: {
             fields: {
@@ -1250,39 +1478,43 @@ var App = _react2['default'].createClass({
             'div',
             null,
             _react2['default'].createElement(
-                Panel,
-                { header: 'Stock line chart', defaultExpanded: true },
-                _react2['default'].createElement(_StockLineChartDemoJs2['default'], { settings: settings })
-            ),
-            _react2['default'].createElement(
-                Panel,
-                { header: 'Smooth line chart', defaultExpanded: true },
-                _react2['default'].createElement(_SmoothLineChartDemoJs2['default'], { settings: settings })
-            ),
-            _react2['default'].createElement(
-                Panel,
-                { header: 'Scatter plot chart', defaultExpanded: true },
-                _react2['default'].createElement(_ScatterPlotDemoJs2['default'], { settings: settings })
-            ),
-            _react2['default'].createElement(
-                Panel,
-                { header: 'Bar chart', defaultExpanded: true },
-                _react2['default'].createElement(_BarChartDemoJs2['default'], { settings: settings })
-            ),
-            _react2['default'].createElement(
-                Panel,
-                { header: 'Pie chart', defaultExpanded: true },
-                _react2['default'].createElement(_PieChartDemoJs2['default'], { settings: settings })
-            ),
-            _react2['default'].createElement(
-                Panel,
-                { header: 'Tree chart', defaultExpanded: true },
-                _react2['default'].createElement(_TreeChartDemoJs2['default'], { settings: settings })
-            ),
-            _react2['default'].createElement(
-                Panel,
-                { header: 'Radar chart', defaultExpanded: true },
-                _react2['default'].createElement(_RadarChartDemoJs2['default'], { settings: settings })
+                _reactBootstrap.TabbedArea,
+                { bsStyle: 'tabs', defaultActiveKey: 1 },
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 1, tab: 'StockLine' },
+                    _react2['default'].createElement(_StockLineChartDemoJs2['default'], { settings: settings })
+                ),
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 2, tab: 'SmoothLine' },
+                    _react2['default'].createElement(_SmoothLineChartDemoJs2['default'], { settings: settings })
+                ),
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 3, tab: 'Scatterplot' },
+                    _react2['default'].createElement(_ScatterPlotDemoJs2['default'], { settings: settings })
+                ),
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 4, tab: 'Bar' },
+                    _react2['default'].createElement(_BarChartDemoJs2['default'], { settings: settings })
+                ),
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 5, tab: 'Pie' },
+                    _react2['default'].createElement(_PieChartDemoJs2['default'], { settings: settings })
+                ),
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 6, tab: 'Tree' },
+                    _react2['default'].createElement(_TreeChartDemoJs2['default'], { settings: settings })
+                ),
+                _react2['default'].createElement(
+                    _reactBootstrap.TabPane,
+                    { eventKey: 7, tab: 'Radar' },
+                    _react2['default'].createElement(_RadarChartDemoJs2['default'], { settings: settings })
+                )
             )
         );
     }
@@ -1291,7 +1523,7 @@ var App = _react2['default'].createClass({
 _react2['default'].render(_react2['default'].createElement(App, null), document.getElementById('app'));
 
 
-},{"./BarChartDemo.js":1,"./PieChartDemo.js":3,"./RadarChartDemo.js":4,"./ScatterPlotDemo.js":5,"./SmoothLineChartDemo.js":6,"./StockLineChartDemo.js":7,"./TreeChartDemo.js":8,"genie":10,"react":undefined,"react-binding":23,"react-json":161,"react-simple-colorpicker":194,"underscore":undefined}],10:[function(require,module,exports){
+},{"./BarChartDemo.js":1,"./PieChartDemo.js":3,"./RadarChartDemo.js":4,"./ScatterPlotDemo.js":5,"./SmoothLineChartDemo.js":6,"./StockLineChartDemo.js":7,"./TreeChartDemo.js":8,"genie":10,"react":undefined,"react-binding":23,"react-bootstrap":92,"react-json":192,"underscore":undefined}],10:[function(require,module,exports){
 // Generated by CoffeeScript 1.5.0
 (function() {
   var Faker, adjectives, companyCategories, fs, genie, moment, surNames, _;
@@ -9440,7 +9672,7 @@ OverlayTrigger.withContext = _utilsCreateContextWrapper2['default'](OverlayTrigg
 
 exports['default'] = OverlayTrigger;
 module.exports = exports['default'];
-},{"./Overlay":67,"./utils/createChainedFunction":99,"./utils/createContextWrapper":100,"babel-runtime/core-js/object/keys":108,"babel-runtime/helpers/extends":111,"babel-runtime/helpers/interop-require-default":113,"lodash/object/pick":156,"react":undefined,"react/lib/warning":197}],69:[function(require,module,exports){
+},{"./Overlay":67,"./utils/createChainedFunction":99,"./utils/createContextWrapper":100,"babel-runtime/core-js/object/keys":108,"babel-runtime/helpers/extends":111,"babel-runtime/helpers/interop-require-default":113,"lodash/object/pick":156,"react":undefined,"react/lib/warning":217}],69:[function(require,module,exports){
 'use strict';
 
 var _extends = require('babel-runtime/helpers/extends')['default'];
@@ -13337,7 +13569,7 @@ function deprecationWarning(oldname, newname, link) {
 }
 
 module.exports = exports['default'];
-},{"babel-runtime/helpers/interop-require-default":113,"react/lib/warning":197}],103:[function(require,module,exports){
+},{"babel-runtime/helpers/interop-require-default":113,"react/lib/warning":217}],103:[function(require,module,exports){
 'use strict';
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
@@ -14940,6 +15172,8 @@ module.exports = identity;
 },{}],158:[function(require,module,exports){
 
 },{}],159:[function(require,module,exports){
+arguments[4][158][0].apply(exports,arguments)
+},{"dup":158}],160:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -15031,7 +15265,3084 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],160:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
+(function (global){
+/* jshint node:true */
+'use strict';
+
+// Expose `React` as a global, because the ReactIntlMixin assumes it's global.
+var oldReact = global.React;
+global.React = require('react');
+
+// Require the lib and add all locale data to `ReactIntl`. This module will be
+// ignored when bundling for the browser with Browserify/Webpack.
+var ReactIntl = require('./lib/react-intl');
+require('./lib/locales');
+
+// Export the Mixin as the default export for back-compat with v1.0.0. This will
+// be changed to simply re-exporting `ReactIntl` as the default export in v2.0.
+exports = module.exports = ReactIntl.IntlMixin;
+
+// Define non-enumerable expandos for each named export on the default export --
+// which is the Mixin for back-compat with v1.0.0.
+Object.keys(ReactIntl).forEach(function (namedExport) {
+    Object.defineProperty(exports, namedExport, {
+        enumerable: true,
+        value     : ReactIntl[namedExport]
+    });
+});
+
+// Put back `global.React` to how it was.
+if (oldReact) {
+    global.React = oldReact;
+} else {
+    // IE < 9 will throw when trying to delete something off the global object,
+    // `window`, so this does the next best thing as sets it to `undefined`.
+    try {
+        delete global.React;
+    } catch (e) {
+        global.React = undefined;
+    }
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./lib/locales":159,"./lib/react-intl":171,"react":undefined}],162:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("../react"), src$mixin$$ = require("../mixin");
+
+var FormattedDate = src$react$$["default"].createClass({
+    displayName: 'FormattedDate',
+    mixins     : [src$mixin$$["default"]],
+
+    statics: {
+        formatOptions: [
+            'localeMatcher', 'timeZone', 'hour12', 'formatMatcher', 'weekday',
+            'era', 'year', 'month', 'day', 'hour', 'minute', 'second',
+            'timeZoneName'
+        ]
+    },
+
+    propTypes: {
+        format: src$react$$["default"].PropTypes.string,
+        value : src$react$$["default"].PropTypes.any.isRequired
+    },
+
+    render: function () {
+        var props    = this.props;
+        var value    = props.value;
+        var format   = props.format;
+        var defaults = format && this.getNamedFormat('date', format);
+        var options  = FormattedDate.filterFormatOptions(props, defaults);
+
+        return src$react$$["default"].DOM.span(null, this.formatDate(value, options));
+    }
+});
+
+exports["default"] = FormattedDate;
+
+
+},{"../mixin":170,"../react":172}],163:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("../react"), src$escape$$ = require("../escape"), src$mixin$$ = require("../mixin");
+
+var FormattedHTMLMessage = src$react$$["default"].createClass({
+    displayName: 'FormattedHTMLMessage',
+    mixins     : [src$mixin$$["default"]],
+
+    propTypes: {
+        tagName: src$react$$["default"].PropTypes.string,
+        message: src$react$$["default"].PropTypes.string.isRequired
+    },
+
+    getDefaultProps: function () {
+        return {tagName: 'span'};
+    },
+
+    render: function () {
+        var props   = this.props;
+        var tagName = props.tagName;
+        var message = props.message;
+
+        // Process all the props before they are used as values when formatting
+        // the ICU Message string. Since the formatted message will be injected
+        // via `innerHTML`, all String-based values need to be HTML-escaped. Any
+        // React Elements that are passed as props will be rendered to a static
+        // markup string that is presumed to be safe.
+        var values = Object.keys(props).reduce(function (values, name) {
+            var value = props[name];
+
+            if (typeof value === 'string') {
+                value = src$escape$$["default"](value);
+            } else if (src$react$$["default"].isValidElement(value)) {
+                value = src$react$$["default"].renderToStaticMarkup(value);
+            }
+
+            values[name] = value;
+            return values;
+        }, {});
+
+        // Since the message presumably has HTML in it, we need to set
+        // `innerHTML` in order for it to be rendered and not escaped by React.
+        // To be safe, all string prop values were escaped before formatting the
+        // message. It is assumed that the message is not UGC, and came from
+        // the developer making it more like a template.
+        //
+        // Note: There's a perf impact of using this component since there's no
+        // way for React to do its virtual DOM diffing.
+        return src$react$$["default"].DOM[tagName]({
+            dangerouslySetInnerHTML: {
+                __html: this.formatMessage(message, values)
+            }
+        });
+    }
+});
+
+exports["default"] = FormattedHTMLMessage;
+
+
+},{"../escape":169,"../mixin":170,"../react":172}],164:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("../react"), src$mixin$$ = require("../mixin");
+
+var FormattedMessage = src$react$$["default"].createClass({
+    displayName: 'FormattedMessage',
+    mixins     : [src$mixin$$["default"]],
+
+    propTypes: {
+        tagName: src$react$$["default"].PropTypes.string,
+        message: src$react$$["default"].PropTypes.string.isRequired
+    },
+
+    getDefaultProps: function () {
+        return {tagName: 'span'};
+    },
+
+    render: function () {
+        var props   = this.props;
+        var tagName = props.tagName;
+        var message = props.message;
+
+        // Creates a token with a random guid that should not be guessable or
+        // conflict with other parts of the `message` string.
+        var guid       = Math.floor(Math.random() * 0x10000000000).toString(16);
+        var tokenRegex = new RegExp('(@__ELEMENT-' + guid + '-\\d+__@)', 'g');
+        var elements   = {};
+
+        var generateToken = (function () {
+            var counter = 0;
+            return function () {
+                return '@__ELEMENT-' + guid + '-' + (counter += 1) + '__@';
+            };
+        }());
+
+        // Iterates over the `props` to keep track of any React Element values
+        // so they can be represented by the `token` as a placeholder when the
+        // `message` is formatted. This allows the formatted message to then be
+        // broken-up into parts with references to the React Elements inserted
+        // back in.
+        var values = Object.keys(props).reduce(function (values, name) {
+            var value = props[name];
+            var token;
+
+            if (src$react$$["default"].isValidElement(value)) {
+                token           = generateToken();
+                values[name]    = token;
+                elements[token] = value;
+            } else {
+                values[name] = value;
+            }
+
+            return values;
+        }, {});
+
+        // Formats the `message` with the `values`, including the `token`
+        // placeholders for React Element values.
+        var formattedMessage = this.formatMessage(message, values);
+
+        // Split the message into parts so the React Element values captured
+        // above can be inserted back into the rendered message. This
+        // approach allows messages to render with React Elements while keeping
+        // React's virtual diffing working properly.
+        var children = formattedMessage.split(tokenRegex)
+            .filter(function (part) {
+                // Ignore empty string parts.
+                return !!part;
+            })
+            .map(function (part) {
+                // When the `part` is a token, get a ref to the React Element.
+                return elements[part] || part;
+            });
+
+        var elementArgs = [tagName, null].concat(children);
+        return src$react$$["default"].createElement.apply(null, elementArgs);
+    }
+});
+
+exports["default"] = FormattedMessage;
+
+
+},{"../mixin":170,"../react":172}],165:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("../react"), src$mixin$$ = require("../mixin");
+
+var FormattedNumber = src$react$$["default"].createClass({
+    displayName: 'FormattedNumber',
+    mixins     : [src$mixin$$["default"]],
+
+    statics: {
+        formatOptions: [
+            'localeMatcher', 'style', 'currency', 'currencyDisplay',
+            'useGrouping', 'minimumIntegerDigits', 'minimumFractionDigits',
+            'maximumFractionDigits', 'minimumSignificantDigits',
+            'maximumSignificantDigits'
+        ]
+    },
+
+    propTypes: {
+        format: src$react$$["default"].PropTypes.string,
+        value : src$react$$["default"].PropTypes.any.isRequired
+    },
+
+    render: function () {
+        var props    = this.props;
+        var value    = props.value;
+        var format   = props.format;
+        var defaults = format && this.getNamedFormat('number', format);
+        var options  = FormattedNumber.filterFormatOptions(props, defaults);
+
+        return src$react$$["default"].DOM.tspan(null, this.formatNumber(value, options));
+    }
+});
+
+exports["default"] = FormattedNumber;
+
+
+},{"../mixin":170,"../react":172}],166:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("../react"), src$mixin$$ = require("../mixin");
+
+var FormattedRelative = src$react$$["default"].createClass({
+    displayName: 'FormattedRelative',
+    mixins     : [src$mixin$$["default"]],
+
+    statics: {
+        formatOptions: [
+            'style', 'units'
+        ]
+    },
+
+    propTypes: {
+        format: src$react$$["default"].PropTypes.string,
+        value : src$react$$["default"].PropTypes.any.isRequired,
+        now   : src$react$$["default"].PropTypes.any
+    },
+
+    render: function () {
+        var props    = this.props;
+        var value    = props.value;
+        var format   = props.format;
+        var defaults = format && this.getNamedFormat('relative', format);
+        var options  = FormattedRelative.filterFormatOptions(props, defaults);
+
+        var formattedRelativeTime = this.formatRelative(value, options, {
+            now: props.now
+        });
+
+        return src$react$$["default"].DOM.span(null, formattedRelativeTime);
+    }
+});
+
+exports["default"] = FormattedRelative;
+
+
+},{"../mixin":170,"../react":172}],167:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("../react"), src$mixin$$ = require("../mixin");
+
+var FormattedTime = src$react$$["default"].createClass({
+    displayName: 'FormattedTime',
+    mixins     : [src$mixin$$["default"]],
+
+    statics: {
+        formatOptions: [
+            'localeMatcher', 'timeZone', 'hour12', 'formatMatcher', 'weekday',
+            'era', 'year', 'month', 'day', 'hour', 'minute', 'second',
+            'timeZoneName'
+        ]
+    },
+
+    propTypes: {
+        format: src$react$$["default"].PropTypes.string,
+        value : src$react$$["default"].PropTypes.any.isRequired
+    },
+
+    render: function () {
+        var props    = this.props;
+        var value    = props.value;
+        var format   = props.format;
+        var defaults = format && this.getNamedFormat('time', format);
+        var options  = FormattedTime.filterFormatOptions(props, defaults);
+
+        return src$react$$["default"].DOM.span(null, this.formatTime(value, options));
+    }
+});
+
+exports["default"] = FormattedTime;
+
+
+},{"../mixin":170,"../react":172}],168:[function(require,module,exports){
+// GENERATED FILE
+"use strict";
+exports["default"] = {"locale":"en","pluralRuleFunction":function (n,ord){var s=String(n).split("."),v0=!s[1],t0=Number(s[0])==n,n10=t0&&s[0].slice(-1),n100=t0&&s[0].slice(-2);if(ord)return n10==1&&n100!=11?"one":n10==2&&n100!=12?"two":n10==3&&n100!=13?"few":"other";return n==1&&v0?"one":"other"},"fields":{"year":{"displayName":"Year","relative":{"0":"this year","1":"next year","-1":"last year"},"relativeTime":{"future":{"one":"in {0} year","other":"in {0} years"},"past":{"one":"{0} year ago","other":"{0} years ago"}}},"month":{"displayName":"Month","relative":{"0":"this month","1":"next month","-1":"last month"},"relativeTime":{"future":{"one":"in {0} month","other":"in {0} months"},"past":{"one":"{0} month ago","other":"{0} months ago"}}},"day":{"displayName":"Day","relative":{"0":"today","1":"tomorrow","-1":"yesterday"},"relativeTime":{"future":{"one":"in {0} day","other":"in {0} days"},"past":{"one":"{0} day ago","other":"{0} days ago"}}},"hour":{"displayName":"Hour","relativeTime":{"future":{"one":"in {0} hour","other":"in {0} hours"},"past":{"one":"{0} hour ago","other":"{0} hours ago"}}},"minute":{"displayName":"Minute","relativeTime":{"future":{"one":"in {0} minute","other":"in {0} minutes"},"past":{"one":"{0} minute ago","other":"{0} minutes ago"}}},"second":{"displayName":"Second","relative":{"0":"now"},"relativeTime":{"future":{"one":"in {0} second","other":"in {0} seconds"},"past":{"one":"{0} second ago","other":"{0} seconds ago"}}}}};
+
+
+},{}],169:[function(require,module,exports){
+/* jshint esnext:true */
+
+/*
+HTML escaping implementation is the same as React's (on purpose.) Therefore, it
+has the following Copyright and Licensing:
+
+Copyright 2013-2014, Facebook, Inc.
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the LICENSE
+file in the root directory of React's source tree.
+*/
+"use strict";
+var ESCAPED_CHARS = {
+    '&' : '&amp;',
+    '>' : '&gt;',
+    '<' : '&lt;',
+    '"' : '&quot;',
+    '\'': '&#x27;'
+};
+
+var UNSAFE_CHARS_REGEX = /[&><"']/g;
+
+exports["default"] = function (str) {
+    return ('' + str).replace(UNSAFE_CHARS_REGEX, function (match) {
+        return ESCAPED_CHARS[match];
+    });
+};
+
+
+},{}],170:[function(require,module,exports){
+/* jshint esnext:true */
+
+// TODO: Use `import React from "react";` when external modules are supported.
+"use strict";
+var src$react$$ = require("./react"), intl$messageformat$$ = require("intl-messageformat"), intl$relativeformat$$ = require("intl-relativeformat"), intl$format$cache$$ = require("intl-format-cache");
+
+// -----------------------------------------------------------------------------
+
+var typesSpec = {
+    locales: src$react$$["default"].PropTypes.oneOfType([
+        src$react$$["default"].PropTypes.string,
+        src$react$$["default"].PropTypes.array
+    ]),
+
+    formats : src$react$$["default"].PropTypes.object,
+    messages: src$react$$["default"].PropTypes.object
+};
+
+function assertIsDate(date, errMsg) {
+    // Determine if the `date` is valid by checking if it is finite, which is
+    // the same way that `Intl.DateTimeFormat#format()` checks.
+    if (!isFinite(date)) {
+        throw new TypeError(errMsg);
+    }
+}
+
+exports["default"] = {
+    statics: {
+        filterFormatOptions: function (obj, defaults) {
+            if (!defaults) { defaults = {}; }
+
+            return (this.formatOptions || []).reduce(function (opts, name) {
+                if (obj.hasOwnProperty(name)) {
+                    opts[name] = obj[name];
+                } else if (defaults.hasOwnProperty(name)) {
+                    opts[name] = defaults[name];
+                }
+
+                return opts;
+            }, {});
+        }
+    },
+
+    propTypes        : typesSpec,
+    contextTypes     : typesSpec,
+    childContextTypes: typesSpec,
+
+    getNumberFormat  : intl$format$cache$$["default"](Intl.NumberFormat),
+    getDateTimeFormat: intl$format$cache$$["default"](Intl.DateTimeFormat),
+    getMessageFormat : intl$format$cache$$["default"](intl$messageformat$$["default"]),
+    getRelativeFormat: intl$format$cache$$["default"](intl$relativeformat$$["default"]),
+
+    getChildContext: function () {
+        var context = this.context;
+        var props   = this.props;
+
+        return {
+            locales:  props.locales  || context.locales,
+            formats:  props.formats  || context.formats,
+            messages: props.messages || context.messages
+        };
+    },
+
+    formatDate: function (date, options) {
+        date = new Date(date);
+        assertIsDate(date, 'A date or timestamp must be provided to formatDate()');
+        return this._format('date', date, options);
+    },
+
+    formatTime: function (date, options) {
+        date = new Date(date);
+        assertIsDate(date, 'A date or timestamp must be provided to formatTime()');
+        return this._format('time', date, options);
+    },
+
+    formatRelative: function (date, options, formatOptions) {
+        date = new Date(date);
+        assertIsDate(date, 'A date or timestamp must be provided to formatRelative()');
+        return this._format('relative', date, options, formatOptions);
+    },
+
+    formatNumber: function (num, options) {
+        return this._format('number', num, options);
+    },
+
+    formatMessage: function (message, values) {
+        var locales = this.props.locales || this.context.locales;
+        var formats = this.props.formats || this.context.formats;
+
+        // When `message` is a function, assume it's an IntlMessageFormat
+        // instance's `format()` method passed by reference, and call it. This
+        // is possible because its `this` will be pre-bound to the instance.
+        if (typeof message === 'function') {
+            return message(values);
+        }
+
+        if (typeof message === 'string') {
+            message = this.getMessageFormat(message, locales, formats);
+        }
+
+        return message.format(values);
+    },
+
+    getIntlMessage: function (path) {
+        var messages  = this.props.messages || this.context.messages;
+        var pathParts = path.split('.');
+
+        var message;
+
+        try {
+            message = pathParts.reduce(function (obj, pathPart) {
+                return obj[pathPart];
+            }, messages);
+        } finally {
+            if (message === undefined) {
+                throw new ReferenceError('Could not find Intl message: ' + path);
+            }
+        }
+
+        return message;
+    },
+
+    getNamedFormat: function (type, name) {
+        var formats = this.props.formats || this.context.formats;
+        var format  = null;
+
+        try {
+            format = formats[type][name];
+        } finally {
+            if (!format) {
+                throw new ReferenceError(
+                    'No ' + type + ' format named: ' + name
+                );
+            }
+        }
+
+        return format;
+    },
+
+    _format: function (type, value, options, formatOptions) {
+        var locales = this.props.locales || this.context.locales;
+
+        if (options && typeof options === 'string') {
+            options = this.getNamedFormat(type, options);
+        }
+
+        switch(type) {
+            case 'date':
+            case 'time':
+                return this.getDateTimeFormat(locales, options).format(value);
+            case 'number':
+                return this.getNumberFormat(locales, options).format(value);
+            case 'relative':
+                return this.getRelativeFormat(locales, options).format(value, formatOptions);
+            default:
+                throw new Error('Unrecognized format type: ' + type);
+        }
+    }
+};
+
+
+},{"./react":172,"intl-format-cache":173,"intl-messageformat":176,"intl-relativeformat":185}],171:[function(require,module,exports){
+/* jshint esnext: true */
+
+"use strict";
+exports.__addLocaleData = __addLocaleData;
+var intl$messageformat$$ = require("intl-messageformat"), intl$relativeformat$$ = require("intl-relativeformat"), src$en$$ = require("./en"), src$mixin$$ = require("./mixin"), src$components$date$$ = require("./components/date"), src$components$time$$ = require("./components/time"), src$components$relative$$ = require("./components/relative"), src$components$number$$ = require("./components/number"), src$components$message$$ = require("./components/message"), src$components$html$message$$ = require("./components/html-message");
+function __addLocaleData(data) {
+    intl$messageformat$$["default"].__addLocaleData(data);
+    intl$relativeformat$$["default"].__addLocaleData(data);
+}
+
+__addLocaleData(src$en$$["default"]);
+exports.IntlMixin = src$mixin$$["default"], exports.FormattedDate = src$components$date$$["default"], exports.FormattedTime = src$components$time$$["default"], exports.FormattedRelative = src$components$relative$$["default"], exports.FormattedNumber = src$components$number$$["default"], exports.FormattedMessage = src$components$message$$["default"], exports.FormattedHTMLMessage = src$components$html$message$$["default"];
+
+
+},{"./components/date":162,"./components/html-message":163,"./components/message":164,"./components/number":165,"./components/relative":166,"./components/time":167,"./en":168,"./mixin":170,"intl-messageformat":176,"intl-relativeformat":185}],172:[function(require,module,exports){
+/* global React */
+/* jshint esnext:true */
+
+// TODO: Remove the global `React` binding lookup once the ES6 Module Transpiler
+// supports external modules. This is a hack for now that provides the local
+// modules a referece to React.
+"use strict";
+exports["default"] = React;
+
+
+},{}],173:[function(require,module,exports){
+'use strict';
+
+exports = module.exports = require('./lib/memoizer')['default'];
+exports['default'] = exports;
+
+},{"./lib/memoizer":175}],174:[function(require,module,exports){
+"use strict";
+
+// Purposely using the same implementation as the Intl.js `Intl` polyfill.
+// Copyright 2013 Andy Earnshaw, MIT License
+
+var hop = Object.prototype.hasOwnProperty;
+
+var realDefineProp = (function () {
+    try { return !!Object.defineProperty({}, 'a', {}); }
+    catch (e) { return false; }
+})();
+
+var es3 = !realDefineProp && !Object.prototype.__defineGetter__;
+
+var defineProperty = realDefineProp ? Object.defineProperty :
+        function (obj, name, desc) {
+
+    if ('get' in desc && obj.__defineGetter__) {
+        obj.__defineGetter__(name, desc.get);
+    } else if (!hop.call(obj, name) || 'value' in desc) {
+        obj[name] = desc.value;
+    }
+};
+
+var objCreate = Object.create || function (proto, props) {
+    var obj, k;
+
+    function F() {}
+    F.prototype = proto;
+    obj = new F();
+
+    for (k in props) {
+        if (hop.call(props, k)) {
+            defineProperty(obj, k, props[k]);
+        }
+    }
+
+    return obj;
+};
+exports.defineProperty = defineProperty, exports.objCreate = objCreate;
+
+
+},{}],175:[function(require,module,exports){
+"use strict";
+var src$es5$$ = require("./es5");
+exports["default"] = createFormatCache;
+
+// -----------------------------------------------------------------------------
+
+function createFormatCache(FormatConstructor) {
+    var cache = src$es5$$.objCreate(null);
+
+    return function () {
+        var args    = Array.prototype.slice.call(arguments);
+        var cacheId = getCacheId(args);
+        var format  = cacheId && cache[cacheId];
+
+        if (!format) {
+            format = src$es5$$.objCreate(FormatConstructor.prototype);
+            FormatConstructor.apply(format, args);
+
+            if (cacheId) {
+                cache[cacheId] = format;
+            }
+        }
+
+        return format;
+    };
+}
+
+// -- Utilities ----------------------------------------------------------------
+
+function getCacheId(inputs) {
+    // When JSON is not available in the runtime, we will not create a cache id.
+    if (typeof JSON === 'undefined') { return; }
+
+    var cacheId = [];
+
+    var i, len, input;
+
+    for (i = 0, len = inputs.length; i < len; i += 1) {
+        input = inputs[i];
+
+        if (input && typeof input === 'object') {
+            cacheId.push(orderedProps(input));
+        } else {
+            cacheId.push(input);
+        }
+    }
+
+    return JSON.stringify(cacheId);
+}
+
+function orderedProps(obj) {
+    var props = [],
+        keys  = [];
+
+    var key, i, len, prop;
+
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            keys.push(key);
+        }
+    }
+
+    var orderedKeys = keys.sort();
+
+    for (i = 0, len = orderedKeys.length; i < len; i += 1) {
+        key  = orderedKeys[i];
+        prop = {};
+
+        prop[key] = obj[key];
+        props[i]  = prop;
+    }
+
+    return props;
+}
+
+
+},{"./es5":174}],176:[function(require,module,exports){
+/* jshint node:true */
+
+'use strict';
+
+var IntlMessageFormat = require('./lib/main')['default'];
+
+// Add all locale data to `IntlMessageFormat`. This module will be ignored when
+// bundling for the browser with Browserify/Webpack.
+require('./lib/locales');
+
+// Re-export `IntlMessageFormat` as the CommonJS default exports with all the
+// locale data registered, and with English set as the default locale. Define
+// the `default` prop for use with other compiled ES6 Modules.
+exports = module.exports = IntlMessageFormat;
+exports['default'] = exports;
+
+},{"./lib/locales":159,"./lib/main":181}],177:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+exports["default"] = Compiler;
+
+function Compiler(locales, formats, pluralFn) {
+    this.locales  = locales;
+    this.formats  = formats;
+    this.pluralFn = pluralFn;
+}
+
+Compiler.prototype.compile = function (ast) {
+    this.pluralStack        = [];
+    this.currentPlural      = null;
+    this.pluralNumberFormat = null;
+
+    return this.compileMessage(ast);
+};
+
+Compiler.prototype.compileMessage = function (ast) {
+    if (!(ast && ast.type === 'messageFormatPattern')) {
+        throw new Error('Message AST is not of type: "messageFormatPattern"');
+    }
+
+    var elements = ast.elements,
+        pattern  = [];
+
+    var i, len, element;
+
+    for (i = 0, len = elements.length; i < len; i += 1) {
+        element = elements[i];
+
+        switch (element.type) {
+            case 'messageTextElement':
+                pattern.push(this.compileMessageText(element));
+                break;
+
+            case 'argumentElement':
+                pattern.push(this.compileArgument(element));
+                break;
+
+            default:
+                throw new Error('Message element does not have a valid type');
+        }
+    }
+
+    return pattern;
+};
+
+Compiler.prototype.compileMessageText = function (element) {
+    // When this `element` is part of plural sub-pattern and its value contains
+    // an unescaped '#', use a `PluralOffsetString` helper to properly output
+    // the number with the correct offset in the string.
+    if (this.currentPlural && /(^|[^\\])#/g.test(element.value)) {
+        // Create a cache a NumberFormat instance that can be reused for any
+        // PluralOffsetString instance in this message.
+        if (!this.pluralNumberFormat) {
+            this.pluralNumberFormat = new Intl.NumberFormat(this.locales);
+        }
+
+        return new PluralOffsetString(
+                this.currentPlural.id,
+                this.currentPlural.format.offset,
+                this.pluralNumberFormat,
+                element.value);
+    }
+
+    // Unescape the escaped '#'s in the message text.
+    return element.value.replace(/\\#/g, '#');
+};
+
+Compiler.prototype.compileArgument = function (element) {
+    var format = element.format;
+
+    if (!format) {
+        return new StringFormat(element.id);
+    }
+
+    var formats  = this.formats,
+        locales  = this.locales,
+        pluralFn = this.pluralFn,
+        options;
+
+    switch (format.type) {
+        case 'numberFormat':
+            options = formats.number[format.style];
+            return {
+                id    : element.id,
+                format: new Intl.NumberFormat(locales, options).format
+            };
+
+        case 'dateFormat':
+            options = formats.date[format.style];
+            return {
+                id    : element.id,
+                format: new Intl.DateTimeFormat(locales, options).format
+            };
+
+        case 'timeFormat':
+            options = formats.time[format.style];
+            return {
+                id    : element.id,
+                format: new Intl.DateTimeFormat(locales, options).format
+            };
+
+        case 'pluralFormat':
+            options = this.compileOptions(element);
+            return new PluralFormat(
+                element.id, format.ordinal, format.offset, options, pluralFn
+            );
+
+        case 'selectFormat':
+            options = this.compileOptions(element);
+            return new SelectFormat(element.id, options);
+
+        default:
+            throw new Error('Message element does not have a valid format type');
+    }
+};
+
+Compiler.prototype.compileOptions = function (element) {
+    var format      = element.format,
+        options     = format.options,
+        optionsHash = {};
+
+    // Save the current plural element, if any, then set it to a new value when
+    // compiling the options sub-patterns. This conforms the spec's algorithm
+    // for handling `"#"` syntax in message text.
+    this.pluralStack.push(this.currentPlural);
+    this.currentPlural = format.type === 'pluralFormat' ? element : null;
+
+    var i, len, option;
+
+    for (i = 0, len = options.length; i < len; i += 1) {
+        option = options[i];
+
+        // Compile the sub-pattern and save it under the options's selector.
+        optionsHash[option.selector] = this.compileMessage(option.value);
+    }
+
+    // Pop the plural stack to put back the original current plural value.
+    this.currentPlural = this.pluralStack.pop();
+
+    return optionsHash;
+};
+
+// -- Compiler Helper Classes --------------------------------------------------
+
+function StringFormat(id) {
+    this.id = id;
+}
+
+StringFormat.prototype.format = function (value) {
+    if (!value) {
+        return '';
+    }
+
+    return typeof value === 'string' ? value : String(value);
+};
+
+function PluralFormat(id, useOrdinal, offset, options, pluralFn) {
+    this.id         = id;
+    this.useOrdinal = useOrdinal;
+    this.offset     = offset;
+    this.options    = options;
+    this.pluralFn   = pluralFn;
+}
+
+PluralFormat.prototype.getOption = function (value) {
+    var options = this.options;
+
+    var option = options['=' + value] ||
+            options[this.pluralFn(value - this.offset, this.useOrdinal)];
+
+    return option || options.other;
+};
+
+function PluralOffsetString(id, offset, numberFormat, string) {
+    this.id           = id;
+    this.offset       = offset;
+    this.numberFormat = numberFormat;
+    this.string       = string;
+}
+
+PluralOffsetString.prototype.format = function (value) {
+    var number = this.numberFormat.format(value - this.offset);
+
+    return this.string
+            .replace(/(^|[^\\])#/g, '$1' + number)
+            .replace(/\\#/g, '#');
+};
+
+function SelectFormat(id, options) {
+    this.id      = id;
+    this.options = options;
+}
+
+SelectFormat.prototype.getOption = function (value) {
+    var options = this.options;
+    return options[value] || options.other;
+};
+
+
+},{}],178:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+var src$utils$$ = require("./utils"), src$es5$$ = require("./es5"), src$compiler$$ = require("./compiler"), intl$messageformat$parser$$ = require("intl-messageformat-parser");
+exports["default"] = MessageFormat;
+
+// -- MessageFormat --------------------------------------------------------
+
+function MessageFormat(message, locales, formats) {
+    // Parse string messages into an AST.
+    var ast = typeof message === 'string' ?
+            MessageFormat.__parse(message) : message;
+
+    if (!(ast && ast.type === 'messageFormatPattern')) {
+        throw new TypeError('A message must be provided as a String or AST.');
+    }
+
+    // Creates a new object with the specified `formats` merged with the default
+    // formats.
+    formats = this._mergeFormats(MessageFormat.formats, formats);
+
+    // Defined first because it's used to build the format pattern.
+    src$es5$$.defineProperty(this, '_locale',  {value: this._resolveLocale(locales)});
+
+    // Compile the `ast` to a pattern that is highly optimized for repeated
+    // `format()` invocations. **Note:** This passes the `locales` set provided
+    // to the constructor instead of just the resolved locale.
+    var pluralFn = this._findPluralRuleFunction(this._locale);
+    var pattern  = this._compilePattern(ast, locales, formats, pluralFn);
+
+    // "Bind" `format()` method to `this` so it can be passed by reference like
+    // the other `Intl` APIs.
+    var messageFormat = this;
+    this.format = function (values) {
+        return messageFormat._format(pattern, values);
+    };
+}
+
+// Default format options used as the prototype of the `formats` provided to the
+// constructor. These are used when constructing the internal Intl.NumberFormat
+// and Intl.DateTimeFormat instances.
+src$es5$$.defineProperty(MessageFormat, 'formats', {
+    enumerable: true,
+
+    value: {
+        number: {
+            'currency': {
+                style: 'currency'
+            },
+
+            'percent': {
+                style: 'percent'
+            }
+        },
+
+        date: {
+            'short': {
+                month: 'numeric',
+                day  : 'numeric',
+                year : '2-digit'
+            },
+
+            'medium': {
+                month: 'short',
+                day  : 'numeric',
+                year : 'numeric'
+            },
+
+            'long': {
+                month: 'long',
+                day  : 'numeric',
+                year : 'numeric'
+            },
+
+            'full': {
+                weekday: 'long',
+                month  : 'long',
+                day    : 'numeric',
+                year   : 'numeric'
+            }
+        },
+
+        time: {
+            'short': {
+                hour  : 'numeric',
+                minute: 'numeric'
+            },
+
+            'medium':  {
+                hour  : 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            },
+
+            'long': {
+                hour        : 'numeric',
+                minute      : 'numeric',
+                second      : 'numeric',
+                timeZoneName: 'short'
+            },
+
+            'full': {
+                hour        : 'numeric',
+                minute      : 'numeric',
+                second      : 'numeric',
+                timeZoneName: 'short'
+            }
+        }
+    }
+});
+
+// Define internal private properties for dealing with locale data.
+src$es5$$.defineProperty(MessageFormat, '__localeData__', {value: src$es5$$.objCreate(null)});
+src$es5$$.defineProperty(MessageFormat, '__addLocaleData', {value: function (data) {
+    if (!(data && data.locale)) {
+        throw new Error(
+            'Locale data provided to IntlMessageFormat is missing a ' +
+            '`locale` property'
+        );
+    }
+
+    MessageFormat.__localeData__[data.locale.toLowerCase()] = data;
+}});
+
+// Defines `__parse()` static method as an exposed private.
+src$es5$$.defineProperty(MessageFormat, '__parse', {value: intl$messageformat$parser$$["default"].parse});
+
+// Define public `defaultLocale` property which defaults to English, but can be
+// set by the developer.
+src$es5$$.defineProperty(MessageFormat, 'defaultLocale', {
+    enumerable: true,
+    writable  : true,
+    value     : undefined
+});
+
+MessageFormat.prototype.resolvedOptions = function () {
+    // TODO: Provide anything else?
+    return {
+        locale: this._locale
+    };
+};
+
+MessageFormat.prototype._compilePattern = function (ast, locales, formats, pluralFn) {
+    var compiler = new src$compiler$$["default"](locales, formats, pluralFn);
+    return compiler.compile(ast);
+};
+
+MessageFormat.prototype._findPluralRuleFunction = function (locale) {
+    var localeData = MessageFormat.__localeData__;
+    var data       = localeData[locale.toLowerCase()];
+
+    // The locale data is de-duplicated, so we have to traverse the locale's
+    // hierarchy until we find a `pluralRuleFunction` to return.
+    while (data) {
+        if (data.pluralRuleFunction) {
+            return data.pluralRuleFunction;
+        }
+
+        data = data.parentLocale && localeData[data.parentLocale.toLowerCase()];
+    }
+
+    throw new Error(
+        'Locale data added to IntlMessageFormat is missing a ' +
+        '`pluralRuleFunction` for :' + locale
+    );
+};
+
+MessageFormat.prototype._format = function (pattern, values) {
+    var result = '',
+        i, len, part, id, value;
+
+    for (i = 0, len = pattern.length; i < len; i += 1) {
+        part = pattern[i];
+
+        // Exist early for string parts.
+        if (typeof part === 'string') {
+            result += part;
+            continue;
+        }
+
+        id = part.id;
+
+        // Enforce that all required values are provided by the caller.
+        if (!(values && src$utils$$.hop.call(values, id))) {
+            throw new Error('A value must be provided for: ' + id);
+        }
+
+        value = values[id];
+
+        // Recursively format plural and select parts' option — which can be a
+        // nested pattern structure. The choosing of the option to use is
+        // abstracted-by and delegated-to the part helper object.
+        if (part.options) {
+            result += this._format(part.getOption(value), values);
+        } else {
+            result += part.format(value);
+        }
+    }
+
+    return result;
+};
+
+MessageFormat.prototype._mergeFormats = function (defaults, formats) {
+    var mergedFormats = {},
+        type, mergedType;
+
+    for (type in defaults) {
+        if (!src$utils$$.hop.call(defaults, type)) { continue; }
+
+        mergedFormats[type] = mergedType = src$es5$$.objCreate(defaults[type]);
+
+        if (formats && src$utils$$.hop.call(formats, type)) {
+            src$utils$$.extend(mergedType, formats[type]);
+        }
+    }
+
+    return mergedFormats;
+};
+
+MessageFormat.prototype._resolveLocale = function (locales) {
+    if (typeof locales === 'string') {
+        locales = [locales];
+    }
+
+    // Create a copy of the array so we can push on the default locale.
+    locales = (locales || []).concat(MessageFormat.defaultLocale);
+
+    var localeData = MessageFormat.__localeData__;
+    var i, len, localeParts, data;
+
+    // Using the set of locales + the default locale, we look for the first one
+    // which that has been registered. When data does not exist for a locale, we
+    // traverse its ancestors to find something that's been registered within
+    // its hierarchy of locales. Since we lack the proper `parentLocale` data
+    // here, we must take a naive approach to traversal.
+    for (i = 0, len = locales.length; i < len; i += 1) {
+        localeParts = locales[i].toLowerCase().split('-');
+
+        while (localeParts.length) {
+            data = localeData[localeParts.join('-')];
+            if (data) {
+                // Return the normalized locale string; e.g., we return "en-US",
+                // instead of "en-us".
+                return data.locale;
+            }
+
+            localeParts.pop();
+        }
+    }
+
+    var defaultLocale = locales.pop();
+    throw new Error(
+        'No locale data has been added to IntlMessageFormat for: ' +
+        locales.join(', ') + ', or the default locale: ' + defaultLocale
+    );
+};
+
+
+},{"./compiler":177,"./es5":180,"./utils":182,"intl-messageformat-parser":183}],179:[function(require,module,exports){
+// GENERATED FILE
+"use strict";
+exports["default"] = {"locale":"en","pluralRuleFunction":function (n,ord){var s=String(n).split("."),v0=!s[1],t0=Number(s[0])==n,n10=t0&&s[0].slice(-1),n100=t0&&s[0].slice(-2);if(ord)return n10==1&&n100!=11?"one":n10==2&&n100!=12?"two":n10==3&&n100!=13?"few":"other";return n==1&&v0?"one":"other"}};
+
+
+},{}],180:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+var src$utils$$ = require("./utils");
+
+// Purposely using the same implementation as the Intl.js `Intl` polyfill.
+// Copyright 2013 Andy Earnshaw, MIT License
+
+var realDefineProp = (function () {
+    try { return !!Object.defineProperty({}, 'a', {}); }
+    catch (e) { return false; }
+})();
+
+var es3 = !realDefineProp && !Object.prototype.__defineGetter__;
+
+var defineProperty = realDefineProp ? Object.defineProperty :
+        function (obj, name, desc) {
+
+    if ('get' in desc && obj.__defineGetter__) {
+        obj.__defineGetter__(name, desc.get);
+    } else if (!src$utils$$.hop.call(obj, name) || 'value' in desc) {
+        obj[name] = desc.value;
+    }
+};
+
+var objCreate = Object.create || function (proto, props) {
+    var obj, k;
+
+    function F() {}
+    F.prototype = proto;
+    obj = new F();
+
+    for (k in props) {
+        if (src$utils$$.hop.call(props, k)) {
+            defineProperty(obj, k, props[k]);
+        }
+    }
+
+    return obj;
+};
+exports.defineProperty = defineProperty, exports.objCreate = objCreate;
+
+
+},{"./utils":182}],181:[function(require,module,exports){
+/* jslint esnext: true */
+
+"use strict";
+var src$core$$ = require("./core"), src$en$$ = require("./en");
+
+src$core$$["default"].__addLocaleData(src$en$$["default"]);
+src$core$$["default"].defaultLocale = 'en';
+
+exports["default"] = src$core$$["default"];
+
+
+},{"./core":178,"./en":179}],182:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+exports.extend = extend;
+var hop = Object.prototype.hasOwnProperty;
+
+function extend(obj) {
+    var sources = Array.prototype.slice.call(arguments, 1),
+        i, len, source, key;
+
+    for (i = 0, len = sources.length; i < len; i += 1) {
+        source = sources[i];
+        if (!source) { continue; }
+
+        for (key in source) {
+            if (hop.call(source, key)) {
+                obj[key] = source[key];
+            }
+        }
+    }
+
+    return obj;
+}
+exports.hop = hop;
+
+
+},{}],183:[function(require,module,exports){
+'use strict';
+
+exports = module.exports = require('./lib/parser')['default'];
+exports['default'] = exports;
+
+},{"./lib/parser":184}],184:[function(require,module,exports){
+"use strict";
+
+exports["default"] = (function() {
+  /*
+   * Generated by PEG.js 0.8.0.
+   *
+   * http://pegjs.majda.cz/
+   */
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function SyntaxError(message, expected, found, offset, line, column) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.offset   = offset;
+    this.line     = line;
+    this.column   = column;
+
+    this.name     = "SyntaxError";
+  }
+
+  peg$subclass(SyntaxError, Error);
+
+  function parse(input) {
+    var options = arguments.length > 1 ? arguments[1] : {},
+
+        peg$FAILED = {},
+
+        peg$startRuleFunctions = { start: peg$parsestart },
+        peg$startRuleFunction  = peg$parsestart,
+
+        peg$c0 = [],
+        peg$c1 = function(elements) {
+                return {
+                    type    : 'messageFormatPattern',
+                    elements: elements
+                };
+            },
+        peg$c2 = peg$FAILED,
+        peg$c3 = function(text) {
+                var string = '',
+                    i, j, outerLen, inner, innerLen;
+
+                for (i = 0, outerLen = text.length; i < outerLen; i += 1) {
+                    inner = text[i];
+
+                    for (j = 0, innerLen = inner.length; j < innerLen; j += 1) {
+                        string += inner[j];
+                    }
+                }
+
+                return string;
+            },
+        peg$c4 = function(messageText) {
+                return {
+                    type : 'messageTextElement',
+                    value: messageText
+                };
+            },
+        peg$c5 = /^[^ \t\n\r,.+={}#]/,
+        peg$c6 = { type: "class", value: "[^ \\t\\n\\r,.+={}#]", description: "[^ \\t\\n\\r,.+={}#]" },
+        peg$c7 = "{",
+        peg$c8 = { type: "literal", value: "{", description: "\"{\"" },
+        peg$c9 = null,
+        peg$c10 = ",",
+        peg$c11 = { type: "literal", value: ",", description: "\",\"" },
+        peg$c12 = "}",
+        peg$c13 = { type: "literal", value: "}", description: "\"}\"" },
+        peg$c14 = function(id, format) {
+                return {
+                    type  : 'argumentElement',
+                    id    : id,
+                    format: format && format[2]
+                };
+            },
+        peg$c15 = "number",
+        peg$c16 = { type: "literal", value: "number", description: "\"number\"" },
+        peg$c17 = "date",
+        peg$c18 = { type: "literal", value: "date", description: "\"date\"" },
+        peg$c19 = "time",
+        peg$c20 = { type: "literal", value: "time", description: "\"time\"" },
+        peg$c21 = function(type, style) {
+                return {
+                    type : type + 'Format',
+                    style: style && style[2]
+                };
+            },
+        peg$c22 = "plural",
+        peg$c23 = { type: "literal", value: "plural", description: "\"plural\"" },
+        peg$c24 = function(pluralStyle) {
+                return {
+                    type   : pluralStyle.type,
+                    ordinal: false,
+                    offset : pluralStyle.offset || 0,
+                    options: pluralStyle.options
+                };
+            },
+        peg$c25 = "selectordinal",
+        peg$c26 = { type: "literal", value: "selectordinal", description: "\"selectordinal\"" },
+        peg$c27 = function(pluralStyle) {
+                return {
+                    type   : pluralStyle.type,
+                    ordinal: true,
+                    offset : pluralStyle.offset || 0,
+                    options: pluralStyle.options
+                }
+            },
+        peg$c28 = "select",
+        peg$c29 = { type: "literal", value: "select", description: "\"select\"" },
+        peg$c30 = function(options) {
+                return {
+                    type   : 'selectFormat',
+                    options: options
+                };
+            },
+        peg$c31 = "=",
+        peg$c32 = { type: "literal", value: "=", description: "\"=\"" },
+        peg$c33 = function(selector, pattern) {
+                return {
+                    type    : 'optionalFormatPattern',
+                    selector: selector,
+                    value   : pattern
+                };
+            },
+        peg$c34 = "offset:",
+        peg$c35 = { type: "literal", value: "offset:", description: "\"offset:\"" },
+        peg$c36 = function(number) {
+                return number;
+            },
+        peg$c37 = function(offset, options) {
+                return {
+                    type   : 'pluralFormat',
+                    offset : offset,
+                    options: options
+                };
+            },
+        peg$c38 = { type: "other", description: "whitespace" },
+        peg$c39 = /^[ \t\n\r]/,
+        peg$c40 = { type: "class", value: "[ \\t\\n\\r]", description: "[ \\t\\n\\r]" },
+        peg$c41 = { type: "other", description: "optionalWhitespace" },
+        peg$c42 = /^[0-9]/,
+        peg$c43 = { type: "class", value: "[0-9]", description: "[0-9]" },
+        peg$c44 = /^[0-9a-f]/i,
+        peg$c45 = { type: "class", value: "[0-9a-f]i", description: "[0-9a-f]i" },
+        peg$c46 = "0",
+        peg$c47 = { type: "literal", value: "0", description: "\"0\"" },
+        peg$c48 = /^[1-9]/,
+        peg$c49 = { type: "class", value: "[1-9]", description: "[1-9]" },
+        peg$c50 = function(digits) {
+            return parseInt(digits, 10);
+        },
+        peg$c51 = /^[^{}\\\0-\x1F \t\n\r]/,
+        peg$c52 = { type: "class", value: "[^{}\\\\\\0-\\x1F \\t\\n\\r]", description: "[^{}\\\\\\0-\\x1F \\t\\n\\r]" },
+        peg$c53 = "\\#",
+        peg$c54 = { type: "literal", value: "\\#", description: "\"\\\\#\"" },
+        peg$c55 = function() { return '\\#'; },
+        peg$c56 = "\\{",
+        peg$c57 = { type: "literal", value: "\\{", description: "\"\\\\{\"" },
+        peg$c58 = function() { return '\u007B'; },
+        peg$c59 = "\\}",
+        peg$c60 = { type: "literal", value: "\\}", description: "\"\\\\}\"" },
+        peg$c61 = function() { return '\u007D'; },
+        peg$c62 = "\\u",
+        peg$c63 = { type: "literal", value: "\\u", description: "\"\\\\u\"" },
+        peg$c64 = function(digits) {
+                return String.fromCharCode(parseInt(digits, 16));
+            },
+        peg$c65 = function(chars) { return chars.join(''); },
+
+        peg$currPos          = 0,
+        peg$reportedPos      = 0,
+        peg$cachedPos        = 0,
+        peg$cachedPosDetails = { line: 1, column: 1, seenCR: false },
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$reportedPos, peg$currPos);
+    }
+
+    function offset() {
+      return peg$reportedPos;
+    }
+
+    function line() {
+      return peg$computePosDetails(peg$reportedPos).line;
+    }
+
+    function column() {
+      return peg$computePosDetails(peg$reportedPos).column;
+    }
+
+    function expected(description) {
+      throw peg$buildException(
+        null,
+        [{ type: "other", description: description }],
+        peg$reportedPos
+      );
+    }
+
+    function error(message) {
+      throw peg$buildException(message, null, peg$reportedPos);
+    }
+
+    function peg$computePosDetails(pos) {
+      function advance(details, startPos, endPos) {
+        var p, ch;
+
+        for (p = startPos; p < endPos; p++) {
+          ch = input.charAt(p);
+          if (ch === "\n") {
+            if (!details.seenCR) { details.line++; }
+            details.column = 1;
+            details.seenCR = false;
+          } else if (ch === "\r" || ch === "\u2028" || ch === "\u2029") {
+            details.line++;
+            details.column = 1;
+            details.seenCR = true;
+          } else {
+            details.column++;
+            details.seenCR = false;
+          }
+        }
+      }
+
+      if (peg$cachedPos !== pos) {
+        if (peg$cachedPos > pos) {
+          peg$cachedPos = 0;
+          peg$cachedPosDetails = { line: 1, column: 1, seenCR: false };
+        }
+        advance(peg$cachedPosDetails, peg$cachedPos, pos);
+        peg$cachedPos = pos;
+      }
+
+      return peg$cachedPosDetails;
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildException(message, expected, pos) {
+      function cleanupExpected(expected) {
+        var i = 1;
+
+        expected.sort(function(a, b) {
+          if (a.description < b.description) {
+            return -1;
+          } else if (a.description > b.description) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+
+        while (i < expected.length) {
+          if (expected[i - 1] === expected[i]) {
+            expected.splice(i, 1);
+          } else {
+            i++;
+          }
+        }
+      }
+
+      function buildMessage(expected, found) {
+        function stringEscape(s) {
+          function hex(ch) { return ch.charCodeAt(0).toString(16).toUpperCase(); }
+
+          return s
+            .replace(/\\/g,   '\\\\')
+            .replace(/"/g,    '\\"')
+            .replace(/\x08/g, '\\b')
+            .replace(/\t/g,   '\\t')
+            .replace(/\n/g,   '\\n')
+            .replace(/\f/g,   '\\f')
+            .replace(/\r/g,   '\\r')
+            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, function(ch) { return '\\x0' + hex(ch); })
+            .replace(/[\x10-\x1F\x80-\xFF]/g,    function(ch) { return '\\x'  + hex(ch); })
+            .replace(/[\u0180-\u0FFF]/g,         function(ch) { return '\\u0' + hex(ch); })
+            .replace(/[\u1080-\uFFFF]/g,         function(ch) { return '\\u'  + hex(ch); });
+        }
+
+        var expectedDescs = new Array(expected.length),
+            expectedDesc, foundDesc, i;
+
+        for (i = 0; i < expected.length; i++) {
+          expectedDescs[i] = expected[i].description;
+        }
+
+        expectedDesc = expected.length > 1
+          ? expectedDescs.slice(0, -1).join(", ")
+              + " or "
+              + expectedDescs[expected.length - 1]
+          : expectedDescs[0];
+
+        foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
+
+        return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+      }
+
+      var posDetails = peg$computePosDetails(pos),
+          found      = pos < input.length ? input.charAt(pos) : null;
+
+      if (expected !== null) {
+        cleanupExpected(expected);
+      }
+
+      return new SyntaxError(
+        message !== null ? message : buildMessage(expected, found),
+        expected,
+        found,
+        pos,
+        posDetails.line,
+        posDetails.column
+      );
+    }
+
+    function peg$parsestart() {
+      var s0;
+
+      s0 = peg$parsemessageFormatPattern();
+
+      return s0;
+    }
+
+    function peg$parsemessageFormatPattern() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parsemessageFormatElement();
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$parsemessageFormatElement();
+      }
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c1(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsemessageFormatElement() {
+      var s0;
+
+      s0 = peg$parsemessageTextElement();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseargumentElement();
+      }
+
+      return s0;
+    }
+
+    function peg$parsemessageText() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$parse_();
+      if (s3 !== peg$FAILED) {
+        s4 = peg$parsechars();
+        if (s4 !== peg$FAILED) {
+          s5 = peg$parse_();
+          if (s5 !== peg$FAILED) {
+            s3 = [s3, s4, s5];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$c2;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$c2;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$c2;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsechars();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parse_();
+              if (s5 !== peg$FAILED) {
+                s3 = [s3, s4, s5];
+                s2 = s3;
+              } else {
+                peg$currPos = s2;
+                s2 = peg$c2;
+              }
+            } else {
+              peg$currPos = s2;
+              s2 = peg$c2;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$c2;
+          }
+        }
+      } else {
+        s1 = peg$c2;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c3(s1);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parsews();
+        if (s1 !== peg$FAILED) {
+          s1 = input.substring(s0, peg$currPos);
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parsemessageTextElement() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parsemessageText();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c4(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseargument() {
+      var s0, s1, s2;
+
+      s0 = peg$parsenumber();
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = [];
+        if (peg$c5.test(input.charAt(peg$currPos))) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c6); }
+        }
+        if (s2 !== peg$FAILED) {
+          while (s2 !== peg$FAILED) {
+            s1.push(s2);
+            if (peg$c5.test(input.charAt(peg$currPos))) {
+              s2 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s2 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c6); }
+            }
+          }
+        } else {
+          s1 = peg$c2;
+        }
+        if (s1 !== peg$FAILED) {
+          s1 = input.substring(s0, peg$currPos);
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parseargumentElement() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c7;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c8); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseargument();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$currPos;
+              if (input.charCodeAt(peg$currPos) === 44) {
+                s6 = peg$c10;
+                peg$currPos++;
+              } else {
+                s6 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c11); }
+              }
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parse_();
+                if (s7 !== peg$FAILED) {
+                  s8 = peg$parseelementFormat();
+                  if (s8 !== peg$FAILED) {
+                    s6 = [s6, s7, s8];
+                    s5 = s6;
+                  } else {
+                    peg$currPos = s5;
+                    s5 = peg$c2;
+                  }
+                } else {
+                  peg$currPos = s5;
+                  s5 = peg$c2;
+                }
+              } else {
+                peg$currPos = s5;
+                s5 = peg$c2;
+              }
+              if (s5 === peg$FAILED) {
+                s5 = peg$c9;
+              }
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parse_();
+                if (s6 !== peg$FAILED) {
+                  if (input.charCodeAt(peg$currPos) === 125) {
+                    s7 = peg$c12;
+                    peg$currPos++;
+                  } else {
+                    s7 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c13); }
+                  }
+                  if (s7 !== peg$FAILED) {
+                    peg$reportedPos = s0;
+                    s1 = peg$c14(s3, s5);
+                    s0 = s1;
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c2;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c2;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c2;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c2;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parseelementFormat() {
+      var s0;
+
+      s0 = peg$parsesimpleFormat();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsepluralFormat();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseselectOrdinalFormat();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseselectFormat();
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parsesimpleFormat() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 6) === peg$c15) {
+        s1 = peg$c15;
+        peg$currPos += 6;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c16); }
+      }
+      if (s1 === peg$FAILED) {
+        if (input.substr(peg$currPos, 4) === peg$c17) {
+          s1 = peg$c17;
+          peg$currPos += 4;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c18); }
+        }
+        if (s1 === peg$FAILED) {
+          if (input.substr(peg$currPos, 4) === peg$c19) {
+            s1 = peg$c19;
+            peg$currPos += 4;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c20); }
+          }
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s4 = peg$c10;
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c11); }
+          }
+          if (s4 !== peg$FAILED) {
+            s5 = peg$parse_();
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parsechars();
+              if (s6 !== peg$FAILED) {
+                s4 = [s4, s5, s6];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c2;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c2;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c2;
+          }
+          if (s3 === peg$FAILED) {
+            s3 = peg$c9;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c21(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parsepluralFormat() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 6) === peg$c22) {
+        s1 = peg$c22;
+        peg$currPos += 6;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c23); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s3 = peg$c10;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c11); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parsepluralStyle();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c24(s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c2;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c2;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parseselectOrdinalFormat() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 13) === peg$c25) {
+        s1 = peg$c25;
+        peg$currPos += 13;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c26); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s3 = peg$c10;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c11); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parsepluralStyle();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c27(s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c2;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c2;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parseselectFormat() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 6) === peg$c28) {
+        s1 = peg$c28;
+        peg$currPos += 6;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c29); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s3 = peg$c10;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c11); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parse_();
+            if (s4 !== peg$FAILED) {
+              s5 = [];
+              s6 = peg$parseoptionalFormatPattern();
+              if (s6 !== peg$FAILED) {
+                while (s6 !== peg$FAILED) {
+                  s5.push(s6);
+                  s6 = peg$parseoptionalFormatPattern();
+                }
+              } else {
+                s5 = peg$c2;
+              }
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c30(s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c2;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c2;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parseselector() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 61) {
+        s2 = peg$c31;
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c32); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = peg$parsenumber();
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c2;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c2;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsechars();
+      }
+
+      return s0;
+    }
+
+    function peg$parseoptionalFormatPattern() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8;
+
+      s0 = peg$currPos;
+      s1 = peg$parse_();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseselector();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parse_();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 123) {
+              s4 = peg$c7;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c8); }
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parse_();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsemessageFormatPattern();
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parse_();
+                  if (s7 !== peg$FAILED) {
+                    if (input.charCodeAt(peg$currPos) === 125) {
+                      s8 = peg$c12;
+                      peg$currPos++;
+                    } else {
+                      s8 = peg$FAILED;
+                      if (peg$silentFails === 0) { peg$fail(peg$c13); }
+                    }
+                    if (s8 !== peg$FAILED) {
+                      peg$reportedPos = s0;
+                      s1 = peg$c33(s2, s6);
+                      s0 = s1;
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c2;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c2;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c2;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c2;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c2;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parseoffset() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 7) === peg$c34) {
+        s1 = peg$c34;
+        peg$currPos += 7;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c35); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsenumber();
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c36(s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parsepluralStyle() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseoffset();
+      if (s1 === peg$FAILED) {
+        s1 = peg$c9;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parse_();
+        if (s2 !== peg$FAILED) {
+          s3 = [];
+          s4 = peg$parseoptionalFormatPattern();
+          if (s4 !== peg$FAILED) {
+            while (s4 !== peg$FAILED) {
+              s3.push(s4);
+              s4 = peg$parseoptionalFormatPattern();
+            }
+          } else {
+            s3 = peg$c2;
+          }
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c37(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c2;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c2;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c2;
+      }
+
+      return s0;
+    }
+
+    function peg$parsews() {
+      var s0, s1;
+
+      peg$silentFails++;
+      s0 = [];
+      if (peg$c39.test(input.charAt(peg$currPos))) {
+        s1 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c40); }
+      }
+      if (s1 !== peg$FAILED) {
+        while (s1 !== peg$FAILED) {
+          s0.push(s1);
+          if (peg$c39.test(input.charAt(peg$currPos))) {
+            s1 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c40); }
+          }
+        }
+      } else {
+        s0 = peg$c2;
+      }
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c38); }
+      }
+
+      return s0;
+    }
+
+    function peg$parse_() {
+      var s0, s1, s2;
+
+      peg$silentFails++;
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parsews();
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$parsews();
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+      peg$silentFails--;
+      if (s0 === peg$FAILED) {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c41); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsedigit() {
+      var s0;
+
+      if (peg$c42.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsehexDigit() {
+      var s0;
+
+      if (peg$c44.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c45); }
+      }
+
+      return s0;
+    }
+
+    function peg$parsenumber() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 48) {
+        s1 = peg$c46;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+      if (s1 === peg$FAILED) {
+        s1 = peg$currPos;
+        s2 = peg$currPos;
+        if (peg$c48.test(input.charAt(peg$currPos))) {
+          s3 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c49); }
+        }
+        if (s3 !== peg$FAILED) {
+          s4 = [];
+          s5 = peg$parsedigit();
+          while (s5 !== peg$FAILED) {
+            s4.push(s5);
+            s5 = peg$parsedigit();
+          }
+          if (s4 !== peg$FAILED) {
+            s3 = [s3, s4];
+            s2 = s3;
+          } else {
+            peg$currPos = s2;
+            s2 = peg$c2;
+          }
+        } else {
+          peg$currPos = s2;
+          s2 = peg$c2;
+        }
+        if (s2 !== peg$FAILED) {
+          s2 = input.substring(s1, peg$currPos);
+        }
+        s1 = s2;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c50(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsechar() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      if (peg$c51.test(input.charAt(peg$currPos))) {
+        s0 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        if (input.substr(peg$currPos, 2) === peg$c53) {
+          s1 = peg$c53;
+          peg$currPos += 2;
+        } else {
+          s1 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        }
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c55();
+        }
+        s0 = s1;
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          if (input.substr(peg$currPos, 2) === peg$c56) {
+            s1 = peg$c56;
+            peg$currPos += 2;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c57); }
+          }
+          if (s1 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c58();
+          }
+          s0 = s1;
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            if (input.substr(peg$currPos, 2) === peg$c59) {
+              s1 = peg$c59;
+              peg$currPos += 2;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c60); }
+            }
+            if (s1 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c61();
+            }
+            s0 = s1;
+            if (s0 === peg$FAILED) {
+              s0 = peg$currPos;
+              if (input.substr(peg$currPos, 2) === peg$c62) {
+                s1 = peg$c62;
+                peg$currPos += 2;
+              } else {
+                s1 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c63); }
+              }
+              if (s1 !== peg$FAILED) {
+                s2 = peg$currPos;
+                s3 = peg$currPos;
+                s4 = peg$parsehexDigit();
+                if (s4 !== peg$FAILED) {
+                  s5 = peg$parsehexDigit();
+                  if (s5 !== peg$FAILED) {
+                    s6 = peg$parsehexDigit();
+                    if (s6 !== peg$FAILED) {
+                      s7 = peg$parsehexDigit();
+                      if (s7 !== peg$FAILED) {
+                        s4 = [s4, s5, s6, s7];
+                        s3 = s4;
+                      } else {
+                        peg$currPos = s3;
+                        s3 = peg$c2;
+                      }
+                    } else {
+                      peg$currPos = s3;
+                      s3 = peg$c2;
+                    }
+                  } else {
+                    peg$currPos = s3;
+                    s3 = peg$c2;
+                  }
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$c2;
+                }
+                if (s3 !== peg$FAILED) {
+                  s3 = input.substring(s2, peg$currPos);
+                }
+                s2 = s3;
+                if (s2 !== peg$FAILED) {
+                  peg$reportedPos = s0;
+                  s1 = peg$c64(s2);
+                  s0 = s1;
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c2;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c2;
+              }
+            }
+          }
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parsechars() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parsechar();
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$parsechar();
+        }
+      } else {
+        s1 = peg$c2;
+      }
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c65(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail({ type: "end", description: "end of input" });
+      }
+
+      throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos);
+    }
+  }
+
+  return {
+    SyntaxError: SyntaxError,
+    parse:       parse
+  };
+})();
+
+
+},{}],185:[function(require,module,exports){
+/* jshint node:true */
+
+'use strict';
+
+var IntlRelativeFormat = require('./lib/main')['default'];
+
+// Add all locale data to `IntlRelativeFormat`. This module will be ignored when
+// bundling for the browser with Browserify/Webpack.
+require('./lib/locales');
+
+// Re-export `IntlRelativeFormat` as the CommonJS default exports with all the
+// locale data registered, and with English set as the default locale. Define
+// the `default` prop for use with other compiled ES6 Modules.
+exports = module.exports = IntlRelativeFormat;
+exports['default'] = exports;
+
+},{"./lib/locales":159,"./lib/main":190}],186:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+var intl$messageformat$$ = require("intl-messageformat"), src$diff$$ = require("./diff"), src$es5$$ = require("./es5");
+exports["default"] = RelativeFormat;
+
+// -----------------------------------------------------------------------------
+
+var FIELDS = ['second', 'minute', 'hour', 'day', 'month', 'year'];
+var STYLES = ['best fit', 'numeric'];
+
+// -- RelativeFormat -----------------------------------------------------------
+
+function RelativeFormat(locales, options) {
+    options = options || {};
+
+    // Make a copy of `locales` if it's an array, so that it doesn't change
+    // since it's used lazily.
+    if (src$es5$$.isArray(locales)) {
+        locales = locales.concat();
+    }
+
+    src$es5$$.defineProperty(this, '_locale', {value: this._resolveLocale(locales)});
+    src$es5$$.defineProperty(this, '_options', {value: {
+        style: this._resolveStyle(options.style),
+        units: this._isValidUnits(options.units) && options.units
+    }});
+
+    src$es5$$.defineProperty(this, '_locales', {value: locales});
+    src$es5$$.defineProperty(this, '_fields', {value: this._findFields(this._locale)});
+    src$es5$$.defineProperty(this, '_messages', {value: src$es5$$.objCreate(null)});
+
+    // "Bind" `format()` method to `this` so it can be passed by reference like
+    // the other `Intl` APIs.
+    var relativeFormat = this;
+    this.format = function format(date, options) {
+        return relativeFormat._format(date, options);
+    };
+}
+
+// Define internal private properties for dealing with locale data.
+src$es5$$.defineProperty(RelativeFormat, '__localeData__', {value: src$es5$$.objCreate(null)});
+src$es5$$.defineProperty(RelativeFormat, '__addLocaleData', {value: function (data) {
+    if (!(data && data.locale)) {
+        throw new Error(
+            'Locale data provided to IntlRelativeFormat is missing a ' +
+            '`locale` property value'
+        );
+    }
+
+    RelativeFormat.__localeData__[data.locale.toLowerCase()] = data;
+
+    // Add data to IntlMessageFormat.
+    intl$messageformat$$["default"].__addLocaleData(data);
+}});
+
+// Define public `defaultLocale` property which can be set by the developer, or
+// it will be set when the first RelativeFormat instance is created by
+// leveraging the resolved locale from `Intl`.
+src$es5$$.defineProperty(RelativeFormat, 'defaultLocale', {
+    enumerable: true,
+    writable  : true,
+    value     : undefined
+});
+
+// Define public `thresholds` property which can be set by the developer, and
+// defaults to relative time thresholds from moment.js.
+src$es5$$.defineProperty(RelativeFormat, 'thresholds', {
+    enumerable: true,
+
+    value: {
+        second: 45,  // seconds to minute
+        minute: 45,  // minutes to hour
+        hour  : 22,  // hours to day
+        day   : 26,  // days to month
+        month : 11   // months to year
+    }
+});
+
+RelativeFormat.prototype.resolvedOptions = function () {
+    return {
+        locale: this._locale,
+        style : this._options.style,
+        units : this._options.units
+    };
+};
+
+RelativeFormat.prototype._compileMessage = function (units) {
+    // `this._locales` is the original set of locales the user specified to the
+    // constructor, while `this._locale` is the resolved root locale.
+    var locales        = this._locales;
+    var resolvedLocale = this._locale;
+
+    var field        = this._fields[units];
+    var relativeTime = field.relativeTime;
+    var future       = '';
+    var past         = '';
+    var i;
+
+    for (i in relativeTime.future) {
+        if (relativeTime.future.hasOwnProperty(i)) {
+            future += ' ' + i + ' {' +
+                relativeTime.future[i].replace('{0}', '#') + '}';
+        }
+    }
+
+    for (i in relativeTime.past) {
+        if (relativeTime.past.hasOwnProperty(i)) {
+            past += ' ' + i + ' {' +
+                relativeTime.past[i].replace('{0}', '#') + '}';
+        }
+    }
+
+    var message = '{when, select, future {{0, plural, ' + future + '}}' +
+                                 'past {{0, plural, ' + past + '}}}';
+
+    // Create the synthetic IntlMessageFormat instance using the original
+    // locales value specified by the user when constructing the the parent
+    // IntlRelativeFormat instance.
+    return new intl$messageformat$$["default"](message, locales);
+};
+
+RelativeFormat.prototype._getMessage = function (units) {
+    var messages = this._messages;
+
+    // Create a new synthetic message based on the locale data from CLDR.
+    if (!messages[units]) {
+        messages[units] = this._compileMessage(units);
+    }
+
+    return messages[units];
+};
+
+RelativeFormat.prototype._getRelativeUnits = function (diff, units) {
+    var field = this._fields[units];
+
+    if (field.relative) {
+        return field.relative[diff];
+    }
+};
+
+RelativeFormat.prototype._findFields = function (locale) {
+    var localeData = RelativeFormat.__localeData__;
+    var data       = localeData[locale.toLowerCase()];
+
+    // The locale data is de-duplicated, so we have to traverse the locale's
+    // hierarchy until we find `fields` to return.
+    while (data) {
+        if (data.fields) {
+            return data.fields;
+        }
+
+        data = data.parentLocale && localeData[data.parentLocale.toLowerCase()];
+    }
+
+    throw new Error(
+        'Locale data added to IntlRelativeFormat is missing `fields` for :' +
+        locale
+    );
+};
+
+RelativeFormat.prototype._format = function (date, options) {
+    var now = options && options.now !== undefined ? options.now : src$es5$$.dateNow();
+
+    if (date === undefined) {
+        date = now;
+    }
+
+    // Determine if the `date` and optional `now` values are valid, and throw a
+    // similar error to what `Intl.DateTimeFormat#format()` would throw.
+    if (!isFinite(now)) {
+        throw new RangeError(
+            'The `now` option provided to IntlRelativeFormat#format() is not ' +
+            'in valid range.'
+        );
+    }
+
+    if (!isFinite(date)) {
+        throw new RangeError(
+            'The date value provided to IntlRelativeFormat#format() is not ' +
+            'in valid range.'
+        );
+    }
+
+    var diffReport  = src$diff$$["default"](now, date);
+    var units       = this._options.units || this._selectUnits(diffReport);
+    var diffInUnits = diffReport[units];
+
+    if (this._options.style !== 'numeric') {
+        var relativeUnits = this._getRelativeUnits(diffInUnits, units);
+        if (relativeUnits) {
+            return relativeUnits;
+        }
+    }
+
+    return this._getMessage(units).format({
+        '0' : Math.abs(diffInUnits),
+        when: diffInUnits < 0 ? 'past' : 'future'
+    });
+};
+
+RelativeFormat.prototype._isValidUnits = function (units) {
+    if (!units || src$es5$$.arrIndexOf.call(FIELDS, units) >= 0) {
+        return true;
+    }
+
+    if (typeof units === 'string') {
+        var suggestion = /s$/.test(units) && units.substr(0, units.length - 1);
+        if (suggestion && src$es5$$.arrIndexOf.call(FIELDS, suggestion) >= 0) {
+            throw new Error(
+                '"' + units + '" is not a valid IntlRelativeFormat `units` ' +
+                'value, did you mean: ' + suggestion
+            );
+        }
+    }
+
+    throw new Error(
+        '"' + units + '" is not a valid IntlRelativeFormat `units` value, it ' +
+        'must be one of: "' + FIELDS.join('", "') + '"'
+    );
+};
+
+RelativeFormat.prototype._resolveLocale = function (locales) {
+    if (typeof locales === 'string') {
+        locales = [locales];
+    }
+
+    // Create a copy of the array so we can push on the default locale.
+    locales = (locales || []).concat(RelativeFormat.defaultLocale);
+
+    var localeData = RelativeFormat.__localeData__;
+    var i, len, localeParts, data;
+
+    // Using the set of locales + the default locale, we look for the first one
+    // which that has been registered. When data does not exist for a locale, we
+    // traverse its ancestors to find something that's been registered within
+    // its hierarchy of locales. Since we lack the proper `parentLocale` data
+    // here, we must take a naive approach to traversal.
+    for (i = 0, len = locales.length; i < len; i += 1) {
+        localeParts = locales[i].toLowerCase().split('-');
+
+        while (localeParts.length) {
+            data = localeData[localeParts.join('-')];
+            if (data) {
+                // Return the normalized locale string; e.g., we return "en-US",
+                // instead of "en-us".
+                return data.locale;
+            }
+
+            localeParts.pop();
+        }
+    }
+
+    var defaultLocale = locales.pop();
+    throw new Error(
+        'No locale data has been added to IntlRelativeFormat for: ' +
+        locales.join(', ') + ', or the default locale: ' + defaultLocale
+    );
+};
+
+RelativeFormat.prototype._resolveStyle = function (style) {
+    // Default to "best fit" style.
+    if (!style) {
+        return STYLES[0];
+    }
+
+    if (src$es5$$.arrIndexOf.call(STYLES, style) >= 0) {
+        return style;
+    }
+
+    throw new Error(
+        '"' + style + '" is not a valid IntlRelativeFormat `style` value, it ' +
+        'must be one of: "' + STYLES.join('", "') + '"'
+    );
+};
+
+RelativeFormat.prototype._selectUnits = function (diffReport) {
+    var i, l, units;
+
+    for (i = 0, l = FIELDS.length; i < l; i += 1) {
+        units = FIELDS[i];
+
+        if (Math.abs(diffReport[units]) < RelativeFormat.thresholds[units]) {
+            break;
+        }
+    }
+
+    return units;
+};
+
+
+},{"./diff":187,"./es5":189,"intl-messageformat":176}],187:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+
+var round = Math.round;
+
+function daysToYears(days) {
+    // 400 years have 146097 days (taking into account leap year rules)
+    return days * 400 / 146097;
+}
+
+exports["default"] = function (from, to) {
+    // Convert to ms timestamps.
+    from = +from;
+    to   = +to;
+
+    var millisecond = round(to - from),
+        second      = round(millisecond / 1000),
+        minute      = round(second / 60),
+        hour        = round(minute / 60),
+        day         = round(hour / 24),
+        week        = round(day / 7);
+
+    var rawYears = daysToYears(day),
+        month    = round(rawYears * 12),
+        year     = round(rawYears);
+
+    return {
+        millisecond: millisecond,
+        second     : second,
+        minute     : minute,
+        hour       : hour,
+        day        : day,
+        week       : week,
+        month      : month,
+        year       : year
+    };
+};
+
+
+},{}],188:[function(require,module,exports){
+arguments[4][168][0].apply(exports,arguments)
+},{"dup":168}],189:[function(require,module,exports){
+/*
+Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+Copyrights licensed under the New BSD License.
+See the accompanying LICENSE file for terms.
+*/
+
+/* jslint esnext: true */
+
+"use strict";
+
+// Purposely using the same implementation as the Intl.js `Intl` polyfill.
+// Copyright 2013 Andy Earnshaw, MIT License
+
+var hop = Object.prototype.hasOwnProperty;
+var toString = Object.prototype.toString;
+
+var realDefineProp = (function () {
+    try { return !!Object.defineProperty({}, 'a', {}); }
+    catch (e) { return false; }
+})();
+
+var es3 = !realDefineProp && !Object.prototype.__defineGetter__;
+
+var defineProperty = realDefineProp ? Object.defineProperty :
+        function (obj, name, desc) {
+
+    if ('get' in desc && obj.__defineGetter__) {
+        obj.__defineGetter__(name, desc.get);
+    } else if (!hop.call(obj, name) || 'value' in desc) {
+        obj[name] = desc.value;
+    }
+};
+
+var objCreate = Object.create || function (proto, props) {
+    var obj, k;
+
+    function F() {}
+    F.prototype = proto;
+    obj = new F();
+
+    for (k in props) {
+        if (hop.call(props, k)) {
+            defineProperty(obj, k, props[k]);
+        }
+    }
+
+    return obj;
+};
+
+var arrIndexOf = Array.prototype.indexOf || function (search, fromIndex) {
+    /*jshint validthis:true */
+    var arr = this;
+    if (!arr.length) {
+        return -1;
+    }
+
+    for (var i = fromIndex || 0, max = arr.length; i < max; i++) {
+        if (arr[i] === search) {
+            return i;
+        }
+    }
+
+    return -1;
+};
+
+var isArray = Array.isArray || function (obj) {
+    return toString.call(obj) === '[object Array]';
+};
+
+var dateNow = Date.now || function () {
+    return new Date().getTime();
+};
+exports.defineProperty = defineProperty, exports.objCreate = objCreate, exports.arrIndexOf = arrIndexOf, exports.isArray = isArray, exports.dateNow = dateNow;
+
+
+},{}],190:[function(require,module,exports){
+arguments[4][181][0].apply(exports,arguments)
+},{"./core":186,"./en":188,"dup":181}],191:[function(require,module,exports){
 var React = require('react'),
 	TypeField = require('./TypeField')
 ;
@@ -15127,7 +18438,7 @@ var FieldAdder = React.createClass({
 
 module.exports = FieldAdder;
 
-},{"./TypeField":162,"react":undefined}],161:[function(require,module,exports){
+},{"./TypeField":193,"react":undefined}],192:[function(require,module,exports){
 var React = require('react'),
 	Freezer = require('freezer-js'),
 	objectAssign = require('object-assign'),
@@ -15306,7 +18617,7 @@ Json.registerType( 'select', SelectField );
 
 module.exports = Json;
 
-},{"./src/TypeField":174,"./src/deepSettings":175,"./src/types/ArrayField":176,"./src/types/BooleanField":177,"./src/types/NumberField":178,"./src/types/ObjectField":179,"./src/types/PasswordField":180,"./src/types/SelectField":181,"./src/types/StringField":182,"./src/types/TextField":183,"freezer-js":166,"object-assign":172,"react":undefined}],162:[function(require,module,exports){
+},{"./src/TypeField":205,"./src/deepSettings":206,"./src/types/ArrayField":207,"./src/types/BooleanField":208,"./src/types/NumberField":209,"./src/types/ObjectField":210,"./src/types/PasswordField":211,"./src/types/SelectField":212,"./src/types/StringField":213,"./src/types/TextField":214,"freezer-js":197,"object-assign":203,"react":undefined}],193:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -15397,7 +18708,7 @@ TypeField.registerType = function( name, Component, selectable ){
 
 module.exports = TypeField;
 
-},{"./deepSettings":163,"object-assign":172,"react":undefined}],163:[function(require,module,exports){
+},{"./deepSettings":194,"object-assign":203,"react":undefined}],194:[function(require,module,exports){
 module.exports = {
 	editing: function( parentValue, value ){
 		if( typeof value != 'undefined' )
@@ -15426,7 +18737,7 @@ module.exports = {
 	}
 };
 
-},{}],164:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -15540,7 +18851,7 @@ module.exports = {
 	}
 };
 
-},{"../FieldAdder":160,"object-assign":172,"react":undefined}],165:[function(require,module,exports){
+},{"../FieldAdder":191,"object-assign":203,"react":undefined}],196:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -15631,10 +18942,10 @@ module.exports = {
 	}
 };
 
-},{"react":undefined}],166:[function(require,module,exports){
+},{"react":undefined}],197:[function(require,module,exports){
 var Freezer = require('./src/freezer');
 module.exports = Freezer;
-},{"./src/freezer":168}],167:[function(require,module,exports){
+},{"./src/freezer":199}],198:[function(require,module,exports){
 'use strict';
 
 var Utils = require( './utils' );
@@ -15716,7 +19027,7 @@ var Emitter = Utils.createNonEnumerable( emitterProto );
 //#build
 
 module.exports = Emitter;
-},{"./utils":171}],168:[function(require,module,exports){
+},{"./utils":202}],199:[function(require,module,exports){
 'use strict';
 
 var Utils = require( './utils.js' ),
@@ -15789,7 +19100,7 @@ Freezer.prototype = Utils.createNonEnumerable({constructor: Freezer}, Emitter);
 
 module.exports = Freezer;
 
-},{"./emitter":167,"./frozen":169,"./mixins":170,"./utils.js":171}],169:[function(require,module,exports){
+},{"./emitter":198,"./frozen":200,"./mixins":201,"./utils.js":202}],200:[function(require,module,exports){
 'use strict';
 
 var Utils = require( './utils' ),
@@ -16363,7 +19674,7 @@ var Frozen = {
 //#build
 
 module.exports = Frozen;
-},{"./emitter":167,"./mixins":170,"./utils":171}],170:[function(require,module,exports){
+},{"./emitter":198,"./mixins":201,"./utils":202}],201:[function(require,module,exports){
 'use strict';
 
 var Utils = require( './utils.js' );
@@ -16519,7 +19830,7 @@ arrayMethods: arrayMethods
 //#build
 
 module.exports = Mixins;
-},{"./utils.js":171}],171:[function(require,module,exports){
+},{"./utils.js":202}],202:[function(require,module,exports){
 'use strict';
 
 //#build
@@ -16627,7 +19938,7 @@ var Utils = {
 
 
 module.exports = Utils;
-},{}],172:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 'use strict';
 
 function ToObject(val) {
@@ -16655,7 +19966,7 @@ module.exports = Object.assign || function (target, source) {
 	return to;
 };
 
-},{}],173:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -16813,7 +20124,7 @@ var Field = React.createClass({
 
 module.exports = Field;
 
-},{"./TypeField":174,"./validation":184,"object-assign":172,"react":undefined}],174:[function(require,module,exports){
+},{"./TypeField":205,"./validation":215,"object-assign":203,"react":undefined}],205:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -16906,7 +20217,7 @@ TypeField.registerType = function( name, Component, selectable ){
 
 module.exports = TypeField;
 
-},{"./deepSettings":175,"object-assign":172,"react":undefined}],175:[function(require,module,exports){
+},{"./deepSettings":206,"object-assign":203,"react":undefined}],206:[function(require,module,exports){
 module.exports = {
 	editing: function( parentValue, value ){
 		if( typeof value != 'undefined' )
@@ -16935,7 +20246,7 @@ module.exports = {
 	}
 };
 
-},{}],176:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -17046,7 +20357,7 @@ var ArrayField = React.createClass({
 
 module.exports = ArrayField;
 
-},{"../../mixins/CompoundFieldMixin":164,"../Field":173,"object-assign":172,"react":undefined}],177:[function(require,module,exports){
+},{"../../mixins/CompoundFieldMixin":195,"../Field":204,"object-assign":203,"react":undefined}],208:[function(require,module,exports){
 var React = require('react');
 
 /**
@@ -17085,7 +20396,7 @@ var BooleanField = React.createClass({
 
 module.exports = BooleanField;
 
-},{"react":undefined}],178:[function(require,module,exports){
+},{"react":undefined}],209:[function(require,module,exports){
 var React = require('react'),
 	LeafMixin = require('../../mixins/LeafFieldMixin')
 ;
@@ -17121,7 +20432,7 @@ var NumberField = React.createClass({
 
 module.exports = NumberField;
 
-},{"../../mixins/LeafFieldMixin":165,"react":undefined}],179:[function(require,module,exports){
+},{"../../mixins/LeafFieldMixin":196,"react":undefined}],210:[function(require,module,exports){
 'use strict';
 
 var React = require('react'),
@@ -17333,7 +20644,7 @@ var ObjectField = React.createClass({
 
 module.exports = ObjectField;
 
-},{"../../mixins/CompoundFieldMixin":164,"../Field":173,"object-assign":172,"react":undefined}],180:[function(require,module,exports){
+},{"../../mixins/CompoundFieldMixin":195,"../Field":204,"object-assign":203,"react":undefined}],211:[function(require,module,exports){
 var React = require('react'),
 	LeafMixin = require('../../mixins/LeafFieldMixin')
 ;
@@ -17382,7 +20693,7 @@ var PasswordField = React.createClass({
 
 module.exports = PasswordField;
 
-},{"../../mixins/LeafFieldMixin":165,"react":undefined}],181:[function(require,module,exports){
+},{"../../mixins/LeafFieldMixin":196,"react":undefined}],212:[function(require,module,exports){
 var React = require('react');
 
 /**
@@ -17443,7 +20754,7 @@ var SelectType = React.createClass({
 
 module.exports = SelectType;
 
-},{"react":undefined}],182:[function(require,module,exports){
+},{"react":undefined}],213:[function(require,module,exports){
 var React = require('react'),
 	LeafMixin = require('../../mixins/LeafFieldMixin')
 ;
@@ -17480,7 +20791,7 @@ var StringField = React.createClass({
 
 module.exports = StringField;
 
-},{"../../mixins/LeafFieldMixin":165,"react":undefined}],183:[function(require,module,exports){
+},{"../../mixins/LeafFieldMixin":196,"react":undefined}],214:[function(require,module,exports){
 var React = require('react'),
 	LeafMixin = require('../../mixins/LeafFieldMixin')
 ;
@@ -17526,7 +20837,7 @@ var TextField = React.createClass({
 
 module.exports = TextField;
 
-},{"../../mixins/LeafFieldMixin":165,"react":undefined}],184:[function(require,module,exports){
+},{"../../mixins/LeafFieldMixin":196,"react":undefined}],215:[function(require,module,exports){
 'use strict';
 
 var ValidationMethods = {
@@ -17700,1123 +21011,7 @@ function findInTree( path, jsonValue ){
 
 	return findInTree(path.slice(1), jsonValue[ path[0] ]);
 }
-},{}],185:[function(require,module,exports){
-'use strict';
-
-
-/*
- * DEPENDENCIES
- */
-
-var convert = require('colr-convert');
-
-
-/*
- * CONSTRUCTOR
- */
-
-function Colr () {
-  if ((this instanceof Colr) === false) { return new Colr(); }
-  this._ = {};
-}
-
-
-/*
- * STATIC METHODS
- */
-
-Colr.fromHex = function (hex) {
-  return (new Colr()).fromHex(hex);
-};
-
-Colr.fromGrayscale = function (value) {
-  return (new Colr()).fromGrayscale(value);
-};
-
-Colr.fromRgb = function (r, g, b) {
-  return (new Colr()).fromRgb(r, g, b);
-};
-
-Colr.fromRgbArray = function (arr) {
-  return (new Colr()).fromRgb(arr[0], arr[1], arr[2]);
-};
-
-Colr.fromRgbObject = function (obj) {
-  return (new Colr()).fromRgb(obj.r, obj.g, obj.b);
-};
-Colr.fromHsl = function (h, s, l) {
-  return (new Colr()).fromHsl(h, s, l);
-};
-
-Colr.fromHslArray = function (arr) {
-  return (new Colr()).fromHsl(arr[0], arr[1], arr[2]);
-};
-
-Colr.fromHslObject = function (obj) {
-  return (new Colr()).fromHsl(obj.h, obj.s, obj.l);
-};
-
-Colr.fromHsv = function (h, s, v) {
-  return (new Colr()).fromHsv(h, s, v);
-};
-
-Colr.fromHsvArray = function (arr) {
-  return (new Colr()).fromHsv(arr[0], arr[1], arr[2]);
-};
-
-Colr.fromHsvObject = function (obj) {
-  return (new Colr()).fromHsv(obj.h, obj.s, obj.v);
-};
-
-
-/*
- * IMPORTERS
- */
-
-// HEX
-
-Colr.prototype.fromHex = function (input) {
-  var value = convert.hex.rgb(input);
-  this._ = { rgb: value };
-  return this;
-};
-
-// GRAYSCALE
-
-Colr.prototype.fromGrayscale = function (input) {
-  input = clampByte(input);
-  var value = convert.grayscale.rgb(input);
-  this._ = { rgb: value };
-  return this;
-};
-
-// RGB
-
-Colr.prototype.fromRgb = function (r, g, b) {
-  if (typeof(r) !== 'number' || typeof(g) !== 'number' || typeof(b) !== 'number') {
-    throw new Error('Arguments must be numbers');
-  }
-  var value = clampRgb(r, g, b);
-  this._ = { rgb: value };
-  return this;
-};
-
-Colr.prototype.fromRgbArray = function (arr) {
-  return this.fromRgb(arr[0], arr[1], arr[2]);
-};
-
-Colr.prototype.fromRgbObject = function (obj) {
-  return this.fromRgb(obj.r, obj.g, obj.b);
-};
-
-// HSL
-
-Colr.prototype.fromHsl = function (h, s, l) {
-  if (typeof(h) !== 'number' || typeof(s) !== 'number' || typeof(l) !== 'number') {
-    throw new Error('Arguments must be numbers');
-  }
-  this._ = { hsl: clampHsx(h, s, l) };
-  return this;
-};
-
-Colr.prototype.fromHslArray = function (arr) {
-  return this.fromHsl(arr[0], arr[1], arr[2]);
-};
-
-Colr.prototype.fromHslObject = function (obj) {
-  return this.fromHsl(obj.h, obj.s, obj.l);
-};
-
-// HSV
-
-Colr.prototype.fromHsv = function (h, s, v) {
-  if (typeof(h) !== 'number' || typeof(s) !== 'number' || typeof(v) !== 'number') {
-    throw new Error('Arguments must be numbers');
-  }
-  this._ = { hsv: clampHsx(h, s, v) };
-  return this;
-};
-
-Colr.prototype.fromHsvArray = function (arr) {
-  return this.fromHsv(arr[0], arr[1], arr[2]);
-};
-
-Colr.prototype.fromHsvObject = function (obj) {
-  return this.fromHsv(obj.h, obj.s, obj.v);
-};
-
-
-/*
- * EXPORTERS
- */
-
-// HEX
-
-Colr.prototype.toHex = function () {
-  var cached = this._.hex;
-  if (cached !== undefined) { return cached; }
-
-  var input;
-  var cachedFrom = this._.rgb;
-
-  if (cachedFrom !== undefined) { input = cachedFrom; }
-  else { input = this.toRawRgbArray(); }
-
-  input[0] = Math.round(input[0]);
-  input[1] = Math.round(input[1]);
-  input[2] = Math.round(input[2]);
-
-  var value = convert.rgb.hex(input);
-  this._.hex = value;
-
-  return value;
-};
-
-// GRAYSCALE
-
-Colr.prototype.toGrayscale = function () {
-  var cached = this._.grayscale;
-  if (cached !== undefined) { return cached; }
-
-  var input;
-  var cachedFrom = this._.rgb;
-
-  if (cachedFrom !== undefined) { input = cachedFrom; }
-  else { input = this.toRawRgbArray(); }
-
-  var value = convert.rgb.grayscale(input);
-  this._.grayscale = value;
-  return value;
-};
-
-// RGB
-
-Colr.prototype.toRawRgbArray = function () {
-  var cached = this._.rgb;
-  if (cached !== undefined) { return cached; }
-
-  var value;
-
-  if ((value = this._.hsv) !== undefined) {
-    value = convert.hsv.rgb(value);
-  } else if ((value = this._.hsl) !== undefined) {
-    value = convert.hsl.rgb(value);
-  } else {
-    throw new Error('No data to convert');
-  }
-
-  this._.rgb = value;
-  return value;
-};
-
-Colr.prototype.toRawRgbObject = function () {
-  var arr = this.toRawRgbArray();
-  return { r: arr[0], g: arr[1], b: arr[2] };
-};
-
-Colr.prototype.toRgbArray = function () {
-  var arr = this.toRawRgbArray();
-  return [ Math.round(arr[0]), Math.round(arr[1]), Math.round(arr[2]) ];
-};
-
-Colr.prototype.toRgbObject = function () {
-  var arr = this.toRgbArray();
-  return { r: arr[0], g: arr[1], b: arr[2] };
-};
-
-// HSL
-
-Colr.prototype.toRawHslArray = function () {
-  var cached = this._.hsl;
-  if (cached !== undefined) { return cached; }
-
-  var value;
-
-  if ((value = this._.hsv) !== undefined) {
-    value = convert.hsv.hsl(value);
-  } else if ((value = this._.rgb) !== undefined) {
-    value = convert.rgb.hsl(value);
-  } else {
-    throw new Error('No data to convert');
-  }
-
-  this._.hsl = value;
-  return value;
-};
-
-Colr.prototype.toRawHslObject = function () {
-  var arr = this.toRawHslArray();
-  return { h: arr[0], s: arr[1], l: arr[2] };
-};
-
-Colr.prototype.toHslArray = function () {
-  var arr = this.toRawHslArray();
-  return [ Math.round(arr[0]), Math.round(arr[1]), Math.round(arr[2]) ];
-};
-
-Colr.prototype.toHslObject = function () {
-  var arr = this.toHslArray();
-  return { h: arr[0], s: arr[1], l: arr[2] };
-};
-
-// HSV
-
-Colr.prototype.toRawHsvArray = function () {
-  var cached = this._.hsv;
-  if (cached !== undefined) { return cached; }
-
-  var value;
-
-  if ((value = this._.hsl) !== undefined) {
-    value = convert.hsl.hsv(value);
-  } else if ((value = this._.rgb) !== undefined) {
-    value = convert.rgb.hsv(value);
-  } else {
-    throw new Error('No data to convert');
-  }
-
-  this._.hsv = value;
-  return value;
-};
-
-Colr.prototype.toRawHsvObject = function () {
-  var arr = this.toRawHsvArray();
-  return { h: arr[0], s: arr[1], v: arr[2] };
-};
-
-Colr.prototype.toHsvArray = function () {
-  var arr = this.toRawHsvArray();
-  return [ Math.round(arr[0]), Math.round(arr[1]), Math.round(arr[2]) ];
-};
-
-Colr.prototype.toHsvObject = function () {
-  var arr = this.toHsvArray();
-  return { h: arr[0], s: arr[1], v: arr[2] };
-};
-
-
-/*
- * MODIFIERS
- */
-
-Colr.prototype.lighten = function (amount) {
-  var hsl = this.toRawHslArray();
-  hsl[2] = clampPercentage(hsl[2] + amount);
-  this._ = { hsl: hsl };
-  return this;
-};
-
-Colr.prototype.darken = function (amount) {
-  var hsl = this.toRawHslArray();
-  hsl[2] = clampPercentage(hsl[2] - amount);
-  this._ = { hsl: hsl };
-  return this;
-};
-
-/*
- * MISC
- */
-
-Colr.prototype.clone = function () {
-  var colr = new Colr();
-  colr._.hex = this._.hex;
-  colr._.grayscale = this._.grayscale;
-
-  if (this._.rgb !== undefined) {
-    colr._.rgb = this._.rgb.slice(0);
-  }
-  if (this._.hsv !== undefined) {
-    colr._.hsv = this._.hsv.slice(0);
-  }
-  if (this._.hsl !== undefined) {
-    colr._.hsl = this._.hsl.slice(0);
-  }
-
-  return colr;
-};
-
-/*
- * UTILS
- */
-
-function clampPercentage (val) {
-  return Math.max(Math.min(val, 100), 0);
-}
-
-function clampByte (byte) {
-  return Math.max(Math.min(byte, 255), 0);
-}
-
-function clampRgb (r, g, b) {
-  return [
-    Math.max(Math.min(r, 255), 0),
-    Math.max(Math.min(g, 255), 0),
-    Math.max(Math.min(b, 255), 0),
-  ];
-}
-
-function clampHsx (h, s, x) {
-  return [
-    Math.max(Math.min(h, 360), 0),
-    Math.max(Math.min(s, 100), 0),
-    Math.max(Math.min(x, 100), 0),
-  ];
-}
-
-
-module.exports = Colr;
-
-},{"colr-convert":186}],186:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-  grayscale: {
-    rgb: grayscale2rgb
-  },
-  hex: {
-    rgb: hex2rgb,
-  },
-  rgb: {
-    hsl: rgb2hsl,
-    hsv: rgb2hsv,
-    hex: rgb2hex,
-    grayscale: rgb2grayscale
-  },
-  hsl: {
-    rgb: hsl2rgb,
-    hsv: hsl2hsv,
-  },
-  hsv: {
-    rgb: hsv2rgb,
-    hsl: hsv2hsl,
-  },
-};
-
-// convert a charcode to a hex val
-function hexVal (c) {
-  return (
-    c < 58 ? c - 48 : // 0 - 9
-    c < 71 ? c - 55 : // A - F
-    c - 87            // a - f
-  );
-}
-
-function hex2rgb (hex) {
-  var i = hex[0] === '#' ? 1 : 0;
-  var len = hex.length;
-
-  if (len - i < 3) {
-    throw new Error('hex input must be at least three chars long');
-  }
-
-  var r, g, b;
-
-  var h1 = hexVal(hex.charCodeAt(0+i));
-  var h2 = hexVal(hex.charCodeAt(1+i));
-  var h3 = hexVal(hex.charCodeAt(2+i));
-
-  if (len - i >= 6) {
-    r = (h1 << 4) + h2;
-    g = (h3 << 4) + hexVal(hex.charCodeAt(3+i));
-    b = (hexVal(hex.charCodeAt(4+i)) << 4) + hexVal(hex.charCodeAt(5+i));
-  } else {
-    r = (h1 << 4) + h1;
-    g = (h2 << 4) + h2;
-    b = (h3 << 4) + h3;
-  }
-
-  if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
-    throw new Error('hex input is invalid');
-  }
-
-  return [r, g, b];
-}
-
-
-function rgb2hex (rgb) {
-  return '#' + (
-    '000000' +
-    ((rgb[0] << 16) +
-     (rgb[1] << 8) +
-      rgb[2]
-    ).toString(16)
-  ).slice(-6);
-}
-
-function rgb2hsl (rgb) {
-  var r = rgb[0] / 255;
-  var g = rgb[1] / 255;
-  var b = rgb[2] / 255;
-
-  var min = Math.min(r, g, b);
-  var max = Math.max(r, g, b);
-  var delta = max - min;
-  var h, s, l;
-
-  if (max === min) {
-    h = 0;
-  } else if (r === max) {
-    h = (g - b) / delta;
-  } else if (g === max) {
-    h = 2 + (b - r) / delta;
-  } else if (b === max) {
-    h = 4 + (r - g) / delta;
-  }
-
-  h = Math.min(h * 60, 360);
-
-  if (h < 0) {
-    h += 360;
-  }
-
-  l = (min + max) / 2;
-
-  if (max === min) {
-    s = 0;
-  } else if (l <= 0.5) {
-    s = delta / (max + min);
-  } else {
-    s = delta / (2 - max - min);
-  }
-
-  return [h, s * 100, l * 100];
-}
-
-function rgb2hsv(rgb) {
-  var r = rgb[0];
-  var g = rgb[1];
-  var b = rgb[2];
-  var min = Math.min(r, g, b);
-  var max = Math.max(r, g, b);
-  var delta = max - min;
-  var h, s, v;
-
-  if (max === 0) {
-    s = 0;
-  } else {
-    s = delta / max * 100;
-  }
-
-  if (max === min) {
-    h = 0;
-  } else if (r === max) {
-    h = (g - b) / delta;
-  } else if (g === max) {
-    h = 2 + (b - r) / delta;
-  } else if (b === max) {
-    h = 4 + (r - g) / delta;
-  }
-
-  h = Math.min(h * 60, 360);
-
-  if (h < 0) {
-    h += 360;
-  }
-
-  v = (max / 255) * 100;
-
-  return [h, s, v];
-}
-
-function hsl2rgb (hsl) {
-  var h = hsl[0] / 360;
-  var s = hsl[1] / 100;
-  var l = hsl[2] / 100;
-
-  var r, g, b;
-
-  if (s === 0) { // monochrome
-    r = g = b = l;
-
-  } else {
-    var q = l < 0.5 ? l * (s + 1) : l + s - l * s;
-    var p = 2 * l - q;
-    var t;
-
-    // red
-    t = h + 1/3;
-    if      (t < 0) { t += 1; }
-    else if (t > 1) { t -= 1; }
-    if      (t < 1/6)  { r = p + (q - p) * t * 6; }
-    else if (t < 1/2 ) { r = q; }
-    else if (t < 2/3 ) { r = p + (q - p) * (2/3 - t) * 6; }
-    else               { r = p; }
-
-    // green
-    t = h;
-    if      (t < 0) { t += 1; }
-    else if (t > 1) { t -= 1; }
-    if      (t < 1/6)  { g = p + (q - p) * t * 6; }
-    else if (t < 1/2 ) { g = q; }
-    else if (t < 2/3 ) { g = p + (q - p) * (2/3 - t) * 6; }
-    else               { g = p; }
-
-    // blue
-    t = h - 1/3;
-    if      (t < 0) { t += 1; }
-    else if (t > 1) { t -= 1; }
-    if      (t < 1/6)  { b = p + (q - p) * t * 6; }
-    else if (t < 1/2 ) { b = q; }
-    else if (t < 2/3 ) { b = p + (q - p) * (2/3 - t) * 6; }
-    else               { b = p; }
-  }
-
-  return [r * 255, g * 255, b * 255];
-}
-
-function hsl2hsv(hsl) {
-  var h = hsl[0];
-  var s = hsl[1] / 100;
-  var l = hsl[2] / 100;
-  var sv, v;
-
-  if (s === 0) {
-    return [h, 0, l * 100];
-  }
-
-  if (l === 0) {
-    return [h, 0, 0];
-  }
-
-  l *= 2;
-  s *= (l <= 1) ? l : 2 - l;
-  v = (l + s) / 2;
-  sv = (2 * s) / (l + s);
-  return [h, sv * 100, v * 100];
-}
-
-function hsv2rgb(hsv) {
-  var h = hsv[0] / 60;
-  var s = hsv[1] / 100;
-  var v = hsv[2] / 100;
-
-  var hi = Math.floor(h) % 6;
-
-  var f = h - Math.floor(h);
-  var p = 255 * v * (1 - s);
-  var q = 255 * v * (1 - (s * f));
-  var t = 255 * v * (1 - (s * (1 - f)));
-      v = 255 * v;
-
-  switch(hi) {
-    case 0:
-      return [v, t, p];
-    case 1:
-      return [q, v, p];
-    case 2:
-      return [p, v, t];
-    case 3:
-      return [p, q, v];
-    case 4:
-      return [t, p, v];
-    case 5:
-      return [v, p, q];
-  }
-}
-
-function hsv2hsl(hsv) {
-  var h = hsv[0];
-  var s = hsv[1] / 100;
-  var v = hsv[2] / 100;
-  var sl, l;
-
-  if (s === 0) {
-    return [h, 0, v * 100];
-  }
-
-  if (v === 0) {
-    return [h, 0, 0];
-  }
-
-  l = (2 - s) * v;
-  sl = s * v;
-  sl /= (l <= 1) ? l : 2 - l;
-  l /= 2;
-  return [h, sl * 100, l * 100];
-}
-
-function grayscale2rgb (value) {
-  return [value, value, value];
-}
-
-function rgb2grayscale (rgb) {
-  return (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-}
-
-},{}],187:[function(require,module,exports){
-/**
- * Copyright 2013-2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
-* @providesModule ReactComponentWithPureRenderMixin
-*/
-
-"use strict";
-
-var shallowEqual = require("./shallowEqual");
-
-/**
- * If your React component's render function is "pure", e.g. it will render the
- * same result given the same props and state, provide this Mixin for a
- * considerable performance boost.
- *
- * Most React components have pure render functions.
- *
- * Example:
- *
- *   var ReactComponentWithPureRenderMixin =
- *     require('ReactComponentWithPureRenderMixin');
- *   React.createClass({
- *     mixins: [ReactComponentWithPureRenderMixin],
- *
- *     render: function() {
- *       return <div className={this.props.className}>foo</div>;
- *     }
- *   });
- *
- * Note: This only checks shallow equality for props and state. If these contain
- * complex data structures this mixin may have false-negatives for deeper
- * differences. Only mixin to components which have simple props and state, or
- * use `forceUpdate()` when you know deep data structures have changed.
- */
-var ReactComponentWithPureRenderMixin = {
-  shouldComponentUpdate: function(nextProps, nextState) {
-    return !shallowEqual(this.props, nextProps) ||
-           !shallowEqual(this.state, nextState);
-  }
-};
-
-module.exports = ReactComponentWithPureRenderMixin;
-
-},{"./shallowEqual":189}],188:[function(require,module,exports){
-/**
- * Copyright 2013-2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule cx
- */
-
-/**
- * This function is used to mark string literals representing CSS class names
- * so that they can be transformed statically. This allows for modularization
- * and minification of CSS class names.
- *
- * In static_upstream, this function is actually implemented, but it should
- * eventually be replaced with something more descriptive, and the transform
- * that is used in the main stack should be ported for use elsewhere.
- *
- * @param string|object className to modularize, or an object of key/values.
- *                      In the object case, the values are conditions that
- *                      determine if the className keys should be included.
- * @param [string ...]  Variable list of classNames in the string case.
- * @return string       Renderable space-separated CSS className.
- */
-function cx(classNames) {
-  if (typeof classNames == 'object') {
-    return Object.keys(classNames).filter(function(className) {
-      return classNames[className];
-    }).join(' ');
-  } else {
-    return Array.prototype.join.call(arguments, ' ');
-  }
-}
-
-module.exports = cx;
-
-},{}],189:[function(require,module,exports){
-/**
- * Copyright 2013-2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule shallowEqual
- */
-
-"use strict";
-
-/**
- * Performs equality by iterating through keys on an object and returning
- * false when any key has values which are not strictly equal between
- * objA and objB. Returns true when the values of all keys are strictly equal.
- *
- * @return {boolean}
- */
-function shallowEqual(objA, objB) {
-  if (objA === objB) {
-    return true;
-  }
-  var key;
-  // Test for A's keys different from B.
-  for (key in objA) {
-    if (objA.hasOwnProperty(key) &&
-        (!objB.hasOwnProperty(key) || objA[key] !== objB[key])) {
-      return false;
-    }
-  }
-  // Test for B's keys missing from A.
-  for (key in objB) {
-    if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-module.exports = shallowEqual;
-
-},{}],190:[function(require,module,exports){
-/**
- * @jsx React.DOM
- */
-
-var React = require("react");
-var PureRenderMixin = require("react/lib/ReactComponentWithPureRenderMixin");
-var cx = require("react/lib/cx");
-var Map = require("./Map");
-var Slider = require("./Slider");
-var Colr = require("colr");
-
-
-var ColorPicker = React.createClass({displayName: "ColorPicker",
-
-  mixins : [PureRenderMixin],
-
-  getDefaultProps : function() {
-    return {
-      color : "#000000"
-    };
-  },
-
-  getInitialState: function() {
-    return this.getStateFrom(this.props.color);
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    var nextColor = nextProps.color;
-    var currentColor = Colr.fromHsvObject(this.state.hsv).toHex();
-
-    if(nextColor.toLowerCase() !== currentColor.toLowerCase()) {
-      this.setState(this.getStateFrom(nextColor));
-    }
-  },
-
-  getStateFrom : function(color) {
-    color = Colr.fromHex(color);
-    return {
-      hsv : color.toHsvObject()
-    };
-  },
-
-  render: function () {
-    var luminosity = this.getLuminosity();
-    var hue = this.getBackgroundHue();
-
-    var classes = cx({
-      dark: luminosity <= 0.5,
-      light: luminosity > 0.5
-    });
-
-    return (
-      React.createElement("div", {className: "colorpicker"}, 
-        React.createElement("div", {className: "hue-slider"}, 
-          React.createElement(Slider, {
-            vertical: true, 
-            value: this.state.hsv.h, 
-            max: 360, 
-            onChange: this.handleHueChange}
-          )
-        ), 
-        React.createElement(Map, {
-          x: this.state.hsv.s, 
-          y: this.state.hsv.v, 
-          max: 100, 
-          className: classes, 
-          backgroundColor: hue, 
-          onChange: this.handleSaturationValueChange}
-        )
-      )
-    );
-  },
-
-  getLuminosity : function() {
-    return Colr.fromHsvObject(this.state.hsv).toGrayscale() / 255;
-  },
-
-  getBackgroundHue : function() {
-    return Colr.fromHsv(this.state.hsv.h, 100, 100).toHex();
-  },
-
-  handleHueChange : function(hue) {
-    this.update({
-      h : hue,
-      s : this.state.hsv.s,
-      v : this.state.hsv.v
-    });
-  },
-
-  handleSaturationValueChange : function(saturation, value) {
-    this.update({
-      h : this.state.hsv.h,
-      s : saturation,
-      v : value
-    });
-  },
-
-  update : function(hsv) {
-    var color = Colr.fromHsvObject(hsv);
-    this.props.onChange(color.toHex());
-    this.setState({ hsv : hsv });
-  }
-
-});
-
-module.exports = ColorPicker;
-
-},{"./Map":192,"./Slider":193,"colr":185,"react":undefined,"react/lib/ReactComponentWithPureRenderMixin":187,"react/lib/cx":188}],191:[function(require,module,exports){
-/**
- * @jsx React.DOM
- */
-
-var React = require("react");
-var clamp = require("../util/clamp");
-
-function noop() {}
-
-var DraggableMixin = {
-
-  propTypes: {
-    onChange : React.PropTypes.func,
-    max : React.PropTypes.number
-  },
-
-  getDefaultProps: function () {
-    return {
-      onChange: noop,
-      max : 1
-    };
-  },
-
-  getInitialState: function () {
-    return {
-      active: false
-    };
-  },
-
-  componentDidMount: function() {
-    document.addEventListener("mousemove", this.handleUpdate);
-    document.addEventListener("touchmove", this.handleUpdate);
-    document.addEventListener("mouseup", this.stopUpdates);
-    document.addEventListener("touchend", this.stopUpdates);
-  },
-
-  componentWillUnmount: function() {
-    document.removeEventListener("mousemove", this.handleUpdate);
-    document.removeEventListener("touchmove", this.handleUpdate);
-    document.removeEventListener("mouseup", this.stopUpdates);
-    document.removeEventListener("touchend", this.stopUpdates);
-  },
-
-  startUpdates: function (e) {
-    e.preventDefault();
-    var coords = this.getPosition(e);
-    this.setState({ active: true });
-    this.updatePosition(coords.x, coords.y);
-  },
-
-  handleUpdate: function (e) {
-    if (this.state.active) {
-      e.preventDefault();
-      var coords = this.getPosition(e);
-      this.updatePosition(coords.x, coords.y);
-    }
-  },
-
-  stopUpdates: function () {
-    if(this.state.active) {
-      this.setState({ active: false });
-    }
-  },
-
-  getPosition : function(e) {
-    if(e.touches) {
-      e = e.touches[0];
-    }
-
-    return {
-      x : e.clientX,
-      y : e.clientY
-    };
-  },
-
-  getPercentageValue : function(value) {
-    return (value / this.props.max) * 100 + "%";
-  },
-
-  getScaledValue : function(value) {
-    return clamp(value, 0, 1) * this.props.max;
-  }
-
-};
-
-module.exports = DraggableMixin;
-},{"../util/clamp":195,"react":undefined}],192:[function(require,module,exports){
-/**
- * @jsx React.DOM
- */
-
-var React = require("react");
-var PureRenderMixin = require("react/lib/ReactComponentWithPureRenderMixin");
-var cx = require("react/lib/cx");
-var DraggableMixin = require("./DraggableMixin");
-
-
-var Map = React.createClass({displayName: "Map",
-
-  mixins : [DraggableMixin, PureRenderMixin],
-
-  propTypes: {
-    x : React.PropTypes.number,
-    y : React.PropTypes.number,
-    backgroundColor : React.PropTypes.string
-  },
-
-  getDefaultProps: function() {
-    return {
-      x : 0,
-      y : 0,
-      backgroundColor : "transparent"
-    };
-  },
-
-  updatePosition : function(clientX, clientY) {
-    var rect = this.getDOMNode().getBoundingClientRect();
-    var x = (clientX - rect.left) / rect.width;
-    var y = (rect.bottom - clientY) / rect.height;
-
-    x = this.getScaledValue(x);
-    y = this.getScaledValue(y);
-
-    this.props.onChange(x, y);
-  },
-
-  render: function () {
-    var classes = cx({
-      map: true,
-      active: this.state.active
-    });
-
-    return (
-      React.createElement("div", {
-        className: this.props.className + " " + classes, 
-        onMouseDown: this.startUpdates, 
-        onTouchStart: this.startUpdates
-      }, 
-        React.createElement("div", {className: "background", style: {
-          backgroundColor: this.props.backgroundColor
-        }}), 
-        React.createElement("div", {className: "pointer", style: {
-          left: this.getPercentageValue(this.props.x),
-          bottom: this.getPercentageValue(this.props.y)
-        }})
-      )
-    );
-  }
-
-});
-
-module.exports = Map;
-
-},{"./DraggableMixin":191,"react":undefined,"react/lib/ReactComponentWithPureRenderMixin":187,"react/lib/cx":188}],193:[function(require,module,exports){
-/**
- * @jsx React.DOM
- */
-
-var React = require("react");
-var PureRenderMixin = require("react/lib/ReactComponentWithPureRenderMixin");
-var cx = require("react/lib/cx");
-var DraggableMixin = require("./DraggableMixin");
-
-
-var Slider = React.createClass({displayName: "Slider",
-
-  mixins : [DraggableMixin, PureRenderMixin],
-
-  propTypes: {
-    vertical: React.PropTypes.bool.isRequired,
-    value: React.PropTypes.number.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      value : 0
-    };
-  },
-
-  updatePosition : function(clientX, clientY) {
-    var rect = this.getDOMNode().getBoundingClientRect();
-
-    var value;
-    if (this.props.vertical) {
-      value = (rect.bottom - clientY) / rect.height;
-    } else {
-      value = (clientX - rect.left) / rect.width;
-    }
-
-    value = this.getScaledValue(value);
-    this.props.onChange(value);
-  },
-
-  getCss: function () {
-    var obj = {};
-    var attr = this.props.vertical ? "bottom" : "left";
-    obj[attr] = this.getPercentageValue(this.props.value);
-    return obj;
-  },
-
-  render: function () {
-    var classes = cx({
-      slider: true,
-      vertical: this.props.vertical,
-      horizontal: ! this.props.vertical
-    });
-
-    return (
-      React.createElement("div", {
-        className: classes, 
-        onMouseDown: this.startUpdates, 
-        onTouchStart: this.startUpdates
-      }, 
-        React.createElement("div", {className: "track"}), 
-        React.createElement("div", {className: "pointer", style: this.getCss()})
-      )
-    );
-  }
-
-});
-
-module.exports = Slider;
-
-},{"./DraggableMixin":191,"react":undefined,"react/lib/ReactComponentWithPureRenderMixin":187,"react/lib/cx":188}],194:[function(require,module,exports){
-module.exports = require("./components/ColorPicker");
-
-},{"./components/ColorPicker":190}],195:[function(require,module,exports){
-function clamp(val, min, max){
-  return val < min? min : (val > max? max : val);
-}
-
-module.exports = clamp;
-},{}],196:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18850,7 +21045,7 @@ emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 
 module.exports = emptyFunction;
 
-},{}],197:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -18913,7 +21108,7 @@ if ("production" !== process.env.NODE_ENV) {
 module.exports = warning;
 
 }).call(this,require('_process'))
-},{"./emptyFunction":196,"_process":159}],198:[function(require,module,exports){
+},{"./emptyFunction":216,"_process":160}],218:[function(require,module,exports){
 // underscore.deepclone
 // --------------------
 // v0.1.1

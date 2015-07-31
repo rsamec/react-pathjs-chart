@@ -1664,7 +1664,12 @@ var BarChart = (function (_React$Component) {
 
             var chartArea = { x: { minValue: 0, maxValue: 200, min: 0, max: options.chartWidth }, y: this.getMaxAndMin(values, chart.scale) };
 
-            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
+            var sec = options.animate.fillTransition || 0;
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
+
+            var textStyle = _underscore2['default'].clone(options.axisX.label);
+            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+
             var lines = chart.curves.map(function (c, i) {
                 var color = this.color(i % 3);
                 var stroke = _palleteColorsJs2['default'].darkenColor(color);
@@ -1674,7 +1679,7 @@ var BarChart = (function (_React$Component) {
                     _react2['default'].createElement('path', { d: c.line.path.print(), style: fillOpacityStyle, stroke: stroke, fill: color }),
                     options.axisX.showLabels ? _react2['default'].createElement(
                         'text',
-                        { transform: 'translate(' + c.line.centroid[0] + ',' + (chartArea.y.min + 25) + ')rotate(45)', textAnchor: 'middle' },
+                        { style: textStyle, transform: 'translate(' + c.line.centroid[0] + ',' + (chartArea.y.min + 25) + ')rotate(45)', textAnchor: 'middle' },
                         c.item.name
                     ) : null
                 );
@@ -1741,11 +1746,27 @@ var BarVivusChart = (function (_BarChart) {
     _inherits(BarVivusChart, _BarChart);
 
     _createClass(BarVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -2011,7 +2032,6 @@ var PieChart = (function (_React$Component) {
                 var target = self.defaultRange;
                 target[i] = 1;
                 self.animateState({ expanded: target });
-                console.log('Target:' + target);
                 //self.setState({ expanded: target });
             };
         }
@@ -2042,7 +2062,11 @@ var PieChart = (function (_React$Component) {
 
             var self = this;
             var coefficients = this.state.expanded;
-            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
+            var sec = options.animate.fillTransition || 0;
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
+
+            var textStyle = _underscore2['default'].clone(options.label);
+            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
 
             var slices = chart.curves.map(function (c, i) {
                 var fill = self.color(i);
@@ -2053,7 +2077,7 @@ var PieChart = (function (_React$Component) {
                     _react2['default'].createElement('path', { onClick: self.expand(i), style: fillOpacityStyle, d: c.sector.path.print(), stroke: stroke, fill: fill }),
                     _react2['default'].createElement(
                         'text',
-                        { textAnchor: 'middle', transform: self.translate(c.sector.centroid) },
+                        { style: textStyle, textAnchor: 'middle', transform: self.translate(c.sector.centroid) },
                         c.item.name
                     )
                 );
@@ -2158,11 +2182,27 @@ var PieVivusChart = (function (_PieChart) {
     _inherits(PieVivusChart, _PieChart);
 
     _createClass(PieVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -2201,6 +2241,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
 
 var _componentOptionsJs = require('../component/Options.js');
 
@@ -2275,6 +2319,9 @@ var RadarChart = (function (_React$Component) {
                 }
             });
             //
+            var textStyle = _underscore2['default'].clone(options.label);
+            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+
             var labels = chart.rings[length - 1].path.points().map(function (p, i) {
                 return _react2['default'].createElement(
                     'g',
@@ -2282,7 +2329,7 @@ var RadarChart = (function (_React$Component) {
                     _react2['default'].createElement('line', { x1: p[0], y1: p[1], x2: center[0], y2: center[1], stroke: 'gray' }),
                     _react2['default'].createElement(
                         'text',
-                        { textAnchor: 'middle', fill: self.props.options.fill,
+                        { style: textStyle, textAnchor: 'middle', fill: self.props.options.fill,
                             transform: 'translate(' + Math.floor(p[0]) + ',' + Math.floor(p[1]) + ')' },
                         keys[i]
                     )
@@ -2318,7 +2365,7 @@ exports['default'] = RadarChart;
 module.exports = exports['default'];
 
 
-},{"../component/Options.js":35,"paths-js/radar":10,"react":undefined}],25:[function(require,module,exports){
+},{"../component/Options.js":35,"paths-js/radar":10,"react":undefined,"underscore":undefined}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2358,11 +2405,27 @@ var RadarVivusChart = (function (_RadarChart) {
     _inherits(RadarVivusChart, _RadarChart);
 
     _createClass(RadarVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -2491,8 +2554,12 @@ var Scatterplot = (function (_React$Component) {
                 margin: options.margin
             };
 
-            var transparent = { opacity: 0.5 };
-            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
+            var sec = options.animate.fillTransition || 0;
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
+
+            var textStyle = _underscore2['default'].clone(options.label);
+            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+
             var points = _underscore2['default'].map(chart.curves, function (c, i) {
                 return _underscore2['default'].map(c.line.path.points(), function (p, j) {
                     var item = c.item[j];
@@ -2502,7 +2569,7 @@ var Scatterplot = (function (_React$Component) {
                         _react2['default'].createElement('circle', { cx: 0, cy: 0, r: 5, style: fillOpacityStyle, stroke: options.stroke, fill: options.fill, onMouseEnter: this.onEnter.bind(this, j), onMouseLeave: this.onLeave.bind(this, j) }),
                         item.selected ? _react2['default'].createElement(
                             'text',
-                            { transform: 'translate(15, 5)', 'text-anchor': 'start' },
+                            { style: textStyle, transform: 'translate(15, 5)', 'text-anchor': 'start' },
                             item.title
                         ) : null
                     );
@@ -2570,11 +2637,27 @@ var ScatterplotVivusChart = (function (_ScatterplotChart) {
     _inherits(ScatterplotVivusChart, _ScatterplotChart);
 
     _createClass(ScatterplotVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -2670,11 +2753,27 @@ var SmoothLineVivusChart = (function (_SmoothLineChart) {
     _inherits(SmoothLineVivusChart, _SmoothLineChart);
 
     _createClass(SmoothLineVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -2770,11 +2869,27 @@ var StockLineVivusChart = (function (_StockLineChart) {
     _inherits(StockLineVivusChart, _StockLineChart);
 
     _createClass(StockLineVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -2818,6 +2933,10 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _componentOptionsJs = require('../component/Options.js');
+
+var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
+
 var Tree = require('paths-js/tree');
 
 function children(x) {
@@ -2848,25 +2967,28 @@ var TreeChart = (function (_React$Component) {
                 noDataMsg
             );
 
-            var options = this.props.options || {};
-            var width = options.width || 400;
-            var height = options.height || 400;
-
+            var options = new _componentOptionsJs2['default'](this.props);
             var that = this;
 
             var tree = Tree({
                 data: this.props.data,
                 children: children,
-                width: width - 150,
-                height: height - 100
+                width: options.chartWidth,
+                height: options.chartHeight
             });
 
             var curves = _underscore2['default'].map(tree.curves, function (c) {
                 return _react2['default'].createElement('path', { d: c.connector.path.print(), fill: 'none', stroke: options.stroke });
             });
 
-            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0 };
-            var nodes = _underscore2['default'].map(tree.nodes, function (n) {
+            var sec = options.animate.fillTransition || 0;
+            var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
+
+            var textStyle = _underscore2['default'].clone(options.label);
+            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+
+            var r = options.r || 5;
+            var nodes = _underscore2['default'].map(tree.nodes, function (n, index) {
                 var position = 'translate(' + n.point[0] + ',' + n.point[1] + ')';
 
                 function toggle() {
@@ -2877,13 +2999,13 @@ var TreeChart = (function (_React$Component) {
                 if (children(n.item).length > 0) {
                     var text = _react2['default'].createElement(
                         'text',
-                        { transform: 'translate(-10,0)', textAnchor: 'end' },
+                        { style: textStyle, transform: 'translate(-10,0)', textAnchor: 'end' },
                         n.item.name
                     );
                 } else {
                     var text = _react2['default'].createElement(
                         'text',
-                        { transform: 'translate(10,0)', textAnchor: 'start' },
+                        { style: textStyle, transform: 'translate(10,0)', textAnchor: 'start' },
                         n.item.name
                     );
                 }
@@ -2891,17 +3013,17 @@ var TreeChart = (function (_React$Component) {
                 return _react2['default'].createElement(
                     'g',
                     { transform: position },
-                    _react2['default'].createElement('circle', { style: fillOpacityStyle, fill: options.fill, stroke: options.stroke, r: '5', cx: '0', cy: '0', onClick: toggle }),
+                    _react2['default'].createElement('circle', { key: 'tree_' + index, style: fillOpacityStyle, fill: options.fill, stroke: options.stroke, r: r, cx: '0', cy: '0', onClick: toggle }),
                     text
                 );
             });
 
             return _react2['default'].createElement(
                 'svg',
-                { ref: 'vivus', width: width, height: height },
+                { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(80, 10)' },
+                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
                     curves,
                     nodes
                 )
@@ -2916,7 +3038,7 @@ exports['default'] = TreeChart;
 module.exports = exports['default'];
 
 
-},{"paths-js/tree":16,"react":undefined,"underscore":undefined}],33:[function(require,module,exports){
+},{"../component/Options.js":35,"paths-js/tree":16,"react":undefined,"underscore":undefined}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2956,11 +3078,27 @@ var TreeVivusChart = (function (_TreeChart) {
     _inherits(TreeVivusChart, _TreeChart);
 
     _createClass(TreeVivusChart, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            this.run();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (!this.state.finished) this.run();
+        }
+    }, {
+        key: 'run',
+        value: function run() {
+            var animate = this.props.options && this.props.options.animate || {};
             new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: 'delayed',
-                duration: 200,
+                type: animate.type || 'delayed',
+                duration: animate.duration || 'delayed',
                 start: 'autostart',
                 selfDestroy: true
             }, this.finish.bind(this));
@@ -3029,7 +3167,7 @@ var AxisStruct = (function () {
 
             var tickInterval = this.options.tickCount || 10;
 
-            var ticks = this.options.tickValues !== undefined ? _underscore2['default'].map(this.options.tickValues, function (v) {
+            var ticks = this.options.tickValues !== undefined && this.options.tickValues.length !== 0 ? _underscore2['default'].map(this.options.tickValues, function (v) {
                 return v.value;
             }) : AxisStruct.getTickValues(currentAxis, tickInterval);
 
@@ -3127,6 +3265,9 @@ var Axis = (function (_React$Component) {
 
             var textTransform = 'translate(' + xy[0] + ',' + xy[1] + ')';
 
+            var textStyle = _underscore2['default'].clone(options.label);
+            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+
             var ticks = _underscore2['default'].map(axis.ticks, function (c, i) {
                 var label = options.labelComponent !== undefined ? _react2['default'].cloneElement(options.labelComponent, { value: c }) : c;
                 return _react2['default'].createElement(
@@ -3135,7 +3276,7 @@ var Axis = (function (_React$Component) {
                     options.showTicks ? _react2['default'].createElement('circle', { r: '2', cx: '0', cy: '0', stroke: 'grey', fill: 'grey' }) : null,
                     options.showLabels ? _react2['default'].createElement(
                         'text',
-                        { transform: textTransform, textAnchor: textAnchor },
+                        { transform: textTransform, style: textStyle, textAnchor: textAnchor },
                         label
                     ) : null
                 );
@@ -3166,7 +3307,7 @@ module.exports = exports['default'];
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
-        value: true
+    value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3174,56 +3315,71 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var ChartOptions = (function () {
-        function ChartOptions(props) {
-                _classCallCheck(this, ChartOptions);
+    function ChartOptions(props) {
+        _classCallCheck(this, ChartOptions);
 
-                //var noDataMsg = this.props.noDataMessage || "No data available";
-                //if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
-                this.options = props.options || {};
+        //var noDataMsg = this.props.noDataMessage || "No data available";
+        //if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
+        this.options = props.options || {};
 
-                this.chartWidth = this.options.width || 400;
-                this.chartHeight = this.options.height || 400;
+        this.chartWidth = this.options.width || 400;
+        this.chartHeight = this.options.height || 400;
 
-                //margins
-                //add right + left
-                this.width = this.chartWidth + (this.margin.right || 0) + (this.margin.left || 0);
-                //add top + bottom
-                this.height = this.chartHeight + (this.margin.top || 0) + (this.margin.bottom || 0);
+        //margins
+        //add right + left
+        this.width = this.chartWidth + (this.margin.right || 0) + (this.margin.left || 0);
+        //add top + bottom
+        this.height = this.chartHeight + (this.margin.top || 0) + (this.margin.bottom || 0);
+    }
+
+    _createClass(ChartOptions, [{
+        key: 'legendPosition',
+        get: function () {
+            return this.options.legendPosition || 'topLeft';
         }
+    }, {
+        key: 'axisX',
+        get: function () {
+            return this.options.axisX || {};
+        }
+    }, {
+        key: 'axisY',
+        get: function () {
+            return this.options.axisY || {};
+        }
+    }, {
+        key: 'margin',
+        get: function () {
+            return this.options.margin || {};
+        }
+    }, {
+        key: 'stroke',
+        get: function () {
+            return this.options.stroke;
+        }
+    }, {
+        key: 'fill',
+        get: function () {
+            return this.options.fill;
+        }
+    }, {
+        key: 'r',
+        get: function () {
+            return this.options.r;
+        }
+    }, {
+        key: 'label',
+        get: function () {
+            return this.options.label || {};
+        }
+    }, {
+        key: 'animate',
+        get: function () {
+            return this.options.animate || {};
+        }
+    }]);
 
-        _createClass(ChartOptions, [{
-                key: 'legendPosition',
-                get: function () {
-                        return this.options.legendPosition || 'topLeft';
-                }
-        }, {
-                key: 'axisX',
-                get: function () {
-                        return this.options.axisX || {};
-                }
-        }, {
-                key: 'axisY',
-                get: function () {
-                        return this.options.axisY || {};
-                }
-        }, {
-                key: 'margin',
-                get: function () {
-                        return this.options.margin || {};
-                }
-        }, {
-                key: 'stroke',
-                get: function () {
-                        return this.options.stroke;
-                }
-        }, {
-                key: 'fill',
-                get: function () {
-                        return this.options.fill;
-                }
-        }]);
-
-        return ChartOptions;
+    return ChartOptions;
 })();
 
 exports['default'] = ChartOptions;
