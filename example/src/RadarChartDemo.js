@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
+import {Radar} from 'react-pathjs-chart';
 import genie from 'genie'
-import {ChartDemo} from './ChartOptions.js';
+import ChartDemo from './ChartDemo.js';
 
 export class RadarDemo {
     get dataTemplate() {
@@ -44,7 +44,17 @@ export class RadarDemo {
             r:300,
             max:150,
             fill:"#2980B9",
-            stroke:"#2980B9"
+            stroke:"#2980B9",
+            animate:{
+                type:'oneByOne',
+                duration:200
+            },
+            label:{
+                fontFamily:'Arial',
+                fontSize:14,
+                fontWeight:true,
+                fill:'#34495E'
+            }
         }
     }
     get props(){

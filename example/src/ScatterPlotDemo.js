@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
+import {Scatterplot} from 'react-pathjs-chart';
 import genie from 'genie'
-import {ChartDemo} from './ChartOptions.js';
+import ChartDemo from './ChartDemo.js';
 import _ from 'underscore';
 
 _.mixin(require('underscore.deepclone'));
@@ -32,13 +32,29 @@ class PlotDemo {
             margin: {top: 40, left: 60, bottom: 30, right: 30},
             fill: "#2980B9",
             stroke: "#3E90F0",
+            animate:{
+                type:'delayed',
+                duration:200
+            },
+            label:{
+                fontFamily:'Arial',
+                fontSize:14,
+                fontWeight:true,
+                fill:'#34495E'
+            },
             axisX: {
                 showAxis: true,
                 showLines: true,
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'bottom'
+                orient: 'bottom',
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             },
             axisY: {
                 showAxis: true,
@@ -46,7 +62,13 @@ class PlotDemo {
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'left'
+                orient: 'left',
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             }
         }
     }

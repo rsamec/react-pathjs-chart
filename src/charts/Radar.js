@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'underscore';
 import Options from '../component/Options.js';
 
 var Radar = require('paths-js/radar');
@@ -60,11 +61,14 @@ export default class RadarChart extends React.Component
             }
         });
         //
+        var textStyle = _.clone(options.label);
+        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+
         var labels = chart.rings[length - 1].path.points().map(function (p, i) {
             return (
                 <g>
                     <line x1={p[0]} y1={p[1]} x2={center[0]} y2={center[1]} stroke="gray"/>
-                    <text textAnchor="middle" fill={self.props.options.fill}
+                    <text style={textStyle} textAnchor="middle" fill={self.props.options.fill}
                           transform={"translate(" + Math.floor( p[0]) + "," + Math.floor( p[1]) + ")"}>{keys[i]}</text>
                 </g>
             )

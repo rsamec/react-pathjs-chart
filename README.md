@@ -5,10 +5,11 @@ These component offers react components - charts (Pie,Bar,SmoothLine,StockLine,S
 
 It is based on clone of these examples from [path-js](https://github.com/andreaferretti/paths-js-react-demo) and is extended so that it is easier to use it.
 
++   configuration of formats, labels, colors, axis, ticks, lines, animations, ...
++   support for chart animation - using vivus [vivus](https://github.com/maxwellito/vivus)
 +   instead of accessor function you can use string key to determine the accessor key in data
-+   axis,ticks, formats support
++   server rendering
 +   wrapped to be used by package managers (npm, bower) or standalone package
-
 
 ## Demo & Examples
 
@@ -54,7 +55,12 @@ import {Pie,Bar, SmoothLine,StockLine,Scatterplot,Tree,Radar} from 'react-pathjs
 
 ### Properties
 
-
++   data - chart data to visualize
++   accessor keys
+    +   Pie,Bar - __accessorKey__ 
+    +   SmoothLine,StockLine,Scatterplot - __xKey__, __yKey__
++   options - visual configuration of chart, enables to configure  formats, labels, colors, axis, ticks, lines, animations, ...
++   noDataMessage - message to show if no data or empty data are specified
 
 ### Notes
 

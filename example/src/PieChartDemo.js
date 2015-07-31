@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pie,Tree,SmoothLine,SmoothLineVivus,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
+import {Pie} from 'react-pathjs-chart';
 import genie from 'genie'
-import {ChartDemo} from './ChartOptions.js';
+import ChartDemo from './ChartDemo.js';
 
 export class PieDemo {
     get dataTemplate() {
@@ -29,7 +29,18 @@ export class PieDemo {
             color: '#2980B9',
             r: 100,
             R: 200,
-            legendPosition: 'topLeft'
+            legendPosition: 'topLeft',
+            animate:{
+                type:'oneByOne',
+                duration:200,
+                fillTransition:3
+            },
+            label:{
+                fontFamily:'Arial',
+                fontSize:14,
+                fontWeight:true,
+                fill:'#ECF0F1'
+            }
         }
     }
     get props(){

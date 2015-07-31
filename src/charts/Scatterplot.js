@@ -67,14 +67,19 @@ export default class Scatterplot extends React.Component {
             margin:options.margin
         };
 
-        var transparent = {opacity: 0.5};
-        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0};
+
+        var sec = options.animate.fillTransition || 0;
+        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
+
+        var textStyle = _.clone(options.label);
+        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+
         var points = _.map(chart.curves, function (c, i) {
             return _.map(c.line.path.points(),function(p,j) {
                 var item = c.item[j];
                 return (<g transform={"translate(" + p[0] + "," + p[1] + ")"}>
                     <circle cx={0} cy={0} r={5} style={fillOpacityStyle} stroke={options.stroke} fill={options.fill} onMouseEnter={this.onEnter.bind(this,j)} onMouseLeave={this.onLeave.bind(this,j)}/>
-                    {item.selected?<text transform="translate(15, 5)" text-anchor="start">{item.title}</text>:null}
+                    {item.selected?<text style={textStyle} transform="translate(15, 5)" text-anchor="start">{item.title}</text>:null}
                 </g>)
             },this)
         },this);

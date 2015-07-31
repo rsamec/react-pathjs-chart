@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pie,Bar,Tree,SmoothLine,Radar,Scatterplot} from 'react-pathjs-chart';
+import {Bar} from 'react-pathjs-chart';
 import genie from 'genie'
-import {ChartDemo} from './ChartOptions.js';
+import ChartDemo from './ChartDemo.js';
 
 export class BarDemo {
     get dataTemplate() {
@@ -54,13 +54,24 @@ export class BarDemo {
             margin: {top: 20, left: 20, bottom: 50, right: 20},
             color:'#2980B9',
             gutter:20,
+            animate:{
+                type:'oneByOne',
+                duration:200,
+                fillTransition:3
+            },
             axisX: {
                 showAxis: true,
                 showLines: true,
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'bottom'
+                orient: 'bottom',
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             },
             axisY: {
                 showAxis: true,
@@ -68,7 +79,13 @@ export class BarDemo {
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'left'
+                orient: 'left',
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             }
         }
     }

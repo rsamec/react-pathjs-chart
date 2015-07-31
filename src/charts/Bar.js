@@ -71,7 +71,12 @@ export default class BarChart extends  React.Component
 
         var chartArea = {x: {minValue: 0, maxValue: 200, min: 0, max: options.chartWidth}, y: this.getMaxAndMin(values, chart.scale)};
 
-        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0};
+        var sec = options.animate.fillTransition || 0;
+        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
+
+        var textStyle = _.clone(options.axisX.label);
+        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+
         var lines = chart.curves.map(function (c, i) {
             var color = this.color(i % 3);
             var stroke = Colors.darkenColor(color);
@@ -79,7 +84,7 @@ export default class BarChart extends  React.Component
                 <g>
                     <path d={ c.line.path.print() } style={fillOpacityStyle} stroke={stroke} fill={ color }/>
                     {options.axisX.showLabels ?
-                        <text  transform={"translate(" + c.line.centroid[0] +  "," +  (chartArea.y.min + 25) + ")rotate(45)"} textAnchor="middle">{c.item.name}</text>
+                        <text style={textStyle} transform={"translate(" + c.line.centroid[0] +  "," +  (chartArea.y.min + 25) + ")rotate(45)"} textAnchor="middle">{c.item.name}</text>
                         :null}
                 </g>
             )

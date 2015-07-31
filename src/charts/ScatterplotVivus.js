@@ -7,14 +7,23 @@ export default class ScatterplotVivusChart extends ScatterplotChart {
         super(props);
         this.state = { finished: false };
     }
+    componentWillReceiveProps(nextProps){
+        if (nextProps.replay !== this.props.replay) this.setState({finished:false});
+    }
     componentDidMount() {
+        this.run();
+    }
+    componentDidUpdate(prevProps,prevState){
+        if (!this.state.finished) this.run()
+    }
+    run(){
+        var animate = this.props.options && this.props.options.animate || {};
         new Vivus(this.refs.vivus.getDOMNode(), {
-            type: 'delayed',
-            duration: 200,
+            type: animate.type || 'delayed',
+            duration: animate.duration || 'delayed',
             start: 'autostart',
             selfDestroy: true
         }, this.finish.bind(this));
-
     }
     finish() {
         this.setState({ finished: true });

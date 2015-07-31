@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pie,Tree,SmoothLine,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
+import {SmoothLine} from 'react-pathjs-chart';
 import genie from 'genie'
-import {ChartDemo} from './ChartOptions.js';
+import ChartDemo from './ChartDemo.js';
 import _ from 'underscore';
 
 
@@ -20,13 +20,23 @@ export class SmoothLineDemo {
             height:600,
             color:'#2980B9',
             margin: {top: 40, left: 60, bottom: 50, right: 20},
+            animate:{
+                type:'delayed',
+                duration:200
+            },
             axisX: {
                 showAxis: true,
                 showLines: true,
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'bottom'
+                orient: 'bottom',
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             },
             axisY: {
                 showAxis: true,
@@ -34,7 +44,13 @@ export class SmoothLineDemo {
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'left'
+                orient: 'left',
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             }
         }
     }

@@ -3,7 +3,8 @@ import BindToMixin from 'react-binding';
 import _ from 'underscore';
 import Json from 'react-json';
 import genie from 'genie'
-import ColorPicker from 'react-simple-colorpicker';
+
+import {TabbedArea,TabPane,Button} from 'react-bootstrap';
 
 import SmoothLineChartDemo from './SmoothLineChartDemo.js';
 import StockLineChartDemo from './StockLineChartDemo.js';
@@ -66,6 +67,79 @@ var colors = {
     "asbestos"      : "#7F8C8D"
 };
 
+var fontFamilies =[
+    'Arial',
+    'Verdana',
+    'Helvetica',
+    'Times New Roman',
+    'Courier New',
+    'Papyrus'
+]
+
+var TickValues = React.createClass({
+    mixins: [BindToMixin],
+    onChange(){
+        if (this.props.onChange!== undefined) this.props.onChange();
+    },
+    add(){
+        this.props.tickValues.add({value: 0});
+        this.onChange();
+    },
+    remove(item){
+        this.props.tickValues.remove(item);
+        this.onChange();
+    },
+    clear(){
+
+        var source = this.props.tickValues.sourceObject;
+        source.splice(0,source.length);
+        this.props.tickValues.notifyChange();
+
+        this.onChange();
+
+    },
+
+    render(){
+        var items = this.props.tickValues.items;
+        return (<div>
+            <input type='button' value="add" onClick={this.add}/>
+            <input type='button' value="clear" onClick={this.clear}/>
+            <table>
+                <tr>
+                    {items.map(function (item, index) {
+                        var valueLink =this.bindTo(item,'value');
+                        var handleChange = function(e){
+                            valueLink.value = e.target.value;
+                            this.onChange();
+                        }.bind(this);
+                        return (
+                            <td>
+                                <input type='number' style={{width:50,display:'inline'}} key={index}
+                                             value={valueLink.value} onChange={handleChange}/>
+                            </td>)
+                    }, this)}
+                </tr>
+            </table>
+        </div>);
+    }
+});
+// Create the custom field type component
+var TickValuesWrapper = React.createClass({
+    mixins: [BindToMixin],
+    getInitialState(){
+        return {tickValues:_.map(this.props.value,function(item){return _.clone(item)})}
+    },
+    render: function () {
+        var bindToArray = this.bindArrayToState('tickValues');
+        return (<TickValues tickValues={bindToArray}  onChange={this.handleChange}></TickValues>)
+    },
+    handleChange: function () {
+        this.props.onUpdated(this.state.tickValues);
+    }
+});
+
+Json.registerType('tickValues',TickValuesWrapper);
+
 // Create the custom field type component
 var ColorPickerWrapper = React.createClass({
 
@@ -73,10 +147,10 @@ var ColorPickerWrapper = React.createClass({
         var opts = this.props.settings.options || [];
         return (<select value={this.props.value}  onChange={this.handleChange}>
             {opts.map(function(opt,index){
-                    return React.DOM.option({value:opt.value},opt.label);
-                })
+                return React.DOM.option({value:opt.value},opt.label);
+            })
             }
-         </select>)
+        </select>)
     },
     handleChange: function (e) {
         this.props.onUpdated(e.target.value);
@@ -85,6 +159,25 @@ var ColorPickerWrapper = React.createClass({
 
 Json.registerType('colorPicker',ColorPickerWrapper);
 
+var labelOptions= {
+    fields: {
+        fontFamily: {
+            type: 'select', settings: {
+                options: _.map(fontFamilies, function (key, value) {
+                    return {value: key, label: key};
+                })
+            }
+        },
+        fill: {
+            type: 'colorPicker', settings: {
+                options: _.map(colors, function (key, value) {
+                    return {value: key, label: value};
+                })
+            }
+        }
+
+    }
+};
 
 // form: true
 // make objects not extensible,
@@ -95,13 +188,25 @@ var settings = {
     fields: {
         color:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
         fill:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
-        stroke:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
+        stroke:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:key};})}},
         legendPosition: {type: 'select', settings: {options: ['topLeft','topRight','bottomLeft','bottomRight']}},
+        label:labelOptions,
+        animate:{
+            fields:{type:{type:'select',  settings: {options: ['delayed','async','oneByOne']}}}}
+        ,
         axisY: {
-            fields: {orient: {type: 'select', settings: {options: ['left','right']}}}
+            fields: {
+                orient: {type: 'select', settings: {options: ['left', 'right']}},
+                tickValues: {type: 'tickValues'},
+                label:labelOptions
+            }
         },
         axisX: {
-            fields: {orient: {type: 'select', settings: {options: ['top','bottom']}}}
+            fields: {
+                orient: {type: 'select', settings: {options: ['top', 'bottom']}},
+                tickValues: {type: 'tickValues'},
+                label: labelOptions
+            }
         },
         data:{
             fields:{
@@ -182,29 +287,30 @@ var App = React.createClass({
 
     render() {
         return (<div>
+                <TabbedArea bsStyle="tabs" defaultActiveKey={1}>
+                    <TabPane eventKey={1} tab='StockLine'>
+                        <StockLineChartDemo settings={settings}/>
+                    </TabPane>
+                    <TabPane eventKey={2} tab='SmoothLine'>
+                        <SmoothLineChartDemo settings={settings}/>
+                    </TabPane>
+                    <TabPane eventKey={3} tab='Scatterplot'>
+                        <ScatterPlotDemo settings={settings}/>
+                    </TabPane>
+                    <TabPane eventKey={4} tab='Bar'>
+                        <BarChartDemo settings={settings}/>
+                    </TabPane>
+                    <TabPane eventKey={5} tab='Pie'>
+                        <PieChartDemo settings={settings}/>
+                    </TabPane>
 
-                <Panel header="Stock line chart" defaultExpanded={true}>
-                    <StockLineChartDemo settings={settings}/>
-                </Panel>
-                <Panel header="Smooth line chart" defaultExpanded={true}>
-                    <SmoothLineChartDemo settings={settings}/>
-                </Panel>
-                <Panel header="Scatter plot chart" defaultExpanded={true}>
-                    <ScatterPlotDemo settings={settings}/>
-                </Panel>
-                <Panel header="Bar chart" defaultExpanded={true}>
-                    <BarChartDemo settings={settings}/>
-                </Panel>
-                <Panel header="Pie chart" defaultExpanded={true}>
-                    <PieChartDemo settings={settings}/>
-                </Panel>
-                <Panel header="Tree chart" defaultExpanded={true}>
-                    <TreeChartDemo settings={settings}/>
-                </Panel>
-                <Panel header="Radar chart" defaultExpanded={true}>
-                    <RadarChartDemo settings={settings}/>
-                </Panel>
-
+                    <TabPane eventKey={6} tab='Tree'>
+                        <TreeChartDemo settings={settings}/>
+                    </TabPane>
+                    <TabPane eventKey={7} tab='Radar'>
+                        <RadarChartDemo settings={settings}/>
+                    </TabPane>
+                </TabbedArea>
             </div>
         )
     }

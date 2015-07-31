@@ -1,4 +1,4 @@
-export default class ChartOptions{
+export default class ChartOptions {
 
     constructor(props) {
 
@@ -24,4 +24,8 @@ export default class ChartOptions{
     
     get stroke(){return this.options.stroke;}
     get fill(){return this.options.fill;}
+    get r(){return this.options.r;}
+
+    get label(){return this.options.label || {};}
+    get animate() {return this.options.animate || {};}
 }

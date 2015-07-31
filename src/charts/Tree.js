@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
-
+import Options from '../component/Options.js';
 var Tree = require('paths-js/tree');
 
 function children(x) {
@@ -20,26 +20,29 @@ export default class TreeChart extends React.Component {
         var noDataMsg = this.props.noDataMessage || "No data available";
         if (this.props.data === undefined) return (<span>{noDataMsg}</span>);
 
-        var options = this.props.options || {};
-        var width = options.width || 400;
-        var height = options.height || 400;
-
+        var options = new Options(this.props);
         var that = this;
 
 
         var tree = Tree({
             data: this.props.data,
             children: children,
-            width: width - 150,
-            height: height - 100
+            width: options.chartWidth,
+            height: options.chartHeight
         });
 
         var curves = _.map(tree.curves,function (c) {
             return <path d={ c.connector.path.print() } fill="none" stroke={options.stroke} />
         });
 
-        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0};
-        var nodes = _.map(tree.nodes,function (n) {
+        var sec = options.animate.fillTransition || 0;
+        var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
+
+        var textStyle = _.clone(options.label);
+        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+
+        var r = options.r || 5;
+        var nodes = _.map(tree.nodes,function (n,index) {
             var position = "translate(" + n.point[0] + "," + n.point[1] + ")";
 
             function toggle() {
@@ -48,22 +51,22 @@ export default class TreeChart extends React.Component {
             };
 
             if (children(n.item).length > 0) {
-                var text = <text transform="translate(-10,0)" textAnchor="end">{ n.item.name }</text>;
+                var text = <text style={textStyle} transform="translate(-10,0)" textAnchor="end">{ n.item.name }</text>;
             } else {
-                var text = <text transform="translate(10,0)" textAnchor="start">{ n.item.name }</text>;
+                var text = <text  style={textStyle} transform="translate(10,0)" textAnchor="start">{ n.item.name }</text>;
             }
 
             return (
                 <g transform={ position }>
-                    <circle style={fillOpacityStyle}    fill={options.fill} stroke={options.stroke} r="5" cx="0" cy="0" onClick={ toggle }/>
+                    <circle key={"tree_" + index} style={fillOpacityStyle} fill={options.fill} stroke={options.stroke} r={r} cx="0" cy="0" onClick={ toggle }/>
                     { text }
                 </g>
             )
         });
 
         return (
-            <svg ref="vivus"  width={width} height={height}>
-                <g transform="translate(80, 10)">
+            <svg ref="vivus"  width={options.width} height={options.height}>
+                <g transform={"translate(" + options.margin.left + "," + options.margin.top + ")"}>
                     { curves }
                     { nodes }
                 </g>

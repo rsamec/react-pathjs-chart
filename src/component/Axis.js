@@ -52,7 +52,7 @@ class AxisStruct {
 
         var tickInterval = this.options.tickCount || 10;
 
-        var ticks = this.options.tickValues !== undefined? _.map(this.options.tickValues,function(v){return v.value }):AxisStruct.getTickValues(currentAxis, tickInterval);
+        var ticks = this.options.tickValues !== undefined && this.options.tickValues.length !== 0? _.map(this.options.tickValues,function(v){return v.value }):AxisStruct.getTickValues(currentAxis, tickInterval);
 
         var fixed = this.options.zeroAxis?this.scale(0):horizontal?yAxis.min:xAxis.min;
 
@@ -114,12 +114,15 @@ export default class Axis extends React.Component {
 
         var textTransform  = "translate(" + xy[0] + "," + xy[1] + ")";
 
+        var textStyle = _.clone(options.label);
+        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+
         var ticks =_.map(axis.ticks, function (c, i) {
             var label = options.labelComponent !== undefined? React.cloneElement(options.labelComponent,{value:c}):c;
             return (<g key={ i } transform={translate(c)}>
                 {options.showTicks ? <circle r="2" cx="0" cy="0" stroke="grey" fill="grey"/> : null}
                 {options.showLabels ?
-                    <text transform={textTransform} textAnchor={textAnchor}>{label}</text> : null}
+                    <text transform={textTransform} style={textStyle} textAnchor={textAnchor}>{label}</text> : null}
             </g>)
         });
 

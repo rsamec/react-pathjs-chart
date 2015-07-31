@@ -1,9 +1,8 @@
 import React from 'react';
-import {Pie,Tree,SmoothLine,StockLine,Radar,Bar,Scatterplot} from 'react-pathjs-chart';
+import {StockLine} from 'react-pathjs-chart';
 import genie from 'genie'
-import {ChartDemo} from './ChartOptions.js';
+import ChartDemo from './ChartDemo.js';
 import _ from 'underscore';
-
 
 export class StockLineDemo {
     get dataTemplate() {
@@ -40,13 +39,24 @@ export class StockLineDemo {
             height:600,
             color:'#2980B9',
             margin: {top: 40, left: 60, bottom: 50, right: 20},
+            animate:{
+                type:'delayed',
+                duration:200
+            },
             axisX: {
                 showAxis: true,
                 showLines: true,
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'bottom'
+                orient: 'bottom',
+                tickValues:[],
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             },
             axisY: {
                 showAxis: true,
@@ -54,7 +64,14 @@ export class StockLineDemo {
                 showLabels: true,
                 showTicks: true,
                 zeroAxis: false,
-                orient: 'left'
+                orient: 'left',
+                tickValues:[],
+                label:{
+                    fontFamily:'Arial',
+                    fontSize:14,
+                    fontWeight:true,
+                    fill:'#34495E'
+                }
             }
         }
     }
