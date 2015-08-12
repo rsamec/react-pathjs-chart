@@ -1377,6 +1377,18 @@ module.exports = (function () {
 
 }).call(this)
 },{}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
 //import Pie from './charts/Pie.js';
 //import Tree from './charts/Tree.js';
 //import Radar from './charts/Radar.js';
@@ -1394,14 +1406,6 @@ module.exports = (function () {
 //    Bar:Bar,
 //    Scatterplot:Scatterplot
 //};
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _chartsSmoothLineVivusJs = require('./charts/SmoothLineVivus.js');
 
@@ -1431,19 +1435,300 @@ var _chartsScatterplotVivusJs = require('./charts/ScatterplotVivus.js');
 
 var _chartsScatterplotVivusJs2 = _interopRequireDefault(_chartsScatterplotVivusJs);
 
+// form: true
+// make objects not extensible,
+// fields not removable
+// and inputs always visible
+var settings = {
+    form: true,
+    fields: {
+        color: { type: 'colorPicker' },
+        fill: { type: 'colorPicker' },
+        stroke: { type: 'colorPicker' },
+        legendPosition: { type: 'select', settings: { options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] } },
+        label: { type: 'fontEditor' },
+        animate: {
+            fields: { type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } } } },
+
+        axisY: {
+            fields: {
+                orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                tickValues: { type: 'tickValues' },
+                label: { type: 'fontEditor' }
+            }
+        },
+        axisX: {
+            fields: {
+                orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                tickValues: { type: 'tickValues' },
+                label: { type: 'fontEditor' }
+            }
+        }
+    }
+};
+
 exports['default'] = {
-    Pie: _chartsPieVivusJs2['default'],
-    Tree: _chartsTreeVivusJs2['default'],
-    SmoothLine: _chartsSmoothLineVivusJs2['default'],
-    StockLine: _chartsStockLineVivusJs2['default'],
-    Radar: _chartsRadarVivusJs2['default'],
-    Bar: _chartsBarVivusJs2['default'],
-    Scatterplot: _chartsScatterplotVivusJs2['default']
+    Pie: _underscore2['default'].extend(_chartsPieVivusJs2['default'], {
+        metaData: {
+            props: {
+                margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                width: 600,
+                height: 600,
+                color: '#2980B9',
+                r: 100,
+                R: 200,
+                legendPosition: 'topLeft',
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200,
+                    fillTransition: 3
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    bold: true,
+                    fill: '#ECF0F1'
+                }
+            },
+            settings: settings
+        }
+    }),
+    Tree: _underscore2['default'].extend(_chartsTreeVivusJs2['default'], {
+        metaData: {
+            props: {
+                margin: { top: 20, left: 50, right: 80, bottom: 20 },
+                width: 600,
+                height: 600,
+                fill: '#2980B9',
+                stroke: '#3E90F0',
+                r: 5,
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200,
+                    fillTransition: 3
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    bold: true,
+                    fill: '#34495E'
+                }
+            },
+            settings: settings
+        }
+    }),
+    SmoothLine: _underscore2['default'].extend(_chartsSmoothLineVivusJs2['default'], {
+        metaData: {
+            props: {
+                width: 600,
+                height: 600,
+                color: '#2980B9',
+                margin: { top: 40, left: 60, bottom: 50, right: 20 },
+                animate: {
+                    type: 'delayed',
+                    duration: 200
+                },
+                axisX: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'bottom',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                },
+                axisY: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'left',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                }
+            },
+            settings: settings
+        }
+    }),
+    StockLine: _underscore2['default'].extend(_chartsStockLineVivusJs2['default'], {
+        metaData: {
+            props: {
+                width: 600,
+                height: 600,
+                color: '#2980B9',
+                margin: { top: 40, left: 60, bottom: 50, right: 20 },
+                animate: {
+                    type: 'delayed',
+                    duration: 200
+                },
+                axisX: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'bottom',
+                    tickValues: [],
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                },
+                axisY: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'left',
+                    tickValues: [],
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                }
+            },
+            settings: settings
+        }
+    }),
+    Radar: _underscore2['default'].extend(_chartsRadarVivusJs2['default'], {
+        metaData: {
+            props: {
+                width: 600,
+                height: 600,
+                margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                r: 300,
+                max: 150,
+                fill: '#2980B9',
+                stroke: '#2980B9',
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    bold: true,
+                    color: '#34495E'
+                }
+            },
+            settings: settings
+        }
+    }),
+    Bar: _underscore2['default'].extend(_chartsBarVivusJs2['default'], {
+        metaData: {
+            props: {
+                width: 600,
+                height: 600,
+                margin: { top: 20, left: 20, bottom: 50, right: 20 },
+                color: '#2980B9',
+                gutter: 20,
+                animate: {
+                    type: 'oneByOne',
+                    duration: 200,
+                    fillTransition: 3
+                },
+                axisX: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'bottom',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                },
+                axisY: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'left',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                }
+            },
+            settings: settings
+        }
+    }),
+    Scatterplot: _underscore2['default'].extend(_chartsScatterplotVivusJs2['default'], {
+        metaData: {
+            props: {
+                width: 600,
+                height: 600,
+                margin: { top: 40, left: 60, bottom: 30, right: 30 },
+                fill: '#2980B9',
+                stroke: '#3E90F0',
+                animate: {
+                    type: 'delayed',
+                    duration: 200
+                },
+                label: {
+                    fontFamily: 'Arial',
+                    fontSize: 14,
+                    bold: true,
+                    color: '#34495E'
+                },
+                axisX: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'bottom',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                },
+                axisY: {
+                    showAxis: true,
+                    showLines: true,
+                    showLabels: true,
+                    showTicks: true,
+                    zeroAxis: false,
+                    orient: 'left',
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
+                }
+            },
+            settings: settings
+        }
+    })
 };
 module.exports = exports['default'];
 
 
-},{"./charts/BarVivus.js":21,"./charts/PieVivus.js":24,"./charts/RadarVivus.js":26,"./charts/ScatterplotVivus.js":28,"./charts/SmoothLineVivus.js":30,"./charts/StockLineVivus.js":32,"./charts/TreeVivus.js":34}],19:[function(require,module,exports){
+},{"./charts/BarVivus.js":21,"./charts/PieVivus.js":24,"./charts/RadarVivus.js":26,"./charts/ScatterplotVivus.js":28,"./charts/SmoothLineVivus.js":30,"./charts/StockLineVivus.js":32,"./charts/TreeVivus.js":34,"underscore":undefined}],19:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1651,6 +1936,10 @@ var _componentOptionsJs = require('../component/Options.js');
 
 var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
 
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
+
 var Bar = require('paths-js/bar');
 
 var Axis = require('../component/Axis');
@@ -1737,8 +2026,7 @@ var BarChart = (function (_React$Component) {
             var sec = options.animate.fillTransition || 0;
             var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
 
-            var textStyle = _underscore2['default'].clone(options.axisX.label);
-            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+            var textStyle = (0, _fontAdapterJs2['default'])(options.axisX.label);
 
             var lines = chart.curves.map(function (c, i) {
                 var color = this.color(i % 3);
@@ -1777,7 +2065,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":35,"../component/Options.js":36,"../pallete/Colors.js":37,"paths-js/bar":1,"underscore":undefined}],21:[function(require,module,exports){
+},{"../component/Axis":35,"../component/Options.js":36,"../fontAdapter.js":37,"../pallete/Colors.js":38,"paths-js/bar":1,"underscore":undefined}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1892,6 +2180,10 @@ var _componentOptionsJs = require('../component/Options.js');
 
 var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
 
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
+
 var Axis = require('../component/Axis');
 var Path = require('paths-js/path');
 
@@ -2003,7 +2295,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":35,"../component/Options.js":36,"../pallete/Colors.js":37,"paths-js/path":7,"underscore":undefined}],23:[function(require,module,exports){
+},{"../component/Axis":35,"../component/Options.js":36,"../fontAdapter.js":37,"../pallete/Colors.js":38,"paths-js/path":7,"underscore":undefined}],23:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2040,6 +2332,10 @@ var _underscore2 = _interopRequireDefault(_underscore);
 var _componentOptionsJs = require('../component/Options.js');
 
 var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
+
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
 
 var Pie = require('paths-js/pie');
 
@@ -2141,8 +2437,7 @@ var PieChart = (function (_React$Component) {
             var sec = options.animate.fillTransition || 0;
             var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
 
-            var textStyle = _underscore2['default'].clone(options.label);
-            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+            var textStyle = (0, _fontAdapterJs2['default'])(options.label);
 
             var slices = chart.curves.map(function (c, i) {
                 var fill = self.color(i);
@@ -2216,7 +2511,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../animate.js":19,"../component/Options.js":36,"../pallete/Colors.js":37,"paths-js/pie":8,"underscore":undefined}],24:[function(require,module,exports){
+},{"../animate.js":19,"../component/Options.js":36,"../fontAdapter.js":37,"../pallete/Colors.js":38,"paths-js/pie":8,"underscore":undefined}],24:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2330,6 +2625,10 @@ var _componentOptionsJs = require('../component/Options.js');
 
 var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
 
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
+
 var Radar = require('paths-js/radar');
 
 function identity(key) {
@@ -2399,8 +2698,7 @@ var RadarChart = (function (_React$Component) {
                 }
             });
             //
-            var textStyle = _underscore2['default'].clone(options.label);
-            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+            var textStyle = (0, _fontAdapterJs2['default'])(options.label);
 
             var labels = chart.rings[length - 1].path.points().map(function (p, i) {
                 return _react2['default'].createElement(
@@ -2446,7 +2744,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Options.js":36,"paths-js/radar":10,"underscore":undefined}],26:[function(require,module,exports){
+},{"../component/Options.js":36,"../fontAdapter.js":37,"paths-js/radar":10,"underscore":undefined}],26:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2557,6 +2855,10 @@ var _componentOptionsJs = require('../component/Options.js');
 
 var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
 
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
+
 var Stock = require('paths-js/stock');
 var Axis = require('../component/Axis');
 var Path = require('paths-js/path');
@@ -2641,8 +2943,7 @@ var Scatterplot = (function (_React$Component) {
             var sec = options.animate.fillTransition || 0;
             var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
 
-            var textStyle = _underscore2['default'].clone(options.label);
-            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+            var textStyle = (0, _fontAdapterJs2['default'])(options.label);
 
             var points = _underscore2['default'].map(chart.curves, function (c, i) {
                 return _underscore2['default'].map(c.line.path.points(), function (p, j) {
@@ -2682,7 +2983,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":35,"../component/Options.js":36,"paths-js/path":7,"paths-js/stock":15,"underscore":undefined}],28:[function(require,module,exports){
+},{"../component/Axis":35,"../component/Options.js":36,"../fontAdapter.js":37,"paths-js/path":7,"paths-js/stock":15,"underscore":undefined}],28:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3029,6 +3330,10 @@ var _componentOptionsJs = require('../component/Options.js');
 
 var _componentOptionsJs2 = _interopRequireDefault(_componentOptionsJs);
 
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
+
 var Tree = require('paths-js/tree');
 
 function children(x) {
@@ -3076,8 +3381,7 @@ var TreeChart = (function (_React$Component) {
             var sec = options.animate.fillTransition || 0;
             var fillOpacityStyle = { fillOpacity: this.state.finished ? 1 : 0, transition: this.state.finished ? 'fill-opacity ' + sec + 's' : '' };
 
-            var textStyle = _underscore2['default'].clone(options.label);
-            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+            var textStyle = (0, _fontAdapterJs2['default'])(options.label);
 
             var r = options.r || 5;
             var nodes = _underscore2['default'].map(tree.nodes, function (n, index) {
@@ -3131,7 +3435,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Options.js":36,"paths-js/tree":16,"underscore":undefined}],34:[function(require,module,exports){
+},{"../component/Options.js":36,"../fontAdapter.js":37,"paths-js/tree":16,"underscore":undefined}],34:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3237,6 +3541,10 @@ var _react2 = _interopRequireDefault(_react);
 var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
+
+var _fontAdapterJs = require('../fontAdapter.js');
+
+var _fontAdapterJs2 = _interopRequireDefault(_fontAdapterJs);
 
 var Path = require('paths-js/path');
 
@@ -3361,8 +3669,7 @@ var Axis = (function (_React$Component) {
 
             var textTransform = 'translate(' + xy[0] + ',' + xy[1] + ')';
 
-            var textStyle = _underscore2['default'].clone(options.label);
-            if (textStyle !== undefined) textStyle.fontWeight = textStyle.fontWeight ? 'bold' : 'normal';
+            var textStyle = (0, _fontAdapterJs2['default'])(options.label);
 
             var ticks = _underscore2['default'].map(axis.ticks, function (c, i) {
                 var label = options.labelComponent !== undefined ? _react2['default'].cloneElement(options.labelComponent, { value: c }) : c;
@@ -3400,7 +3707,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"paths-js/path":7,"underscore":undefined}],36:[function(require,module,exports){
+},{"../fontAdapter.js":37,"paths-js/path":7,"underscore":undefined}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3484,6 +3791,35 @@ module.exports = exports['default'];
 
 
 },{}],37:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+    value: true
+});
+exports['default'] = fontAdapt;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function fontAdapt(fontProps) {
+
+    var style = {};
+    if (fontProps === undefined) return style;
+    style = _underscore2['default'].omit(fontProps, ['color', 'bold', 'italic', 'underline']);
+    if (fontProps.color) style['fill'] = fontProps.color;
+    if (fontProps.bold) style['fontWeight'] = 'bold';
+    if (fontProps.italic) style['fontStyle'] = 'italic';
+    if (fontProps.underline) style['borderBottom'] = '1px dashed #999';
+    return style;
+}
+
+module.exports = exports['default'];
+
+
+},{"underscore":undefined}],38:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

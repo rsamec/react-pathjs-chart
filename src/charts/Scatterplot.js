@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import Options from '../component/Options.js';
+import fontAdapt from '../fontAdapter.js';
 
 var Stock  = require('paths-js/stock');
 var Axis = require('../component/Axis');
@@ -71,8 +72,7 @@ export default class Scatterplot extends React.Component {
         var sec = options.animate.fillTransition || 0;
         var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
 
-        var textStyle = _.clone(options.label);
-        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+        var textStyle = fontAdapt(options.label);
 
         var points = _.map(chart.curves, function (c, i) {
             return _.map(c.line.path.points(),function(p,j) {

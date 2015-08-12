@@ -3,6 +3,7 @@
     import Animate from '../animate.js';
     import _ from 'underscore';
     import Options from '../component/Options.js'
+    import fontAdapt from '../fontAdapter.js';
 
     var Pie = require('paths-js/pie');
 
@@ -78,8 +79,7 @@
             var sec = options.animate.fillTransition || 0;
             var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
 
-            var textStyle = _.clone(options.label);
-            if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+            var textStyle = fontAdapt(options.label);
 
             var slices = chart.curves.map(function(c, i) {
                 var fill = self.color(i);

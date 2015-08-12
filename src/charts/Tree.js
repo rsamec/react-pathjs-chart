@@ -1,6 +1,8 @@
 import React from 'react';
 import _ from 'underscore';
 import Options from '../component/Options.js';
+import fontAdapt from '../fontAdapter.js';
+
 var Tree = require('paths-js/tree');
 
 function children(x) {
@@ -38,8 +40,7 @@ export default class TreeChart extends React.Component {
         var sec = options.animate.fillTransition || 0;
         var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
 
-        var textStyle = _.clone(options.label);
-        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+        var textStyle = fontAdapt(options.label);
 
         var r = options.r || 5;
         var nodes = _.map(tree.nodes,function (n,index) {

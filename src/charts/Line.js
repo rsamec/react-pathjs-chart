@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import Colors from '../pallete/Colors.js';
 import Options from '../component/Options.js';
+import fontAdapt from '../fontAdapter.js';
 
 var Axis = require('../component/Axis');
 var Path = require('paths-js/path');

@@ -1,6 +1,6 @@
 {
   "name": "react-pathjs-chart",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": false,
   "description": "React components - charts (Pie,SmoothLine) and other components (Tree) using path-js.",
   "main": "lib/Chart.js",
@@ -28,6 +28,7 @@
     "react-component-gulp-tasks": "^0.7.0",
     "react-intl": "^1.2.0",
     "react-json": "0.0.1",
+    "react-property-editor": "^0.1.13",
     "underscore.deepclone": "^0.1.1"
   },
   "peerDependencies": {},

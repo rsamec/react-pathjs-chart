@@ -2,6 +2,7 @@ import React from 'react';
 import Colors from '../pallete/Colors.js';
 import _ from 'underscore';
 import Options from '../component/Options.js';
+import fontAdapt from '../fontAdapter.js';
 
 var Bar = require('paths-js/bar');
 
@@ -74,8 +75,7 @@ export default class BarChart extends  React.Component
         var sec = options.animate.fillTransition || 0;
         var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
 
-        var textStyle = _.clone(options.axisX.label);
-        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+        var textStyle = fontAdapt(options.axisX.label);
 
         var lines = chart.curves.map(function (c, i) {
             var color = this.color(i % 3);

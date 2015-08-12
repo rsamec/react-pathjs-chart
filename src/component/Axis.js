@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'underscore';
+import fontAdapt from '../fontAdapter.js';
 
 var Path = require('paths-js/path');
 
@@ -114,8 +115,7 @@ export default class Axis extends React.Component {
 
         var textTransform  = "translate(" + xy[0] + "," + xy[1] + ")";
 
-        var textStyle = _.clone(options.label);
-        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+        var textStyle = fontAdapt(options.label);
 
         var ticks =_.map(axis.ticks, function (c, i) {
             var label = options.labelComponent !== undefined? React.cloneElement(options.labelComponent,{value:c}):c;

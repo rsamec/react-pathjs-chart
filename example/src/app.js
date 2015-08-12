@@ -43,38 +43,38 @@ var patternsOptions = [
 'companySuffix',
 'sentence',
 'paragraph'];
-
-var colors = {
-    "turquoise"     : "#1ABC9C",
-    "green-sea"     : "#16A085",
-    "emerald"       : "#2ECC71",
-    "nephritis"     : "#27AE60",
-    "peter-river"   : "#3498DB",
-    "belize-hole"   : "#2980B9",
-    "amethyst"      : "#9B59B6",
-    "wisteria"      : "#8E44AD",
-    "wet-asphalt"   : "#34495E",
-    "midnight-blue" : "#2C3E50",
-    "sun-flower"    : "#F1C40F",
-    "orange"        : "#F39C12",
-    "carrot"        : "#E67E22",
-    "pumpkin"       : "#D35400",
-    "alizarin"      : "#E74C3C",
-    "pomegranate"   : "#C0392B",
-    "clouds"        : "#ECF0F1",
-    "silver"        : "#BDC3C7",
-    "concrete"      : "#95A5A6",
-    "asbestos"      : "#7F8C8D"
-};
-
-var fontFamilies =[
-    'Arial',
-    'Verdana',
-    'Helvetica',
-    'Times New Roman',
-    'Courier New',
-    'Papyrus'
-]
+//
+//var colors = {
+//    "turquoise"     : "#1ABC9C",
+//    "green-sea"     : "#16A085",
+//    "emerald"       : "#2ECC71",
+//    "nephritis"     : "#27AE60",
+//    "peter-river"   : "#3498DB",
+//    "belize-hole"   : "#2980B9",
+//    "amethyst"      : "#9B59B6",
+//    "wisteria"      : "#8E44AD",
+//    "wet-asphalt"   : "#34495E",
+//    "midnight-blue" : "#2C3E50",
+//    "sun-flower"    : "#F1C40F",
+//    "orange"        : "#F39C12",
+//    "carrot"        : "#E67E22",
+//    "pumpkin"       : "#D35400",
+//    "alizarin"      : "#E74C3C",
+//    "pomegranate"   : "#C0392B",
+//    "clouds"        : "#ECF0F1",
+//    "silver"        : "#BDC3C7",
+//    "concrete"      : "#95A5A6",
+//    "asbestos"      : "#7F8C8D"
+//};
+//
+//var fontFamilies =[
+//    'Arial',
+//    'Verdana',
+//    'Helvetica',
+//    'Times New Roman',
+//    'Courier New',
+//    'Papyrus'
+//]
 
 var TickValues = React.createClass({
     mixins: [BindToMixin],
@@ -139,103 +139,81 @@ var TickValuesWrapper = React.createClass({
 });
 
 Json.registerType('tickValues',TickValuesWrapper);
-
-// Create the custom field type component
-var ColorPickerWrapper = React.createClass({
-
-    render: function () {
-        var opts = this.props.settings.options || [];
-        return (<select value={this.props.value}  onChange={this.handleChange}>
-            {opts.map(function(opt,index){
-                return React.DOM.option({value:opt.value},opt.label);
-            })
-            }
-        </select>)
-    },
-    handleChange: function (e) {
-        this.props.onUpdated(e.target.value);
-    }
-});
-
-Json.registerType('colorPicker',ColorPickerWrapper);
-
-var labelOptions= {
-    fields: {
-        fontFamily: {
-            type: 'select', settings: {
-                options: _.map(fontFamilies, function (key, value) {
-                    return {value: key, label: key};
-                })
-            }
-        },
-        fill: {
-            type: 'colorPicker', settings: {
-                options: _.map(colors, function (key, value) {
-                    return {value: key, label: value};
-                })
-            }
-        }
-
-    }
-};
+//
+//// Create the custom field type component
+//var ColorPickerWrapper = React.createClass({
+//
+//    render: function () {
+//        var opts = this.props.settings.options || [];
+//        return (<select value={this.props.value}  onChange={this.handleChange}>
+//            {opts.map(function(opt,index){
+//                return React.DOM.option({value:opt.value},opt.label);
+//            })
+//            }
+//        </select>)
+//    },
+//    handleChange: function (e) {
+//        this.props.onUpdated(e.target.value);
+//    }
+//});
+//
+//Json.registerType('colorPicker',ColorPickerWrapper);
+//
+//var labelOptions= {
+//    fields: {
+//        fontFamily: {
+//            type: 'select', settings: {
+//                options: _.map(fontFamilies, function (key, value) {
+//                    return {value: key, label: key};
+//                })
+//            }
+//        },
+//        fill: {
+//            type: 'colorPicker', settings: {
+//                options: _.map(colors, function (key, value) {
+//                    return {value: key, label: value};
+//                })
+//            }
+//        }
+//
+//    }
+//};
 
 // form: true
 // make objects not extensible,
 // fields not removable
 // and inputs always visible
 var settings = {
-    form: true,
+    form:true,
     fields: {
-        color:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
-        fill:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:value};})}},
-        stroke:{type:'colorPicker',settings:{options:_.map(colors,function(key,value){return {value:key,label:key};})}},
-        legendPosition: {type: 'select', settings: {options: ['topLeft','topRight','bottomLeft','bottomRight']}},
-        label:labelOptions,
-        animate:{
-            fields:{type:{type:'select',  settings: {options: ['delayed','async','oneByOne']}}}}
-        ,
-        axisY: {
+        data: {
             fields: {
-                orient: {type: 'select', settings: {options: ['left', 'right']}},
-                tickValues: {type: 'tickValues'},
-                label:labelOptions
-            }
-        },
-        axisX: {
-            fields: {
-                orient: {type: 'select', settings: {options: ['top', 'bottom']}},
-                tickValues: {type: 'tickValues'},
-                label: labelOptions
-            }
-        },
-        data:{
-            fields:{
-                template:{
-                    fields:{
-                        title:{
-                            fields:{
-                                pattern:{ type:'select', settings:{options:patternsOptions}}
+                template: {
+                    fields: {
+                        title: {
+                            fields: {
+                                pattern: {type: 'select', settings: {options: patternsOptions}}
                             }
                         },
-                        name:{
-                            fields:{
-                                pattern:{ type:'select', settings:{options:patternsOptions}}
+                        name: {
+                            fields: {
+                                pattern: {type: 'select', settings: {options: patternsOptions}}
                             }
                         }
                     }
                 }
             }
         },
-        children:{
-            fields:{
-                template:{
-                    fields:{
-                        name:{
-                            fields:{
-                                pattern:{ type:'select', settings:{options:patternsOptions}}
+        children: {
+            fields: {
+                template: {
+                    fields: {
+                        name: {
+                            fields: {
+                                pattern: {type: 'select', settings: {options: patternsOptions}}
                             }
                         },
-                        children:{
+                        children: {
                             fields: {
                                 template: {
                                     fields: {

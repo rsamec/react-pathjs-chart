@@ -1,4 +1,4 @@
-React Component Starter
+Chart library
 =======================
 
 These component offers react components - charts (Pie,Bar,SmoothLine,StockLine,Scatterplot,Tree,Radar) using [paths-js](https://github.com/andreaferretti/paths-js).

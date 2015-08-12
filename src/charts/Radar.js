@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import Options from '../component/Options.js';
+import fontAdapt from '../fontAdapter.js';
 
 var Radar = require('paths-js/radar');
 
@@ -61,8 +62,7 @@ export default class RadarChart extends React.Component
             }
         });
         //
-        var textStyle = _.clone(options.label);
-        if (textStyle !== undefined) textStyle.fontWeight =textStyle.fontWeight?'bold':'normal';
+        var textStyle = fontAdapt(options.label);
 
         var labels = chart.rings[length - 1].path.points().map(function (p, i) {
             return (

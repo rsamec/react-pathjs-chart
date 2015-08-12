@@ -4,6 +4,7 @@ import _ from 'underscore';
 import {TabbedArea,TabPane,Button} from 'react-bootstrap';
 import {FormattedNumber} from 'react-intl';
 
+import PropertyEditor from 'react-property-editor';
 _.mixin(require('underscore.deepclone'));
 
 export default class ChartDemo extends React.Component {
@@ -14,7 +15,8 @@ export default class ChartDemo extends React.Component {
             show: false,
             dataTemplate: demo.dataTemplate,
             data: demo.generateData(demo.dataTemplate),
-            options: demo.options
+            options: chartType.metaData.props,
+            settings:chartType.metaData.settings
         }
         this.chartType = chartType;
         this.chartDemo = demo;
@@ -81,8 +83,7 @@ export default class ChartDemo extends React.Component {
                             </div>
                         </TabPane>
                         <TabPane eventKey={2} tab='Options'>
-
-                            <Json value={this.state.options} settings={this.props.settings}
+                            <PropertyEditor value={this.state.options} settings={this.state.settings}
                                   onChange={this.optionsChanged.bind(this)}/>
                         </TabPane>
                     </TabbedArea>
