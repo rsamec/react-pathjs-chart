@@ -15,7 +15,7 @@ export default class ChartDemo extends React.Component {
             show: false,
             dataTemplate: demo.dataTemplate,
             data: demo.generateData(demo.dataTemplate),
-            options: chartType.metaData.props,
+            options: chartType.metaData.props.options,
             settings:chartType.metaData.settings
         }
         this.chartType = chartType;
