@@ -17,6 +17,7 @@ export default class BarVivusChart extends BarChart {
         if (!this.state.finished) this.run()
     }
     run(){
+        if (this.refs.vivus === undefined) return;
         var animate = this.props.options && this.props.options.animate || {};
         new Vivus(this.refs.vivus.getDOMNode(), {
             type: animate.type || 'delayed',

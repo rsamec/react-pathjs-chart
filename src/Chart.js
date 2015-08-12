@@ -33,6 +33,7 @@ import ScatterplotVivus from './charts/ScatterplotVivus.js';
 var settings = {
     form: true,
     fields: {
+        data:{type:'bindingEditor'},
         color:{type:'colorPicker'},
         fill:{type:'colorPicker'},
         stroke:{type:'colorPicker'},
@@ -62,23 +63,27 @@ export default {
     Pie:_.extend(PieVivus, {
         metaData: {
             props:  {
-                margin: {top: 20, left: 20, right: 20, bottom: 20},
-                width: 600,
-                height: 600,
-                color: '#2980B9',
-                r: 100,
-                R: 200,
-                legendPosition: 'topLeft',
-                animate:{
-                    type:'oneByOne',
-                    duration:200,
-                    fillTransition:3
-                },
-                label:{
-                    fontFamily:'Arial',
-                    fontSize:14,
-                    bold:true,
-                    fill:'#ECF0F1'
+                data:{},
+                accessorKey:'',
+                options: {
+                    margin: {top: 20, left: 20, right: 20, bottom: 20},
+                    width: 600,
+                    height: 600,
+                    color: '#2980B9',
+                    r: 100,
+                    R: 200,
+                    legendPosition: 'topLeft',
+                    animate: {
+                        type: 'oneByOne',
+                        duration: 200,
+                        fillTransition: 3
+                    },
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        fill: '#ECF0F1'
+                    }
                 }
             },
             settings:settings
@@ -87,22 +92,25 @@ export default {
     Tree:_.extend(TreeVivus, {
         metaData: {
             props: {
-                margin: {top: 20, left: 50, right: 80, bottom: 20},
-                width: 600,
-                height: 600,
-                fill: "#2980B9",
-                stroke: "#3E90F0",
-                r: 5,
-                animate: {
-                    type: 'oneByOne',
-                    duration: 200,
-                    fillTransition: 3
-                },
-                label: {
-                    fontFamily: 'Arial',
-                    fontSize: 14,
-                    bold: true,
-                    fill: '#34495E'
+                data:{},
+                options: {
+                    margin: {top: 20, left: 50, right: 80, bottom: 20},
+                    width: 600,
+                    height: 600,
+                    fill: "#2980B9",
+                    stroke: "#3E90F0",
+                    r: 5,
+                    animate: {
+                        type: 'oneByOne',
+                        duration: 200,
+                        fillTransition: 3
+                    },
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        fill: '#34495E'
+                    }
                 }
             },
             settings:settings
@@ -111,40 +119,45 @@ export default {
     SmoothLine:_.extend(SmoothLineVivus, {
         metaData: {
             props: {
-                width:600,
-                height:600,
-                color:'#2980B9',
-                margin: {top: 40, left: 60, bottom: 50, right: 20},
-                animate:{
-                    type:'delayed',
-                    duration:200
-                },
-                axisX: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'bottom',
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
-                    }
-                },
-                axisY: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'left',
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
+                data:{},
+                xKey:'',
+                yKey:'',
+                options: {
+                    width: 600,
+                    height: 600,
+                    color: '#2980B9',
+                    margin: {top: 40, left: 60, bottom: 50, right: 20},
+                    animate: {
+                        type: 'delayed',
+                        duration: 200
+                    },
+                    axisX: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'bottom',
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
+                    },
+                    axisY: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'left',
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
                     }
                 }
             },
@@ -154,42 +167,47 @@ export default {
     StockLine:_.extend(StockLineVivus, {
         metaData: {
             props: {
-                width:600,
-                height:600,
-                color:'#2980B9',
-                margin: {top: 40, left: 60, bottom: 50, right: 20},
-                animate:{
-                    type:'delayed',
-                    duration:200
-                },
-                axisX: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'bottom',
-                    tickValues:[],
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
-                    }
-                },
-                axisY: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'left',
-                    tickValues:[],
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
+                data:{},
+                xKey:'',
+                yKey:'',
+                options: {
+                    width: 600,
+                    height: 600,
+                    color: '#2980B9',
+                    margin: {top: 40, left: 60, bottom: 50, right: 20},
+                    animate: {
+                        type: 'delayed',
+                        duration: 200
+                    },
+                    axisX: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'bottom',
+                        tickValues: [],
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
+                    },
+                    axisY: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'left',
+                        tickValues: [],
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
                     }
                 }
             },
@@ -199,22 +217,25 @@ export default {
     Radar:_.extend(RadarVivus, {
         metaData: {
             props: {
-                width:600,
-                height:600,
-                margin:{top:20,left:20,right:20,bottom:20},
-                r:300,
-                max:150,
-                fill:"#2980B9",
-                stroke:"#2980B9",
-                animate:{
-                    type:'oneByOne',
-                    duration:200
-                },
-                label:{
-                    fontFamily:'Arial',
-                    fontSize:14,
-                    bold:true,
-                    color:'#34495E'
+                data:{},
+                options: {
+                    width: 600,
+                    height: 600,
+                    margin: {top: 20, left: 20, right: 20, bottom: 20},
+                    r: 300,
+                    max: 150,
+                    fill: "#2980B9",
+                    stroke: "#2980B9",
+                    animate: {
+                        type: 'oneByOne',
+                        duration: 200
+                    },
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    }
                 }
             },
             settings:settings
@@ -223,42 +244,46 @@ export default {
     Bar:_.extend(BarVivus, {
         metaData: {
             props:{
-                width:600,
-                height:600,
-                margin: {top: 20, left: 20, bottom: 50, right: 20},
-                color:'#2980B9',
-                gutter:20,
-                animate:{
-                    type:'oneByOne',
-                    duration:200,
-                    fillTransition:3
-                },
-                axisX: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'bottom',
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
-                    }
-                },
-                axisY: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'left',
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
+                data:{},
+                accessorKey:'',
+                options: {
+                    width: 600,
+                    height: 600,
+                    margin: {top: 20, left: 20, bottom: 50, right: 20},
+                    color: '#2980B9',
+                    gutter: 20,
+                    animate: {
+                        type: 'oneByOne',
+                        duration: 200,
+                        fillTransition: 3
+                    },
+                    axisX: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'bottom',
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
+                    },
+                    axisY: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'left',
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
                     }
                 }
             },
@@ -268,47 +293,52 @@ export default {
     Scatterplot:_.extend(ScatterplotVivus, {
         metaData: {
             props: {
-                width: 600,
-                height: 600,
-                margin: {top: 40, left: 60, bottom: 30, right: 30},
-                fill: "#2980B9",
-                stroke: "#3E90F0",
-                animate:{
-                    type:'delayed',
-                    duration:200
-                },
-                label:{
-                    fontFamily:'Arial',
-                    fontSize:14,
-                    bold:true,
-                    color:'#34495E'
-                },
-                axisX: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'bottom',
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
-                    }
-                },
-                axisY: {
-                    showAxis: true,
-                    showLines: true,
-                    showLabels: true,
-                    showTicks: true,
-                    zeroAxis: false,
-                    orient: 'left',
-                    label:{
-                        fontFamily:'Arial',
-                        fontSize:14,
-                        bold:true,
-                        color:'#34495E'
+                data:{},
+                xKey:'',
+                yKey:'',
+                options: {
+                    width: 600,
+                    height: 600,
+                    margin: {top: 40, left: 60, bottom: 30, right: 30},
+                    fill: "#2980B9",
+                    stroke: "#3E90F0",
+                    animate: {
+                        type: 'delayed',
+                        duration: 200
+                    },
+                    label: {
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        bold: true,
+                        color: '#34495E'
+                    },
+                    axisX: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'bottom',
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
+                    },
+                    axisY: {
+                        showAxis: true,
+                        showLines: true,
+                        showLabels: true,
+                        showTicks: true,
+                        zeroAxis: false,
+                        orient: 'left',
+                        label: {
+                            fontFamily: 'Arial',
+                            fontSize: 14,
+                            bold: true,
+                            color: '#34495E'
+                        }
                     }
                 }
             },
