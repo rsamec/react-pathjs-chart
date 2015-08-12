@@ -1443,26 +1443,29 @@ var settings = {
     form: true,
     fields: {
         data: { type: 'bindingEditor' },
-        color: { type: 'colorPicker' },
-        fill: { type: 'colorPicker' },
-        stroke: { type: 'colorPicker' },
-        legendPosition: { type: 'select', settings: { options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] } },
-        label: { type: 'fontEditor' },
-        animate: {
-            fields: { type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } } } },
+        options: {
+            color: { type: 'colorPicker' },
+            fill: { type: 'colorPicker' },
+            stroke: { type: 'colorPicker' },
+            legendPosition: { type: 'select', settings: { options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] } },
+            label: { type: 'fontEditor' },
+            animate: {
+                fields: { type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } } }
+            },
 
-        axisY: {
-            fields: {
-                orient: { type: 'select', settings: { options: ['left', 'right'] } },
-                tickValues: { type: 'tickValues' },
-                label: { type: 'fontEditor' }
-            }
-        },
-        axisX: {
-            fields: {
-                orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
-                tickValues: { type: 'tickValues' },
-                label: { type: 'fontEditor' }
+            axisY: {
+                fields: {
+                    orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                    tickValues: { type: 'tickValues' },
+                    label: { type: 'fontEditor' }
+                }
+            },
+            axisX: {
+                fields: {
+                    orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                    tickValues: { type: 'tickValues' },
+                    label: { type: 'fontEditor' }
+                }
             }
         }
     }
