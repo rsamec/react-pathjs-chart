@@ -36,6 +36,12 @@ var settings = {
         data:{type:'bindingEditor'},
         options: {
             fields: {
+                width:{type:'number'},
+                height:{type:'number'},
+                margin:{type:'boxSizeEditor'},
+                r:{type:'number'},
+                R:{type:'number'},
+                gutter:{type:'number'},
                 color: {type: 'colorPicker'},
                 fill: {type: 'colorPicker'},
                 stroke: {type: 'colorPicker'},
@@ -45,21 +51,35 @@ var settings = {
                 },
                 label: {type: 'fontEditor'},
                 animate: {
-                    fields: {type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}}}
+                    fields: {
+                        type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                        duration:{type:'number'},
+                        fillTransition:{type:'number'}
+                    }
                 }
                 ,
                 axisY: {
                     fields: {
                         orient: {type: 'select', settings: {options: ['left', 'right']}},
                         tickValues: {type: 'tickValues'},
-                        label: {type: 'fontEditor'}
+                        label: {type: 'fontEditor'},
+                        showAxis: {type:'boolean'},
+                        showLines: {type:'boolean'},
+                        showLabels: {type:'boolean'},
+                        showTicks: {type:'boolean'},
+                        zeroAxis: {type:'boolean'}
                     }
                 },
                 axisX: {
                     fields: {
                         orient: {type: 'select', settings: {options: ['top', 'bottom']}},
                         tickValues: {type: 'tickValues'},
-                        label: {type: 'fontEditor'}
+                        label: {type: 'fontEditor'},
+                        showAxis: {type:'boolean'},
+                        showLines: {type:'boolean'},
+                        showLabels: {type:'boolean'},
+                        showTicks: {type:'boolean'},
+                        zeroAxis: {type:'boolean'}
                     }
                 }
             }
@@ -137,7 +157,8 @@ export default {
                     margin: {top: 40, left: 60, bottom: 50, right: 20},
                     animate: {
                         type: 'delayed',
-                        duration: 200
+                        duration: 200,
+                        fillTransition:3
                     },
                     axisX: {
                         showAxis: true,
@@ -185,7 +206,8 @@ export default {
                     margin: {top: 40, left: 60, bottom: 50, right: 20},
                     animate: {
                         type: 'delayed',
-                        duration: 200
+                        duration: 200,
+                        fillTransition:3
                     },
                     axisX: {
                         showAxis: true,
@@ -194,7 +216,6 @@ export default {
                         showTicks: true,
                         zeroAxis: false,
                         orient: 'bottom',
-                        tickValues: [],
                         label: {
                             fontFamily: 'Arial',
                             fontSize: 14,
@@ -209,7 +230,6 @@ export default {
                         showTicks: true,
                         zeroAxis: false,
                         orient: 'left',
-                        tickValues: [],
                         label: {
                             fontFamily: 'Arial',
                             fontSize: 14,
@@ -236,7 +256,8 @@ export default {
                     stroke: "#2980B9",
                     animate: {
                         type: 'oneByOne',
-                        duration: 200
+                        duration: 200,
+                        fillTransition:3
                     },
                     label: {
                         fontFamily: 'Arial',
@@ -312,7 +333,8 @@ export default {
                     stroke: "#3E90F0",
                     animate: {
                         type: 'delayed',
-                        duration: 200
+                        duration: 200,
+                        fillTransition:3
                     },
                     label: {
                         fontFamily: 'Arial',

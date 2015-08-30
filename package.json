@@ -1,6 +1,6 @@
 {
   "name": "react-pathjs-chart",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": false,
   "description": "React components - charts (Pie,SmoothLine) and other components (Tree) using path-js.",
   "main": "lib/Chart.js",
