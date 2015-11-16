@@ -1,30 +1,20 @@
 import _ from 'underscore';
 
-//import Pie from './charts/Pie.js';
-//import Tree from './charts/Tree.js';
-//import Radar from './charts/Radar.js';
-//import Bar from './charts/Bar.js';
-//import SmoothLine from './charts/SmoothLine.js';
-//import StockLine from './charts/StockLine.js';
-//import Scatterplot from './charts/Scatterplot.js';
+import Pie from './charts/Pie.js';
+import Tree from './charts/Tree.js';
+import Radar from './charts/Radar.js';
+import Bar from './charts/Bar.js';
+import SmoothLine from './charts/SmoothLine.js';
+import StockLine from './charts/StockLine.js';
+import Scatterplot from './charts/Scatterplot.js';
 
-//export default {
-//    Pie:Pie,
-//    Tree:Tree,
-//    SmoothLine:SmoothLine,
-//    StockLine:StockLine,
-//    Radar:Radar,
-//    Bar:Bar,
-//    Scatterplot:Scatterplot
-//};
-
-import SmoothLineVivus from './charts/SmoothLineVivus.js';
-import StockLineVivus from './charts/StockLineVivus.js';
-import BarVivus from './charts/BarVivus.js';
-import PieVivus from './charts/PieVivus.js';
-import RadarVivus from './charts/RadarVivus.js';
-import TreeVivus from './charts/TreeVivus.js';
-import ScatterplotVivus from './charts/ScatterplotVivus.js';
+//import SmoothLineVivus from './charts/SmoothLineVivus.js';
+//import StockLineVivus from './charts/StockLineVivus.js';
+//import BarVivus from './charts/BarVivus.js';
+//import PieVivus from './charts/PieVivus.js';
+//import RadarVivus from './charts/RadarVivus.js';
+//import TreeVivus from './charts/TreeVivus.js';
+//import ScatterplotVivus from './charts/ScatterplotVivus.js';
 
 // form: true
 // make objects not extensible,
@@ -88,7 +78,7 @@ var settings = {
 };
 
 export default {
-    Pie:_.extend(PieVivus, {
+    Pie:_.extend(Pie, {
         metaData: {
             props:  {
                 data:{},
@@ -117,7 +107,7 @@ export default {
             settings:settings
         }
     }),
-    Tree:_.extend(TreeVivus, {
+    Tree:_.extend(Tree, {
         metaData: {
             props: {
                 data:{},
@@ -144,7 +134,7 @@ export default {
             settings:settings
         }
     }),
-    SmoothLine:_.extend(SmoothLineVivus, {
+    SmoothLine:_.extend(SmoothLine, {
         metaData: {
             props: {
                 data:{},
@@ -193,7 +183,7 @@ export default {
             settings:settings
         }
     }),
-    StockLine:_.extend(StockLineVivus, {
+    StockLine:_.extend(StockLine, {
         metaData: {
             props: {
                 data:{},
@@ -242,7 +232,7 @@ export default {
             settings:settings
         }
     }),
-    Radar:_.extend(RadarVivus, {
+    Radar:_.extend(Radar, {
         metaData: {
             props: {
                 data:{},
@@ -270,7 +260,7 @@ export default {
             settings:settings
         }
     }),
-    Bar:_.extend(BarVivus, {
+    Bar:_.extend(Bar, {
         metaData: {
             props:{
                 data:{},
@@ -319,7 +309,7 @@ export default {
             settings:settings
         }
     }),
-    Scatterplot:_.extend(ScatterplotVivus, {
+    Scatterplot:_.extend(Scatterplot, {
         metaData: {
             props: {
                 data:{},

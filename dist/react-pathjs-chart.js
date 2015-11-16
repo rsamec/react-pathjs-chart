@@ -1389,51 +1389,41 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-//import Pie from './charts/Pie.js';
-//import Tree from './charts/Tree.js';
-//import Radar from './charts/Radar.js';
-//import Bar from './charts/Bar.js';
-//import SmoothLine from './charts/SmoothLine.js';
-//import StockLine from './charts/StockLine.js';
-//import Scatterplot from './charts/Scatterplot.js';
+var _chartsPieJs = require('./charts/Pie.js');
 
-//export default {
-//    Pie:Pie,
-//    Tree:Tree,
-//    SmoothLine:SmoothLine,
-//    StockLine:StockLine,
-//    Radar:Radar,
-//    Bar:Bar,
-//    Scatterplot:Scatterplot
-//};
+var _chartsPieJs2 = _interopRequireDefault(_chartsPieJs);
 
-var _chartsSmoothLineVivusJs = require('./charts/SmoothLineVivus.js');
+var _chartsTreeJs = require('./charts/Tree.js');
 
-var _chartsSmoothLineVivusJs2 = _interopRequireDefault(_chartsSmoothLineVivusJs);
+var _chartsTreeJs2 = _interopRequireDefault(_chartsTreeJs);
 
-var _chartsStockLineVivusJs = require('./charts/StockLineVivus.js');
+var _chartsRadarJs = require('./charts/Radar.js');
 
-var _chartsStockLineVivusJs2 = _interopRequireDefault(_chartsStockLineVivusJs);
+var _chartsRadarJs2 = _interopRequireDefault(_chartsRadarJs);
 
-var _chartsBarVivusJs = require('./charts/BarVivus.js');
+var _chartsBarJs = require('./charts/Bar.js');
 
-var _chartsBarVivusJs2 = _interopRequireDefault(_chartsBarVivusJs);
+var _chartsBarJs2 = _interopRequireDefault(_chartsBarJs);
 
-var _chartsPieVivusJs = require('./charts/PieVivus.js');
+var _chartsSmoothLineJs = require('./charts/SmoothLine.js');
 
-var _chartsPieVivusJs2 = _interopRequireDefault(_chartsPieVivusJs);
+var _chartsSmoothLineJs2 = _interopRequireDefault(_chartsSmoothLineJs);
 
-var _chartsRadarVivusJs = require('./charts/RadarVivus.js');
+var _chartsStockLineJs = require('./charts/StockLine.js');
 
-var _chartsRadarVivusJs2 = _interopRequireDefault(_chartsRadarVivusJs);
+var _chartsStockLineJs2 = _interopRequireDefault(_chartsStockLineJs);
 
-var _chartsTreeVivusJs = require('./charts/TreeVivus.js');
+var _chartsScatterplotJs = require('./charts/Scatterplot.js');
 
-var _chartsTreeVivusJs2 = _interopRequireDefault(_chartsTreeVivusJs);
+var _chartsScatterplotJs2 = _interopRequireDefault(_chartsScatterplotJs);
 
-var _chartsScatterplotVivusJs = require('./charts/ScatterplotVivus.js');
-
-var _chartsScatterplotVivusJs2 = _interopRequireDefault(_chartsScatterplotVivusJs);
+//import SmoothLineVivus from './charts/SmoothLineVivus.js';
+//import StockLineVivus from './charts/StockLineVivus.js';
+//import BarVivus from './charts/BarVivus.js';
+//import PieVivus from './charts/PieVivus.js';
+//import RadarVivus from './charts/RadarVivus.js';
+//import TreeVivus from './charts/TreeVivus.js';
+//import ScatterplotVivus from './charts/ScatterplotVivus.js';
 
 // form: true
 // make objects not extensible,
@@ -1497,7 +1487,7 @@ var settings = {
 };
 
 exports['default'] = {
-    Pie: _underscore2['default'].extend(_chartsPieVivusJs2['default'], {
+    Pie: _underscore2['default'].extend(_chartsPieJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1526,7 +1516,7 @@ exports['default'] = {
             settings: settings
         }
     }),
-    Tree: _underscore2['default'].extend(_chartsTreeVivusJs2['default'], {
+    Tree: _underscore2['default'].extend(_chartsTreeJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1534,8 +1524,8 @@ exports['default'] = {
                     margin: { top: 20, left: 50, right: 80, bottom: 20 },
                     width: 600,
                     height: 600,
-                    fill: '#2980B9',
-                    stroke: '#3E90F0',
+                    fill: "#2980B9",
+                    stroke: "#3E90F0",
                     r: 5,
                     animate: {
                         type: 'oneByOne',
@@ -1553,7 +1543,7 @@ exports['default'] = {
             settings: settings
         }
     }),
-    SmoothLine: _underscore2['default'].extend(_chartsSmoothLineVivusJs2['default'], {
+    SmoothLine: _underscore2['default'].extend(_chartsSmoothLineJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1602,7 +1592,7 @@ exports['default'] = {
             settings: settings
         }
     }),
-    StockLine: _underscore2['default'].extend(_chartsStockLineVivusJs2['default'], {
+    StockLine: _underscore2['default'].extend(_chartsStockLineJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1651,7 +1641,7 @@ exports['default'] = {
             settings: settings
         }
     }),
-    Radar: _underscore2['default'].extend(_chartsRadarVivusJs2['default'], {
+    Radar: _underscore2['default'].extend(_chartsRadarJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1661,8 +1651,8 @@ exports['default'] = {
                     margin: { top: 20, left: 20, right: 20, bottom: 20 },
                     r: 300,
                     max: 150,
-                    fill: '#2980B9',
-                    stroke: '#2980B9',
+                    fill: "#2980B9",
+                    stroke: "#2980B9",
                     animate: {
                         type: 'oneByOne',
                         duration: 200,
@@ -1679,7 +1669,7 @@ exports['default'] = {
             settings: settings
         }
     }),
-    Bar: _underscore2['default'].extend(_chartsBarVivusJs2['default'], {
+    Bar: _underscore2['default'].extend(_chartsBarJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1728,7 +1718,7 @@ exports['default'] = {
             settings: settings
         }
     }),
-    Scatterplot: _underscore2['default'].extend(_chartsScatterplotVivusJs2['default'], {
+    Scatterplot: _underscore2['default'].extend(_chartsScatterplotJs2['default'], {
         metaData: {
             props: {
                 data: {},
@@ -1738,8 +1728,8 @@ exports['default'] = {
                     width: 600,
                     height: 600,
                     margin: { top: 40, left: 60, bottom: 30, right: 30 },
-                    fill: '#2980B9',
-                    stroke: '#3E90F0',
+                    fill: "#2980B9",
+                    stroke: "#3E90F0",
                     animate: {
                         type: 'delayed',
                         duration: 200,
@@ -1788,7 +1778,7 @@ exports['default'] = {
 module.exports = exports['default'];
 
 
-},{"./charts/BarVivus.js":21,"./charts/PieVivus.js":24,"./charts/RadarVivus.js":26,"./charts/ScatterplotVivus.js":28,"./charts/SmoothLineVivus.js":30,"./charts/StockLineVivus.js":32,"./charts/TreeVivus.js":34,"underscore":undefined}],19:[function(require,module,exports){
+},{"./charts/Bar.js":20,"./charts/Pie.js":22,"./charts/Radar.js":23,"./charts/Scatterplot.js":24,"./charts/SmoothLine.js":25,"./charts/StockLine.js":26,"./charts/Tree.js":27,"underscore":undefined}],19:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1798,7 +1788,7 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -1972,15 +1962,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -2019,14 +2009,14 @@ function color(key) {
 };
 
 var BarChart = (function (_React$Component) {
+    _inherits(BarChart, _React$Component);
+
     function BarChart(props) {
         _classCallCheck(this, BarChart);
 
         _get(Object.getPrototypeOf(BarChart.prototype), 'constructor', this).call(this, props);
         this.state = { finished: true };
     }
-
-    _inherits(BarChart, _React$Component);
 
     _createClass(BarChart, [{
         key: 'color',
@@ -2052,14 +2042,14 @@ var BarChart = (function (_React$Component) {
                 max: scale(maxValue)
             };
         }
-    }, {
-        key: 'render',
 
         //componentWillReceiveProps(nextProps) {
         //    if (this.props.data !== nextProps.data) this.setState({ finished:false});
         //}
+    }, {
+        key: 'render',
         value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
+            var noDataMsg = this.props.noDataMessage || "No data available";
             if (this.props.data === undefined) return _react2['default'].createElement(
                 'span',
                 null,
@@ -2097,7 +2087,7 @@ var BarChart = (function (_React$Component) {
                     _react2['default'].createElement('path', { d: c.line.path.print(), style: fillOpacityStyle, stroke: stroke, fill: color }),
                     options.axisX.showLabels ? _react2['default'].createElement(
                         'text',
-                        { style: textStyle, transform: 'translate(' + c.line.centroid[0] + ',' + (chartArea.y.min + 25) + ')rotate(45)', textAnchor: 'middle' },
+                        { style: textStyle, transform: "translate(" + c.line.centroid[0] + "," + (chartArea.y.min + 25) + ")rotate(45)", textAnchor: 'middle' },
                         c.item.name
                     ) : null
                 );
@@ -2108,7 +2098,7 @@ var BarChart = (function (_React$Component) {
                 { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    { transform: "translate(" + options.margin.left + "," + options.margin.top + ")" },
                     _react2['default'].createElement(Axis, { scale: chart.scale, options: options.axisY, chartArea: chartArea }),
                     lines
                 )
@@ -2125,7 +2115,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":35,"../component/Options.js":36,"../fontAdapter.js":37,"../pallete/Colors.js":38,"paths-js/bar":1,"underscore":undefined}],21:[function(require,module,exports){
+},{"../component/Axis":28,"../component/Options.js":29,"../fontAdapter.js":30,"../pallete/Colors.js":31,"paths-js/bar":1,"underscore":undefined}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2135,97 +2125,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _BarJs = require('./Bar.js');
-
-var _BarJs2 = _interopRequireDefault(_BarJs);
-
-var BarVivusChart = (function (_BarChart) {
-    function BarVivusChart(props) {
-        _classCallCheck(this, BarVivusChart);
-
-        _get(Object.getPrototypeOf(BarVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
-    }
-
-    _inherits(BarVivusChart, _BarChart);
-
-    _createClass(BarVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return BarVivusChart;
-})(_BarJs2['default']);
-
-exports['default'] = BarVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Bar.js":20,"vivus":undefined}],22:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -2253,6 +2161,8 @@ function cyclic(coll, i) {
 }
 
 var LineChart = (function (_React$Component) {
+    _inherits(LineChart, _React$Component);
+
     function LineChart(props, chartType) {
         _classCallCheck(this, LineChart);
 
@@ -2260,8 +2170,6 @@ var LineChart = (function (_React$Component) {
         this.chartType = chartType;
         this.state = { finished: true };
     }
-
-    _inherits(LineChart, _React$Component);
 
     _createClass(LineChart, [{
         key: 'getMaxAndMin',
@@ -2294,7 +2202,7 @@ var LineChart = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
+            var noDataMsg = this.props.noDataMessage || "No data available";
             if (this.props.data === undefined) return _react2['default'].createElement(
                 'span',
                 null,
@@ -2338,7 +2246,7 @@ var LineChart = (function (_React$Component) {
                 { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    { transform: "translate(" + options.margin.left + "," + options.margin.top + ")" },
                     this.state.finished ? areas : null,
                     lines,
                     _react2['default'].createElement(Axis, { scale: chart.xscale, options: options.axisX, chartArea: chartArea }),
@@ -2356,7 +2264,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":35,"../component/Options.js":36,"../fontAdapter.js":37,"../pallete/Colors.js":38,"paths-js/path":7,"underscore":undefined}],23:[function(require,module,exports){
+},{"../component/Axis":28,"../component/Options.js":29,"../fontAdapter.js":30,"../pallete/Colors.js":31,"paths-js/path":7,"underscore":undefined}],22:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2366,15 +2274,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -2415,6 +2323,8 @@ function color(key) {
 };
 
 var PieChart = (function (_React$Component) {
+    _inherits(PieChart, _React$Component);
+
     function PieChart(props) {
         _classCallCheck(this, PieChart);
 
@@ -2426,26 +2336,24 @@ var PieChart = (function (_React$Component) {
         };
     }
 
-    _inherits(PieChart, _React$Component);
-
     _createClass(PieChart, [{
         key: 'translate',
         value: function translate(p) {
-            return 'translate(' + p[0] + ',' + p[1] + ')';
+            return "translate(" + p[0] + "," + p[1] + ")";
         }
     }, {
         key: 'move',
         value: function move(point, perc) {
             return this.translate([point[0] * perc / 3, point[1] * perc / 3]);
         }
-    }, {
-        key: 'color',
 
         //
         //grad(i) { return "grad-" + i }
         //
         //fill(i) { return "url(#grad-" + i  +")" }
 
+    }, {
+        key: 'color',
         value: function color(i) {
             var pallete = this.props.pallete || _palleteColorsJs2['default'].mix(this.props.options.color || '#9ac7f7');
             return _palleteColorsJs2['default'].string(cyclic(pallete, i));
@@ -2471,7 +2379,7 @@ var PieChart = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
+            var noDataMsg = this.props.noDataMessage || "No data available";
             if (this.props.data === undefined) return _react2['default'].createElement(
                 'span',
                 null,
@@ -2518,7 +2426,7 @@ var PieChart = (function (_React$Component) {
                 return coefficients[i] === 1;
             });
 
-            var legendClassName = 'legend ' + options.legendPosition;
+            var legendClassName = "legend " + options.legendPosition;
 
             var table = selected ? _react2['default'].createElement(
                 'div',
@@ -2547,7 +2455,7 @@ var PieChart = (function (_React$Component) {
                     { ref: 'vivus', width: options.width, height: options.height },
                     _react2['default'].createElement(
                         'g',
-                        { transform: 'translate(' + (options.margin.left + x) + ',' + (options.margin.top + y) + ')' },
+                        { transform: "translate(" + (options.margin.left + x) + "," + (options.margin.top + y) + ")" },
                         slices
                     )
                 ),
@@ -2556,7 +2464,7 @@ var PieChart = (function (_React$Component) {
         }
     }, {
         key: 'defaultRange',
-        get: function () {
+        get: function get() {
             return _underscore2['default'].map(Array(this.props.data && this.props.data.length), function () {
                 return 0;
             });
@@ -2572,7 +2480,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../animate.js":19,"../component/Options.js":36,"../fontAdapter.js":37,"../pallete/Colors.js":38,"paths-js/pie":8,"underscore":undefined}],24:[function(require,module,exports){
+},{"../animate.js":19,"../component/Options.js":29,"../fontAdapter.js":30,"../pallete/Colors.js":31,"paths-js/pie":8,"underscore":undefined}],23:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2582,101 +2490,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _PieJs = require('./Pie.js');
-
-var _PieJs2 = _interopRequireDefault(_PieJs);
-
-var PieVivusChart = (function (_PieChart) {
-    function PieVivusChart(props) {
-        _classCallCheck(this, PieVivusChart);
-
-        _get(Object.getPrototypeOf(PieVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = {
-            expanded: this.defaultRange,
-            finished: false
-        };
-    }
-
-    _inherits(PieVivusChart, _PieChart);
-
-    _createClass(PieVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return PieVivusChart;
-})(_PieJs2['default']);
-
-exports['default'] = PieVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Pie.js":23,"vivus":undefined}],25:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -2709,6 +2531,8 @@ function accessKeys(keys) {
 }
 
 var RadarChart = (function (_React$Component) {
+    _inherits(RadarChart, _React$Component);
+
     function RadarChart(props) {
         _classCallCheck(this, RadarChart);
 
@@ -2716,12 +2540,10 @@ var RadarChart = (function (_React$Component) {
         this.state = { finished: true };
     }
 
-    _inherits(RadarChart, _React$Component);
-
     _createClass(RadarChart, [{
         key: 'render',
         value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
+            var noDataMsg = this.props.noDataMessage || "No data available";
             if (this.props.data === undefined) return _react2['default'].createElement(
                 'span',
                 null,
@@ -2771,7 +2593,7 @@ var RadarChart = (function (_React$Component) {
                     _react2['default'].createElement(
                         'text',
                         { style: textStyle, textAnchor: 'middle', fill: self.props.options.fill,
-                            transform: 'translate(' + Math.floor(p[0]) + ',' + Math.floor(p[1]) + ')' },
+                            transform: "translate(" + Math.floor(p[0]) + "," + Math.floor(p[1]) + ")" },
                         keys[i]
                     )
                 );
@@ -2781,7 +2603,7 @@ var RadarChart = (function (_React$Component) {
                 { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    { transform: "translate(" + options.margin.left + "," + options.margin.top + ")" },
                     labels,
                     _react2['default'].createElement(
                         'g',
@@ -2807,7 +2629,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Options.js":36,"../fontAdapter.js":37,"paths-js/radar":10,"underscore":undefined}],26:[function(require,module,exports){
+},{"../component/Options.js":29,"../fontAdapter.js":30,"paths-js/radar":10,"underscore":undefined}],24:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2817,98 +2639,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _RadarJs = require('./Radar.js');
-
-var _RadarJs2 = _interopRequireDefault(_RadarJs);
-
-var RadarVivusChart = (function (_RadarChart) {
-    function RadarVivusChart(props) {
-        _classCallCheck(this, RadarVivusChart);
-
-        _get(Object.getPrototypeOf(RadarVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
-    }
-
-    _inherits(RadarVivusChart, _RadarChart);
-
-    _createClass(RadarVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return RadarVivusChart;
-})(_RadarJs2['default']);
-
-exports['default'] = RadarVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Radar.js":25,"vivus":undefined}],27:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -2929,14 +2668,14 @@ var Axis = require('../component/Axis');
 var Path = require('paths-js/path');
 
 var Scatterplot = (function (_React$Component) {
+    _inherits(Scatterplot, _React$Component);
+
     function Scatterplot(props) {
         _classCallCheck(this, Scatterplot);
 
         _get(Object.getPrototypeOf(Scatterplot.prototype), 'constructor', this).call(this, props);
         this.state = { finished: true };
     }
-
-    _inherits(Scatterplot, _React$Component);
 
     _createClass(Scatterplot, [{
         key: 'getMaxAndMin',
@@ -2975,7 +2714,7 @@ var Scatterplot = (function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
+            var noDataMsg = this.props.noDataMessage || "No data available";
             if (this.props.data === undefined) return _react2['default'].createElement(
                 'span',
                 null,
@@ -2984,7 +2723,7 @@ var Scatterplot = (function (_React$Component) {
 
             var options = new _componentOptionsJs2['default'](this.props);
 
-            var palette = this.props.palette || ['#3E90F0', '#7881C2', '#707B82'];
+            var palette = this.props.palette || ["#3E90F0", "#7881C2", "#707B82"];
             var accessor = function accessor(key) {
                 return function (x) {
                     return x[key];
@@ -3015,7 +2754,7 @@ var Scatterplot = (function (_React$Component) {
                     var item = c.item[j];
                     return _react2['default'].createElement(
                         'g',
-                        { transform: 'translate(' + p[0] + ',' + p[1] + ')' },
+                        { transform: "translate(" + p[0] + "," + p[1] + ")" },
                         _react2['default'].createElement('circle', { cx: 0, cy: 0, r: 5, style: fillOpacityStyle, stroke: options.stroke, fill: options.fill, onMouseEnter: this.onEnter.bind(this, j), onMouseLeave: this.onLeave.bind(this, j) }),
                         item.selected ? _react2['default'].createElement(
                             'text',
@@ -3031,7 +2770,7 @@ var Scatterplot = (function (_React$Component) {
                 { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    { transform: "translate(" + options.margin.left + "," + options.margin.top + ")" },
                     points,
                     _react2['default'].createElement(Axis, { scale: chart.xscale, options: options.axisX, chartArea: chartArea }),
                     _react2['default'].createElement(Axis, { scale: chart.yscale, options: options.axisY, chartArea: chartArea })
@@ -3048,102 +2787,20 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":35,"../component/Options.js":36,"../fontAdapter.js":37,"paths-js/path":7,"paths-js/stock":15,"underscore":undefined}],28:[function(require,module,exports){
-(function (global){
+},{"../component/Axis":28,"../component/Options.js":29,"../fontAdapter.js":30,"paths-js/path":7,"paths-js/stock":15,"underscore":undefined}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _ScatterplotJs = require('./Scatterplot.js');
-
-var _ScatterplotJs2 = _interopRequireDefault(_ScatterplotJs);
-
-var ScatterplotVivusChart = (function (_ScatterplotChart) {
-    function ScatterplotVivusChart(props) {
-        _classCallCheck(this, ScatterplotVivusChart);
-
-        _get(Object.getPrototypeOf(ScatterplotVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
-    }
-
-    _inherits(ScatterplotVivusChart, _ScatterplotChart);
-
-    _createClass(ScatterplotVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return ScatterplotVivusChart;
-})(_ScatterplotJs2['default']);
-
-exports['default'] = ScatterplotVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Scatterplot.js":27,"vivus":undefined}],29:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _LineJs = require('./Line.js');
 
@@ -3152,13 +2809,13 @@ var _LineJs2 = _interopRequireDefault(_LineJs);
 var SmoothLine = require('paths-js/smooth-line');
 
 var SmoothLineChart = (function (_LineChart) {
+    _inherits(SmoothLineChart, _LineChart);
+
     function SmoothLineChart(props) {
         _classCallCheck(this, SmoothLineChart);
 
         _get(Object.getPrototypeOf(SmoothLineChart.prototype), 'constructor', this).call(this, props, SmoothLine);
     }
-
-    _inherits(SmoothLineChart, _LineChart);
 
     return SmoothLineChart;
 })(_LineJs2['default']);
@@ -3167,102 +2824,20 @@ exports['default'] = SmoothLineChart;
 module.exports = exports['default'];
 
 
-},{"./Line.js":22,"paths-js/smooth-line":14}],30:[function(require,module,exports){
-(function (global){
+},{"./Line.js":21,"paths-js/smooth-line":14}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _SmoothLineJs = require('./SmoothLine.js');
-
-var _SmoothLineJs2 = _interopRequireDefault(_SmoothLineJs);
-
-var SmoothLineVivusChart = (function (_SmoothLineChart) {
-    function SmoothLineVivusChart(props) {
-        _classCallCheck(this, SmoothLineVivusChart);
-
-        _get(Object.getPrototypeOf(SmoothLineVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
-    }
-
-    _inherits(SmoothLineVivusChart, _SmoothLineChart);
-
-    _createClass(SmoothLineVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return SmoothLineVivusChart;
-})(_SmoothLineJs2['default']);
-
-exports['default'] = SmoothLineVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./SmoothLine.js":29,"vivus":undefined}],31:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _LineJs = require('./Line.js');
 
@@ -3271,13 +2846,13 @@ var _LineJs2 = _interopRequireDefault(_LineJs);
 var StockLine = require('paths-js/stock');
 
 var StockLineChart = (function (_LineChart) {
+    _inherits(StockLineChart, _LineChart);
+
     function StockLineChart(props) {
         _classCallCheck(this, StockLineChart);
 
         _get(Object.getPrototypeOf(StockLineChart.prototype), 'constructor', this).call(this, props, StockLine);
     }
-
-    _inherits(StockLineChart, _LineChart);
 
     return StockLineChart;
 })(_LineJs2['default']);
@@ -3286,7 +2861,7 @@ exports['default'] = StockLineChart;
 module.exports = exports['default'];
 
 
-},{"./Line.js":22,"paths-js/stock":15}],32:[function(require,module,exports){
+},{"./Line.js":21,"paths-js/stock":15}],27:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3296,97 +2871,15 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _StockLineJs = require('./StockLine.js');
-
-var _StockLineJs2 = _interopRequireDefault(_StockLineJs);
-
-var StockLineVivusChart = (function (_StockLineChart) {
-    function StockLineVivusChart(props) {
-        _classCallCheck(this, StockLineVivusChart);
-
-        _get(Object.getPrototypeOf(StockLineVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
-    }
-
-    _inherits(StockLineVivusChart, _StockLineChart);
-
-    _createClass(StockLineVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return StockLineVivusChart;
-})(_StockLineJs2['default']);
-
-exports['default'] = StockLineVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./StockLine.js":31,"vivus":undefined}],33:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -3413,6 +2906,8 @@ function children(x) {
 }
 
 var TreeChart = (function (_React$Component) {
+    _inherits(TreeChart, _React$Component);
+
     function TreeChart(props) {
         _classCallCheck(this, TreeChart);
 
@@ -3420,12 +2915,10 @@ var TreeChart = (function (_React$Component) {
         this.state = { finished: true };
     }
 
-    _inherits(TreeChart, _React$Component);
-
     _createClass(TreeChart, [{
         key: 'render',
         value: function render() {
-            var noDataMsg = this.props.noDataMessage || 'No data available';
+            var noDataMsg = this.props.noDataMessage || "No data available";
             if (this.props.data === undefined) return _react2['default'].createElement(
                 'span',
                 null,
@@ -3453,7 +2946,7 @@ var TreeChart = (function (_React$Component) {
 
             var r = options.r || 5;
             var nodes = _underscore2['default'].map(tree.nodes, function (n, index) {
-                var position = 'translate(' + n.point[0] + ',' + n.point[1] + ')';
+                var position = "translate(" + n.point[0] + "," + n.point[1] + ")";
 
                 function toggle() {
                     n.item.collapsed = !n.item.collapsed;
@@ -3477,7 +2970,7 @@ var TreeChart = (function (_React$Component) {
                 return _react2['default'].createElement(
                     'g',
                     { transform: position },
-                    _react2['default'].createElement('circle', { key: 'tree_' + index, style: fillOpacityStyle, fill: options.fill, stroke: options.stroke, r: r, cx: '0', cy: '0', onClick: toggle }),
+                    _react2['default'].createElement('circle', { key: "tree_" + index, style: fillOpacityStyle, fill: options.fill, stroke: options.stroke, r: r, cx: '0', cy: '0', onClick: toggle }),
                     text
                 );
             });
@@ -3487,7 +2980,7 @@ var TreeChart = (function (_React$Component) {
                 { ref: 'vivus', width: options.width, height: options.height },
                 _react2['default'].createElement(
                     'g',
-                    { transform: 'translate(' + options.margin.left + ',' + options.margin.top + ')' },
+                    { transform: "translate(" + options.margin.left + "," + options.margin.top + ")" },
                     curves,
                     nodes
                 )
@@ -3503,7 +2996,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Options.js":36,"../fontAdapter.js":37,"paths-js/tree":16,"underscore":undefined}],34:[function(require,module,exports){
+},{"../component/Options.js":29,"../fontAdapter.js":30,"paths-js/tree":16,"underscore":undefined}],28:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3511,99 +3004,17 @@ Object.defineProperty(exports, '__esModule', {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _TreeJs = require('./Tree.js');
-
-var _TreeJs2 = _interopRequireDefault(_TreeJs);
-
-var TreeVivusChart = (function (_TreeChart) {
-    function TreeVivusChart(props) {
-        _classCallCheck(this, TreeVivusChart);
-
-        _get(Object.getPrototypeOf(TreeVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
-    }
-
-    _inherits(TreeVivusChart, _TreeChart);
-
-    _createClass(TreeVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](this.refs.vivus.getDOMNode(), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return TreeVivusChart;
-})(_TreeJs2['default']);
-
-exports['default'] = TreeVivusChart;
-module.exports = exports['default'];
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Tree.js":33,"vivus":undefined}],35:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _react = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -3684,7 +3095,7 @@ var AxisStruct = (function () {
             var magMsd = Math.round(tempStep / magPow + 0.5);
 
             // promote the MSD to either 1, 2, or 5
-            if (magMsd > 5) magMsd = 10;else if (magMsd > 2) magMsd = 5;else if (magMsd > 1) magMsd = 2;
+            if (magMsd > 5.0) magMsd = 10.0;else if (magMsd > 2.0) magMsd = 5.0;else if (magMsd > 1.0) magMsd = 2.0;
 
             return magMsd * magPow;
         }
@@ -3701,13 +3112,13 @@ var AxisStruct = (function () {
 })();
 
 var Axis = (function (_React$Component) {
+    _inherits(Axis, _React$Component);
+
     function Axis(props) {
         _classCallCheck(this, Axis);
 
         _get(Object.getPrototypeOf(Axis.prototype), 'constructor', this).call(this, props);
     }
-
-    _inherits(Axis, _React$Component);
 
     _createClass(Axis, [{
         key: 'render',
@@ -3715,28 +3126,28 @@ var Axis = (function (_React$Component) {
             var chartArea = this.props.chartArea;
             var options = this.props.options;
             var scale = this.props.scale;
-            var horizontal = options.orient === 'top' || options.orient === 'bottom';
+            var horizontal = options.orient === "top" || options.orient === "bottom";
 
             var axis = new AxisStruct(this.props.scale, this.props.options, chartArea, horizontal).axis();
 
             var translate = function translate(c) {
                 var pair = horizontal ? [scale(c), chartArea.y.min] : [chartArea.x.min, scale(c)];
-                return 'translate(' + pair[0] + ',' + pair[1] + ')';
+                return "translate(" + pair[0] + "," + pair[1] + ")";
             };
 
             var transparent = { opacity: 0.5 };
-            var textAnchor = 'start';
-            if (options.orient === 'top' || options.orient === 'bottom') textAnchor = 'middle';
-            if (options.orient === 'left') textAnchor = 'end';
-            if (options.orient === 'right') textAnchor = 'start';
+            var textAnchor = "start";
+            if (options.orient === "top" || options.orient === "bottom") textAnchor = "middle";
+            if (options.orient === "left") textAnchor = "end";
+            if (options.orient === "right") textAnchor = "start";
 
             var xy = [0, 0];
-            if (options.orient === 'top') xy = [0, -5];
-            if (options.orient === 'bottom') xy = [0, 20];
-            if (options.orient === 'left') xy = [-5, 0];
-            if (options.orient === 'right') xy = [5, 0];
+            if (options.orient === "top") xy = [0, -5];
+            if (options.orient === "bottom") xy = [0, 20];
+            if (options.orient === "left") xy = [-5, 0];
+            if (options.orient === "right") xy = [5, 0];
 
-            var textTransform = 'translate(' + xy[0] + ',' + xy[1] + ')';
+            var textTransform = "translate(" + xy[0] + "," + xy[1] + ")";
 
             var textStyle = (0, _fontAdapterJs2['default'])(options.label);
 
@@ -3776,7 +3187,7 @@ module.exports = exports['default'];
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../fontAdapter.js":37,"paths-js/path":7,"underscore":undefined}],36:[function(require,module,exports){
+},{"../fontAdapter.js":30,"paths-js/path":7,"underscore":undefined}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3807,47 +3218,47 @@ var ChartOptions = (function () {
 
     _createClass(ChartOptions, [{
         key: 'legendPosition',
-        get: function () {
+        get: function get() {
             return this.options.legendPosition || 'topLeft';
         }
     }, {
         key: 'axisX',
-        get: function () {
+        get: function get() {
             return this.options.axisX || {};
         }
     }, {
         key: 'axisY',
-        get: function () {
+        get: function get() {
             return this.options.axisY || {};
         }
     }, {
         key: 'margin',
-        get: function () {
+        get: function get() {
             return this.options.margin || {};
         }
     }, {
         key: 'stroke',
-        get: function () {
+        get: function get() {
             return this.options.stroke;
         }
     }, {
         key: 'fill',
-        get: function () {
+        get: function get() {
             return this.options.fill;
         }
     }, {
         key: 'r',
-        get: function () {
+        get: function get() {
             return this.options.r;
         }
     }, {
         key: 'label',
-        get: function () {
+        get: function get() {
             return this.options.label || {};
         }
     }, {
         key: 'animate',
-        get: function () {
+        get: function get() {
             return this.options.animate || {};
         }
     }]);
@@ -3859,7 +3270,7 @@ exports['default'] = ChartOptions;
 module.exports = exports['default'];
 
 
-},{}],37:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3888,7 +3299,7 @@ function fontAdapt(fontProps) {
 module.exports = exports['default'];
 
 
-},{"underscore":undefined}],38:[function(require,module,exports){
+},{"underscore":undefined}],31:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
