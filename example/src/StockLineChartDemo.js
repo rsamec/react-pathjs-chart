@@ -2,13 +2,13 @@ import React from 'react';
 import {StockLine} from 'react-pathjs-chart';
 import genie from 'genie'
 import ChartDemo from './ChartDemo.js';
-import _ from 'underscore';
+import _ from 'lodash';
 
 export class StockLineDemo {
     get dataTemplate() {
        return {
            data: {
-               min: 80,
+               min: 30,
                max: 80,
                template: {
                    title: {
@@ -79,7 +79,7 @@ export class StockLineDemo {
         return {xKey:"x",yKey:"y"}
     }
     generateData(dataTemplate){
-        var clone = _.deepClone(dataTemplate);
+        var clone = _.cloneDeep(dataTemplate);
         clone.data.template.index = function () {
             return index++;
         };

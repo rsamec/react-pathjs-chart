@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Vivus from 'vivus';
 import PieChart from './Pie.js';
 
@@ -23,7 +24,7 @@ export default class PieVivusChart extends PieChart {
         if (this.refs.vivus === undefined) return;
         var animate = this.props.options && this.props.options.animate || {};
 
-        new Vivus(this.refs.vivus.getDOMNode(), {
+        new Vivus(ReactDOM.findDOMNode(this.refs.vivus), {
             type: animate.type || 'delayed',
             duration: animate.duration || 'delayed',
             start: 'autostart',

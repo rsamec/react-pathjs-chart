@@ -1,7 +1,8 @@
 import React from 'react';
-import _ from 'underscore';
+import _ from 'lodash';
 import Options from '../component/Options.js';
 import fontAdapt from '../fontAdapter.js';
+import styleSvg from '../styleSvg.js';
 
 var Radar = require('paths-js/radar');
 
@@ -46,9 +47,9 @@ export default class RadarChart extends React.Component
             max: this.props.options.max
         });
         var self = this;
-
+        var colors = styleSvg({}, self.props.options);
         var curves = chart.curves.map(function (c, i) {
-            return (<path key={ i } d={ c.polygon.path.print()} fill={ self.props.options.fill }/>)
+            return (<path key={ i } d={ c.polygon.path.print()} fill={ colors.fill } fillOpacity={colors.fillOpacity}/>)
         });
 
         //var rings = chart.rings.map(function(r, i) {
@@ -58,7 +59,7 @@ export default class RadarChart extends React.Component
 
         var rings = chart.rings.map(function (r, i) {
             if (i !== length - 1) {
-                return (<path key={ i } d={ r.path.print() } stroke={ self.props.options.stroke }/>)
+                return (<path key={ "rings" + i } d={ r.path.print() } stroke={ colors.stroke } strokeOpacity={colors.strokeOpacity}/>)
             }
         });
         //
@@ -66,10 +67,9 @@ export default class RadarChart extends React.Component
 
         var labels = chart.rings[length - 1].path.points().map(function (p, i) {
             return (
-                <g>
-                    <line x1={p[0]} y1={p[1]} x2={center[0]} y2={center[1]} stroke="gray"/>
-                    <text style={textStyle} textAnchor="middle" fill={self.props.options.fill}
-                          transform={"translate(" + Math.floor( p[0]) + "," + Math.floor( p[1]) + ")"}>{keys[i]}</text>
+                <g  key={"label" + i}>
+                    <line x1={p[0]} y1={p[1]} x2={center[0]} y2={center[1]}  stroke={ colors.stroke } strokeOpacity={colors.strokeOpacity}/>
+                    <text style={textStyle} textAnchor="middle" transform={"translate(" + Math.floor( p[0]) + "," + Math.floor( p[1]) + ")"}>{keys[i]}</text>
                 </g>
             )
         });

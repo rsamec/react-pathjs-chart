@@ -7,8 +7,8 @@ export class PieDemo {
     get dataTemplate() {
         return {
             data: {
-                min: 5,
-                max: 5,
+                min: 2,
+                max: 10,
                 template: {
                     name: {
                         pattern: 'brState'
@@ -39,7 +39,7 @@ export class PieDemo {
                 fontFamily:'Arial',
                 fontSize:14,
                 fontWeight:true,
-                fill:'#ECF0F1'
+                color:'#ECF0F1'
             }
         }
     }

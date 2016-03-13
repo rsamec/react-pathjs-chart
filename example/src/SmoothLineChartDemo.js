@@ -2,7 +2,7 @@ import React from 'react';
 import {SmoothLine} from 'react-pathjs-chart';
 import genie from 'genie'
 import ChartDemo from './ChartDemo.js';
-import _ from 'underscore';
+import _ from 'lodash';
 
 
 export class SmoothLineDemo {

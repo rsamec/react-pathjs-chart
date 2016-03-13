@@ -1,7 +1,7 @@
     import React from 'react';
     import Colors from '../pallete/Colors.js';
     import Animate from '../animate.js';
-    import _ from 'underscore';
+    import _ from 'lodash';
     import Options from '../component/Options.js'
     import fontAdapt from '../fontAdapter.js';
 
@@ -36,11 +36,15 @@
         //fill(i) { return "url(#grad-" + i  +")" }
 
         color(i) {
-            var pallete = this.props.pallete || Colors.mix(this.props.options.color || '#9ac7f7');
+            var color = this.props.options.color;
+            if (!_.isString(this.props.options.color)) color = color.color;
+            var pallete = this.props.pallete || Colors.mix(color || '#9ac7f7');
             return Colors.string(cyclic(pallete, i)); }
 
         lighten(i) {
-            var pallete = this.props.pallete || Colors.mix(this.props.options.color || '#9ac7f7');
+            var color = this.props.options.color;
+            if (!_.isString(this.props.options.color)) color = color.color;
+            var pallete = this.props.pallete || Colors.mix(color || '#9ac7f7');
             return Colors.string(Colors.lighten(cyclic(pallete, i))); }
 
 

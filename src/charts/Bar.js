@@ -1,6 +1,6 @@
 import React from 'react';
 import Colors from '../pallete/Colors.js';
-import _ from 'underscore';
+import _ from 'lodash';
 import Options from '../component/Options.js';
 import fontAdapt from '../fontAdapter.js';
 
@@ -29,7 +29,9 @@ export default class BarChart extends  React.Component
         this.state = {finished: true};
     }
     color(i) {
-        var pallete = this.props.pallete || Colors.mix(this.props.options.color || '#9ac7f7');
+        var color = this.props.options.color;
+        if (!_.isString(this.props.options.color)) color = color.color;
+        var pallete = this.props.pallete || Colors.mix(color || '#9ac7f7');
         return Colors.string(cyclic(pallete, i));
     }
     getMaxAndMin(values, scale) {
@@ -81,8 +83,8 @@ export default class BarChart extends  React.Component
             var color = this.color(i % 3);
             var stroke = Colors.darkenColor(color);
             return (
-                <g>
-                    <path d={ c.line.path.print() } style={fillOpacityStyle} stroke={stroke} fill={ color }/>
+                <g key={"lines" + i}>
+                    <path  d={ c.line.path.print() } style={fillOpacityStyle} stroke={stroke} fill={ color }/>
                     {options.axisX.showLabels ?
                         <text style={textStyle} transform={"translate(" + c.line.centroid[0] +  "," +  (chartArea.y.min + 25) + ")rotate(45)"} textAnchor="middle">{c.item.name}</text>
                         :null}

@@ -1,6 +1,6 @@
 {
   "name": "react-pathjs-chart",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "private": false,
   "description": "React components - charts (Pie,SmoothLine) and other components (Tree) using path-js.",
   "main": "lib/Chart.js",
@@ -16,34 +16,35 @@
   },
   "dependencies": {
     "paths-js": "^0.3.4",
-    "react": "^0.13.3",
-    "reactify": "^1.1.1",
-    "underscore": "^1.8.3",
+    "lodash": "^3.10.1",
     "vivus": "^0.2.1"
   },
   "devDependencies": {
     "genie": "^0.1.8",
-    "gulp": "^3.8.10",
-    "react-binding": "^0.6.4",
-    "react-bootstrap": "^0.25.2",
-    "react-component-gulp-tasks": "^0.7.0",
-    "react-intl": "^1.2.0",
+    "gulp": "^3.9.0",
+    "react-binding": "^0.7.5",
+    "react-bootstrap": "^0.28.3",
+    "react-component-gulp-tasks": "^0.7.7",
     "react-json": "0.0.1",
-    "react-property-editor": "^0.1.13",
-    "underscore.deepclone": "^0.1.1"
+    "react-json-fork": "0.0.2",
+    "react-property-editor": "^1.0.1"
   },
-  "peerDependencies": {},
-  "browserify": {
-    "transform": [
-      "reactify"
-    ]
+  "peerDependencies": {
+    "react": "^0.14.0"
   },
   "browser": "lib/Chart.js",
   "browserify-shim": {
     "react": "global:React"
   },
   "scripts": {
-    "test": "echo \"no tests yet\" && exit 0"
+    "build": "gulp clean && NODE_ENV=production gulp build",
+    "examples": "gulp dev:server",
+    "lint": "eslint ./; true",
+    "publish:site": "NODE_ENV=production gulp publish:examples",
+    "release": "NODE_ENV=production gulp release",
+    "start": "gulp dev",
+    "test": "echo \"no tests yet\" && exit 0",
+    "watch": "gulp watch:lib"
   },
   "keywords": [
     "react",

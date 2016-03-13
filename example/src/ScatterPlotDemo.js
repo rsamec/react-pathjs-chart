@@ -2,15 +2,13 @@ import React from 'react';
 import {Scatterplot} from 'react-pathjs-chart';
 import genie from 'genie'
 import ChartDemo from './ChartDemo.js';
-import _ from 'underscore';
-
-_.mixin(require('underscore.deepclone'));
+import _ from 'lodash';
 
 class PlotDemo {
     get dataTemplate() {
         return {
             data: {
-                min: 50,
+                min: 20,
                 max: 70,
                 template: {
                     title: {
@@ -77,7 +75,7 @@ class PlotDemo {
     }
 
     generateData(dataTemplate){
-        var clone = _.deepClone(dataTemplate);
+        var clone = _.cloneDeep(dataTemplate);
         clone.data.template.episode = function () {
             return index++;
         };

@@ -1,7 +1,8 @@
 import React from 'react';
-import _ from 'underscore';
+import _ from 'lodash';
 import Options from '../component/Options.js';
 import fontAdapt from '../fontAdapter.js';
+import styleSvg from '../styleSvg';
 
 var Stock  = require('paths-js/stock');
 var Axis = require('../component/Axis');
@@ -74,11 +75,13 @@ export default class Scatterplot extends React.Component {
 
         var textStyle = fontAdapt(options.label);
 
+
+        var colors = styleSvg({},options);
         var points = _.map(chart.curves, function (c, i) {
             return _.map(c.line.path.points(),function(p,j) {
                 var item = c.item[j];
-                return (<g transform={"translate(" + p[0] + "," + p[1] + ")"}>
-                    <circle cx={0} cy={0} r={5} style={fillOpacityStyle} stroke={options.stroke} fill={options.fill} onMouseEnter={this.onEnter.bind(this,j)} onMouseLeave={this.onLeave.bind(this,j)}/>
+                return (<g key={'k' + j} transform={"translate(" + p[0] + "," + p[1] + ")"}>
+                    <circle {...colors}  cx={0} cy={0} r={options.r || 5} style={fillOpacityStyle}  onMouseEnter={this.onEnter.bind(this,j)} onMouseLeave={this.onLeave.bind(this,j)}/>
                     {item.selected?<text style={textStyle} transform="translate(15, 5)" text-anchor="start">{item.title}</text>:null}
                 </g>)
             },this)

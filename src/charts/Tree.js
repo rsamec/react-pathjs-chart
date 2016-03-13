@@ -1,8 +1,8 @@
 import React from 'react';
-import _ from 'underscore';
+import _ from 'lodash';
 import Options from '../component/Options.js';
 import fontAdapt from '../fontAdapter.js';
-
+import styleSvg from '../styleSvg';
 var Tree = require('paths-js/tree');
 
 function children(x) {
@@ -32,15 +32,17 @@ export default class TreeChart extends React.Component {
             width: options.chartWidth,
             height: options.chartHeight
         });
-
-        var curves = _.map(tree.curves,function (c) {
-            return <path d={ c.connector.path.print() } fill="none" stroke={options.stroke} />
+        var colors = styleSvg({},options);
+        var curves = _.map(tree.curves,function (c,i) {
+            return <path  key={"curves_" + i} d={ c.connector.path.print() } fill="none" stroke={colors.stroke} strokeOpacity={colors.strokeOpacity} />
         });
 
         var sec = options.animate.fillTransition || 0;
         var fillOpacityStyle = {fillOpacity:this.state.finished?1:0,transition: this.state.finished?'fill-opacity ' + sec + 's':''};
 
         var textStyle = fontAdapt(options.label);
+
+
 
         var r = options.r || 5;
         var nodes = _.map(tree.nodes,function (n,index) {
@@ -54,12 +56,12 @@ export default class TreeChart extends React.Component {
             if (children(n.item).length > 0) {
                 var text = <text style={textStyle} transform="translate(-10,0)" textAnchor="end">{ n.item.name }</text>;
             } else {
-                var text = <text  style={textStyle} transform="translate(10,0)" textAnchor="start">{ n.item.name }</text>;
+                var text = <text style={textStyle} transform="translate(10,0)" textAnchor="start">{ n.item.name }</text>;
             }
 
             return (
-                <g transform={ position }>
-                    <circle key={"tree_" + index} style={fillOpacityStyle} fill={options.fill} stroke={options.stroke} r={r} cx="0" cy="0" onClick={ toggle }/>
+                <g key={"tree_" + index} transform={ position }>
+                    <circle  style={fillOpacityStyle} {...colors} r={r} cx="0" cy="0" onClick={ toggle }/>
                     { text }
                 </g>
             )

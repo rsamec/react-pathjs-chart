@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'underscore';
+import _ from 'lodash';
 import fontAdapt from '../fontAdapter.js';
 
 var Path = require('paths-js/path');
@@ -128,7 +128,7 @@ export default class Axis extends React.Component {
 
 
         var gridLines = options.showLines ? _.map(axis.lines, function (c, i) {
-            return (<path d={c.print()} style={ transparent } stroke="#3E90F0" fill="none"/>)
+            return (<path key={"gridLines" + i} d={c.print()} style={ transparent } stroke="#3E90F0" fill="none"/>)
         }) : [];
 
         return(<g>

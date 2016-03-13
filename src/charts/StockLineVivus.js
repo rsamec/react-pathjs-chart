@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Vivus from 'vivus';
 import StockLineChart from './StockLine.js';
 
@@ -19,7 +20,7 @@ export default class StockLineVivusChart extends StockLineChart {
     run(){
         if (this.refs.vivus === undefined) return;
         var animate = this.props.options && this.props.options.animate || {};
-        new Vivus(this.refs.vivus.getDOMNode(), {
+        new Vivus(ReactDOM.findDOMNode(this.refs.vivus), {
             type: animate.type || 'delayed',
             duration: animate.duration || 'delayed',
             start: 'autostart',

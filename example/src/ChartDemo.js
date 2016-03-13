@@ -1,11 +1,10 @@
 import React from 'react';
-import Json from 'react-json';
-import _ from 'underscore';
-import {TabbedArea,TabPane,Button} from 'react-bootstrap';
+import Json from 'react-json-fork';
+import _ from 'lodash';
+import {Tabs as TabbedArea,Tab as TabPane,Button} from 'react-bootstrap';
 import {FormattedNumber} from 'react-intl';
 
 import PropertyEditor from 'react-property-editor';
-_.mixin(require('underscore.deepclone'));
 
 export default class ChartDemo extends React.Component {
     constructor(props, chartType, demo) {
@@ -16,7 +15,7 @@ export default class ChartDemo extends React.Component {
             dataTemplate: demo.dataTemplate,
             data: demo.generateData(demo.dataTemplate),
             options: chartType.metaData.props.options,
-            settings:chartType.metaData.settings
+            settings:chartType.metaData.settings.fields.options
         }
         this.chartType = chartType;
         this.chartDemo = demo;
@@ -28,7 +27,7 @@ export default class ChartDemo extends React.Component {
     }
 
     optionsChanged(value) {
-        this.setState({options: value})
+        this.setState({options: value.props})
     }
 
     regenerate(e) {
@@ -45,11 +44,11 @@ export default class ChartDemo extends React.Component {
 
     render() {
         var tdStyle = {paddingLeft: 10, paddingTop: 10, verticalAlign: 'top'};
-        var options = _.deepClone(this.state.options);
+        var options = _.cloneDeep(this.state.options);
         if (options.axisX !== undefined) options.axisX.labelComponent =
-            <FormattedNumber value={0} style="decimal" maximumFractionDigits={2}/>;
+            <FormattedNumber value={0} style="decimal" maximumFractionDigits={2} tagName="tspan" />;
         if (options.axisY !== undefined) options.axisY.labelComponent =
-            <FormattedNumber value={0} style="decimal" maximumFractionDigits={2}/>;
+            <FormattedNumber value={0} style="decimal" maximumFractionDigits={2} tagName="tspan" />;
         //
         var chartProps = _.extend({
             data: this.state.data,
@@ -72,18 +71,20 @@ export default class ChartDemo extends React.Component {
                 <div className="col-md-4">
 
                     <TabbedArea bsStyle="tabs" defaultActiveKey={2}>
-                        <TabPane eventKey={1} tab='Data'>
+                        <TabPane eventKey={1} title='Data'>
                             <div>
+                                {
                                 <Json value={this.state.dataTemplate} settings={this.props.settings}
                                       onChange={this.templateChanged.bind(this)}/>
+                                }
 
                                 <Button bsStyle="link" onClick={this.toogleShowData.bind(this)}>{this.state.show ? "hide" : "show"} data json</Button>
 
                                 {this.state.show ? <pre style={{width:'100%',height:200}}>{JSON.stringify(this.state.data, null, 2)}</pre> : null}
                             </div>
                         </TabPane>
-                        <TabPane eventKey={2} tab='Options'>
-                            <PropertyEditor value={this.state.options} settings={this.state.settings}
+                        <TabPane eventKey={2} title='Options'>
+                            <PropertyEditor value={{props:this.state.options}} settings={this.state.settings}
                                   onChange={this.optionsChanged.bind(this)}/>
                         </TabPane>
                     </TabbedArea>

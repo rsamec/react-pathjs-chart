@@ -1,10 +1,10 @@
 import React from 'react';
-import BindToMixin from 'react-binding';
-import _ from 'underscore';
-import Json from 'react-json';
+import Binder from 'react-binding';
+import _ from 'lodash';
+import PropertyEditor from 'react-property-editor';
 import genie from 'genie'
 
-import {TabbedArea,TabPane,Button} from 'react-bootstrap';
+import {Tabs as TabbedArea,Tab as TabPane,Button} from 'react-bootstrap';
 
 import SmoothLineChartDemo from './SmoothLineChartDemo.js';
 import StockLineChartDemo from './StockLineChartDemo.js';
@@ -76,19 +76,19 @@ var patternsOptions = [
 //    'Papyrus'
 //]
 
-var TickValues = React.createClass({
-    mixins: [BindToMixin],
+class TickValues extends React.Component
+{
     onChange(){
         if (this.props.onChange!== undefined) this.props.onChange();
-    },
+    }
     add(){
         this.props.tickValues.add({value: 0});
         this.onChange();
-    },
+    }
     remove(item){
         this.props.tickValues.remove(item);
         this.onChange();
-    },
+    }
     clear(){
 
         var source = this.props.tickValues.sourceObject;
@@ -97,7 +97,7 @@ var TickValues = React.createClass({
 
         this.onChange();
 
-    },
+    }
 
     render(){
         var items = this.props.tickValues.items;
@@ -107,7 +107,7 @@ var TickValues = React.createClass({
             <table>
                 <tr>
                     {items.map(function (item, index) {
-                        var valueLink =this.bindTo(item,'value');
+                        var valueLink =Binder.bindTo(item,'value');
                         var handleChange = function(e){
                             valueLink.value = e.target.value;
                             this.onChange();
@@ -122,23 +122,23 @@ var TickValues = React.createClass({
             </table>
         </div>);
     }
-});
+};
 // Create the custom field type component
-var TickValuesWrapper = React.createClass({
-    mixins: [BindToMixin],
+class TickValuesWrapper extends React.Component
+{
     getInitialState(){
         return {tickValues:_.map(this.props.value,function(item){return _.clone(item)})}
-    },
-    render: function () {
-        var bindToArray = this.bindArrayToState('tickValues');
+    }
+    render () {
+        var bindToArray = Binder.bindArrayToState(this,'tickValues');
         return (<TickValues tickValues={bindToArray}  onChange={this.handleChange}></TickValues>)
-    },
-    handleChange: function () {
+    }
+    handleChange () {
         this.props.onUpdated(this.state.tickValues);
     }
-});
+};
 
-Json.registerType('tickValues',TickValuesWrapper);
+PropertyEditor.registerType('tickValues',TickValuesWrapper);
 //
 //// Create the custom field type component
 //var ColorPickerWrapper = React.createClass({
@@ -233,13 +233,14 @@ var settings = {
     }
 };
 
-var Panel = React.createClass({
+class Panel extends React.Component
+{
     getInitialState(){
         return {expanded: this.props.defaultExpanded}
-    },
+    }
     toogleExpanded(){
         this.setState({expanded: !this.state.expanded});
-    },
+    }
     render(){
         var className = this.state.expanded ? "glyphicon-chevron-up" : "glyphicon-chevron-down";
         className = "glyphicon " + className;
@@ -255,43 +256,38 @@ var Panel = React.createClass({
             </div>
         )
     }
-});
-var App = React.createClass({
-    mixins: [BindToMixin],
-    //getInitialState() {
-    //    //labelComponent: <FormattedNumber value={1000} style="currency" currency="USD"/>
-    //
-    //},
-
+}
+class App extends React.Component
+{
     render() {
         return (<div>
                 <TabbedArea bsStyle="tabs" defaultActiveKey={1}>
-                    <TabPane eventKey={1} tab='StockLine'>
+                    <TabPane eventKey={1} title='StockLine'>
                         <StockLineChartDemo settings={settings}/>
                     </TabPane>
-                    <TabPane eventKey={2} tab='SmoothLine'>
+                    <TabPane eventKey={2} title='SmoothLine'>
                         <SmoothLineChartDemo settings={settings}/>
                     </TabPane>
-                    <TabPane eventKey={3} tab='Scatterplot'>
+                    <TabPane eventKey={3} title='Scatterplot'>
                         <ScatterPlotDemo settings={settings}/>
                     </TabPane>
-                    <TabPane eventKey={4} tab='Bar'>
+                    <TabPane eventKey={4} title='Bar'>
                         <BarChartDemo settings={settings}/>
                     </TabPane>
-                    <TabPane eventKey={5} tab='Pie'>
+                    <TabPane eventKey={5} title='Pie'>
                         <PieChartDemo settings={settings}/>
                     </TabPane>
 
-                    <TabPane eventKey={6} tab='Tree'>
+                    <TabPane eventKey={6} title='Tree'>
                         <TreeChartDemo settings={settings}/>
                     </TabPane>
-                    <TabPane eventKey={7} tab='Radar'>
+                    <TabPane eventKey={7} title='Radar'>
                         <RadarChartDemo settings={settings}/>
                     </TabPane>
                 </TabbedArea>
             </div>
         )
     }
-});
+};
 
 React.render(<App />, document.getElementById('app'));

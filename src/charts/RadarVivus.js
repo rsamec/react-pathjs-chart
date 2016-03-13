@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Vivus from 'vivus';
 import RadarChart from './Radar.js';
 
@@ -20,7 +21,7 @@ export default class RadarVivusChart extends RadarChart {
         if (this.refs.vivus === undefined) return;
         var animate = this.props.options && this.props.options.animate || {};
 
-        new Vivus(this.refs.vivus.getDOMNode(), {
+        new Vivus(ReactDOM.findDOMNode(this.refs.vivus), {
             type: animate.type || 'delayed',
             duration: animate.duration || 'delayed',
             start: 'autostart',

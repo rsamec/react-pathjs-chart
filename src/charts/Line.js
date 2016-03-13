@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'underscore';
+import _ from 'lodash';
 import Colors from '../pallete/Colors.js';
 import Options from '../component/Options.js';
 import fontAdapt from '../fontAdapter.js';
@@ -37,7 +37,9 @@ export default class LineChart extends React.Component {
     }
 
     color(i) {
-        var pallete = this.props.pallete || Colors.mix(this.props.options.color || '#9ac7f7');
+        var color = this.props.options.color;
+        if (!_.isString(this.props.options.color)) color = color.color;
+        var pallete = this.props.pallete || Colors.mix(color || '#9ac7f7');
         return Colors.string(cyclic(pallete, i));
     }
 
@@ -71,19 +73,19 @@ export default class LineChart extends React.Component {
         var transparent = {opacity: 0.5};
 
         var lines = _.map(chart.curves, function (c, i) {
-            return <path d={ c.line.path.print() } stroke={ this.color(i) } fill="none"/>
-        },this);
+            return <path key={'lines' + i} d={ c.line.path.print() } stroke={ this.color(i) } fill="none"/>
+        }.bind(this));
         var areas = _.map(chart.curves, function (c, i) {
             //var transparent = { opacity: 0.5 };
-            return <path d={ c.area.path.print() } style={ transparent } stroke="none" fill={ this.color(i) }/>
-        },this);
+            return <path key={'areas' + i} d={ c.area.path.print() } style={ transparent } stroke="none" fill={ this.color(i) }/>
+        }.bind(this));
 
         return <svg ref="vivus" width={options.width} height={options.height}>
             <g transform={"translate(" + options.margin.left + "," + options.margin.top + ")"}>
                 { this.state.finished ? areas : null }
                 { lines }
-                <Axis scale ={chart.xscale} options={options.axisX} chartArea={chartArea} />
-                <Axis scale ={chart.yscale} options={options.axisY} chartArea={chartArea} />
+                <Axis key="x" scale ={chart.xscale} options={options.axisX} chartArea={chartArea} />
+                <Axis key="y" scale ={chart.yscale} options={options.axisY} chartArea={chartArea} />
             </g>
         </svg>
     }
