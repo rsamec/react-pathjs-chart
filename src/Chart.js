@@ -16,73 +16,13 @@ import Radar from './charts/RadarVivus.js';
 import Tree from './charts/TreeVivus.js';
 import Scatterplot from './charts/ScatterplotVivus.js';
 
-// form: true
-// make objects not extensible,
-// fields not removable
-// and inputs always visible
-var settings = {
-    form: true,
-    fields: {
-        data:{type:'bindingEditor'},
-        options: {
-            fields: {
-                width:{type:'number'},
-                height:{type:'number'},
-                margin:{type:'boxSizeEditor'},
-                r:{type:'number'},
-                R:{type:'number'},
-                gutter:{type:'number'},
-                color: {type: 'colorPicker'},
-                fill: {type: 'colorPicker'},
-                stroke: {type: 'colorPicker'},
-                legendPosition: {
-                    type: 'select',
-                    settings: {options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']}
-                },
-                label: {type: 'fontEditor'},
-                animate: {
-                    fields: {
-                        type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
-                        duration:{type:'number'},
-                        fillTransition:{type:'number'}
-                    }
-                }
-                ,
-                axisY: {
-                    fields: {
-                        orient: {type: 'select', settings: {options: ['left', 'right']}},
-                        tickValues: {type: 'tickValues'},
-                        label: {type: 'fontEditor'},
-                        showAxis: {type:'boolean'},
-                        showLines: {type:'boolean'},
-                        showLabels: {type:'boolean'},
-                        showTicks: {type:'boolean'},
-                        zeroAxis: {type:'boolean'}
-                    }
-                },
-                axisX: {
-                    fields: {
-                        orient: {type: 'select', settings: {options: ['top', 'bottom']}},
-                        tickValues: {type: 'tickValues'},
-                        label: {type: 'fontEditor'},
-                        showAxis: {type:'boolean'},
-                        showLines: {type:'boolean'},
-                        showLabels: {type:'boolean'},
-                        showTicks: {type:'boolean'},
-                        zeroAxis: {type:'boolean'}
-                    }
-                }
-            }
-        }
-    }
-};
 
 export default {
     Pie:_.extend(Pie, {
         metaData: {
-            props:  {
-                data:{},
-                accessorKey:'',
+            props: {
+                data: {},
+                accessorKey: '',
                 options: {
                     margin: {top: 20, left: 20, right: 20, bottom: 20},
                     width: 600,
@@ -104,7 +44,34 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    accessorKey:{type:'string'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            r: {type: 'number'},
+                            R: {type: 'number'},
+                            color: {type: 'colorPicker'},
+                            legendPosition: {
+                                type: 'select',
+                                settings: {options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']}
+                            },
+                            label: {type: 'fontEditor'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }),
     Tree:_.extend(Tree, {
@@ -131,7 +98,29 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            r: {type: 'number'},
+                            fill: {type: 'colorPicker'},
+                            stroke: {type: 'colorPicker'},
+                            label: {type: 'fontEditor'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }),
     SmoothLine:_.extend(SmoothLine, {
@@ -180,7 +169,53 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    xKey:{type:'string'},
+                    yKey:{type:'string'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            color: {type: 'colorPicker'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            }
+                            ,
+                            axisY: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['left', 'right']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['top', 'bottom']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }),
     StockLine:_.extend(StockLine, {
@@ -229,7 +264,52 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    xKey:{type:'string'},
+                    yKey:{type:'string'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            color: {type: 'colorPicker'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            },
+                            axisY: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['left', 'right']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['top', 'bottom']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }),
     Radar:_.extend(Radar, {
@@ -257,7 +337,30 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            r: {type: 'number'},
+                            max: {type: 'number'},
+                            fill: {type: 'colorPicker'},
+                            stroke: {type: 'colorPicker'},
+                            label: {type: 'fontEditor'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }),
     Bar:_.extend(Bar, {
@@ -306,7 +409,52 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    accessorKey:{type:'string'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            gutter: {type: 'number'},
+                            color: {type: 'colorPicker'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            },
+                            axisY: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['left', 'right']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['top', 'bottom']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }),
     Scatterplot:_.extend(Scatterplot, {
@@ -362,7 +510,55 @@ export default {
                     }
                 }
             },
-            settings:settings
+            settings: {
+                fields: {
+                    data: {type: 'plainJsonEditor'},
+                    xKey:{type:'string'},
+                    yKey:{type:'string'},
+                    options: {
+                        fields: {
+                            width: {type: 'number'},
+                            height: {type: 'number'},
+                            margin: {type: 'boxSizeEditor'},
+                            fill: {type: 'colorPicker'},
+                            stroke: {type: 'colorPicker'},
+                            label: {type: 'fontEditor'},
+                            animate: {
+                                fields: {
+                                    type: {type: 'select', settings: {options: ['delayed', 'async', 'oneByOne']}},
+                                    duration: {type: 'number'},
+                                    fillTransition: {type: 'number'}
+                                }
+                            }
+                            ,
+                            axisY: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['left', 'right']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: {type: 'select', settings: {options: ['top', 'bottom']}},
+                                    tickValues: {type: 'tickValues'},
+                                    label: {type: 'fontEditor'},
+                                    showAxis: {type: 'boolean'},
+                                    showLines: {type: 'boolean'},
+                                    showLabels: {type: 'boolean'},
+                                    showTicks: {type: 'boolean'},
+                                    zeroAxis: {type: 'boolean'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     })
 };
