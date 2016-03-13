@@ -14,7 +14,7 @@ export default class ChartDemo extends React.Component {
             show: false,
             dataTemplate: demo.dataTemplate,
             data: demo.generateData(demo.dataTemplate),
-            options: chartType.metaData.props.options,
+            options: chartType.defaultProps.options,
             settings:chartType.metaData.settings.fields.options
         }
         this.chartType = chartType;
@@ -44,7 +44,7 @@ export default class ChartDemo extends React.Component {
 
     render() {
         var tdStyle = {paddingLeft: 10, paddingTop: 10, verticalAlign: 'top'};
-        var options = _.cloneDeep(this.state.options);
+        var options = _.cloneDeep(this.state.options) || {};
         if (options.axisX !== undefined) options.axisX.labelComponent =
             <FormattedNumber value={0} style="decimal" maximumFractionDigits={2} tagName="tspan" />;
         if (options.axisY !== undefined) options.axisY.labelComponent =

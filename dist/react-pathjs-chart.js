@@ -16018,62 +16018,246 @@ var _chartsScatterplotVivusJs = require('./charts/ScatterplotVivus.js');
 
 var _chartsScatterplotVivusJs2 = _interopRequireDefault(_chartsScatterplotVivusJs);
 
-// form: true
-// make objects not extensible,
-// fields not removable
-// and inputs always visible
-var settings = {
-    form: true,
-    fields: {
-        data: { type: 'bindingEditor' },
-        options: {
-            fields: {
-                width: { type: 'number' },
-                height: { type: 'number' },
-                margin: { type: 'boxSizeEditor' },
-                r: { type: 'number' },
-                R: { type: 'number' },
-                gutter: { type: 'number' },
-                color: { type: 'colorPicker' },
-                fill: { type: 'colorPicker' },
-                stroke: { type: 'colorPicker' },
-                legendPosition: {
-                    type: 'select',
-                    settings: { options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] }
-                },
-                label: { type: 'fontEditor' },
-                animate: {
-                    fields: {
-                        type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
-                        duration: { type: 'number' },
-                        fillTransition: { type: 'number' }
-                    }
-                },
+_chartsPieVivusJs2['default'].defaultProps = {
+    options: {
+        margin: { top: 20, left: 20, right: 20, bottom: 20 },
+        width: 600,
+        height: 600,
+        color: '#2980B9',
+        r: 100,
+        R: 200,
+        legendPosition: 'topLeft',
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#ECF0F1'
+        }
+    }
+};
+_chartsTreeVivusJs2['default'].defaultProps = {
 
-                axisY: {
-                    fields: {
-                        orient: { type: 'select', settings: { options: ['left', 'right'] } },
-                        tickValues: { type: 'tickValues' },
-                        label: { type: 'fontEditor' },
-                        showAxis: { type: 'boolean' },
-                        showLines: { type: 'boolean' },
-                        showLabels: { type: 'boolean' },
-                        showTicks: { type: 'boolean' },
-                        zeroAxis: { type: 'boolean' }
-                    }
-                },
-                axisX: {
-                    fields: {
-                        orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
-                        tickValues: { type: 'tickValues' },
-                        label: { type: 'fontEditor' },
-                        showAxis: { type: 'boolean' },
-                        showLines: { type: 'boolean' },
-                        showLabels: { type: 'boolean' },
-                        showTicks: { type: 'boolean' },
-                        zeroAxis: { type: 'boolean' }
-                    }
-                }
+    options: {
+        margin: { top: 20, left: 50, right: 80, bottom: 20 },
+        width: 600,
+        height: 600,
+        fill: "#2980B9",
+        stroke: "#3E90F0",
+        r: 5,
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            fill: '#34495E'
+        }
+    }
+};
+_chartsSmoothLineVivusJs2['default'].defaultProps = {
+
+    options: {
+        width: 600,
+        height: 600,
+        color: '#2980B9',
+        margin: { top: 40, left: 60, bottom: 50, right: 20 },
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
+    }
+};
+_chartsStockLineVivusJs2['default'].defaultProps = {
+    options: {
+        width: 600,
+        height: 600,
+        color: '#2980B9',
+        margin: { top: 40, left: 60, bottom: 50, right: 20 },
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
+    }
+};
+_chartsRadarVivusJs2['default'].defaultProps = {
+    options: {
+        width: 600,
+        height: 600,
+        margin: { top: 20, left: 20, right: 20, bottom: 20 },
+        r: 300,
+        max: 150,
+        fill: "#2980B9",
+        stroke: "#2980B9",
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#34495E'
+        }
+    }
+};
+
+_chartsBarVivusJs2['default'].defaultProps = {
+    accessorKey: '',
+    options: {
+        width: 600,
+        height: 600,
+        margin: { top: 20, left: 20, bottom: 50, right: 20 },
+        color: '#2980B9',
+        gutter: 20,
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
+    }
+};
+
+_chartsScatterplotVivusJs2['default'].defaultProps = {
+    xKey: '',
+    yKey: '',
+    options: {
+        width: 600,
+        height: 600,
+        margin: { top: 40, left: 60, bottom: 30, right: 30 },
+        fill: "#2980B9",
+        stroke: "#3E90F0",
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#34495E'
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
             }
         }
     }
@@ -16082,289 +16266,293 @@ var settings = {
 exports['default'] = {
     Pie: _underscore2['default'].extend(_chartsPieVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                accessorKey: '',
-                options: {
-                    margin: { top: 20, left: 20, right: 20, bottom: 20 },
-                    width: 600,
-                    height: 600,
-                    color: '#2980B9',
-                    r: 100,
-                    R: 200,
-                    legendPosition: 'topLeft',
-                    animate: {
-                        type: 'oneByOne',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    label: {
-                        fontFamily: 'Arial',
-                        fontSize: 14,
-                        bold: true,
-                        color: '#ECF0F1'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    accessorKey: { type: 'string' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            r: { type: 'number' },
+                            R: { type: 'number' },
+                            color: { type: 'colorPicker' },
+                            legendPosition: {
+                                type: 'select',
+                                settings: { options: ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'] }
+                            },
+                            label: { type: 'fontEditor' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            }
+                        }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     }),
     Tree: _underscore2['default'].extend(_chartsTreeVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                options: {
-                    margin: { top: 20, left: 50, right: 80, bottom: 20 },
-                    width: 600,
-                    height: 600,
-                    fill: "#2980B9",
-                    stroke: "#3E90F0",
-                    r: 5,
-                    animate: {
-                        type: 'oneByOne',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    label: {
-                        fontFamily: 'Arial',
-                        fontSize: 14,
-                        bold: true,
-                        fill: '#34495E'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            r: { type: 'number' },
+                            fill: { type: 'colorPicker' },
+                            stroke: { type: 'colorPicker' },
+                            label: { type: 'fontEditor' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            }
+                        }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     }),
     SmoothLine: _underscore2['default'].extend(_chartsSmoothLineVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                xKey: '',
-                yKey: '',
-                options: {
-                    width: 600,
-                    height: 600,
-                    color: '#2980B9',
-                    margin: { top: 40, left: 60, bottom: 50, right: 20 },
-                    animate: {
-                        type: 'delayed',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    axisX: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'bottom',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
-                        }
-                    },
-                    axisY: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'left',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    xKey: { type: 'string' },
+                    yKey: { type: 'string' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            color: { type: 'colorPicker' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            },
+
+                            axisY: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            }
                         }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     }),
     StockLine: _underscore2['default'].extend(_chartsStockLineVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                xKey: '',
-                yKey: '',
-                options: {
-                    width: 600,
-                    height: 600,
-                    color: '#2980B9',
-                    margin: { top: 40, left: 60, bottom: 50, right: 20 },
-                    animate: {
-                        type: 'delayed',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    axisX: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'bottom',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
-                        }
-                    },
-                    axisY: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'left',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    xKey: { type: 'string' },
+                    yKey: { type: 'string' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            color: { type: 'colorPicker' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            },
+                            axisY: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            }
                         }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     }),
     Radar: _underscore2['default'].extend(_chartsRadarVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                options: {
-                    width: 600,
-                    height: 600,
-                    margin: { top: 20, left: 20, right: 20, bottom: 20 },
-                    r: 300,
-                    max: 150,
-                    fill: "#2980B9",
-                    stroke: "#2980B9",
-                    animate: {
-                        type: 'oneByOne',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    label: {
-                        fontFamily: 'Arial',
-                        fontSize: 14,
-                        bold: true,
-                        color: '#34495E'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            r: { type: 'number' },
+                            max: { type: 'number' },
+                            fill: { type: 'colorPicker' },
+                            stroke: { type: 'colorPicker' },
+                            label: { type: 'fontEditor' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            }
+                        }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     }),
     Bar: _underscore2['default'].extend(_chartsBarVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                accessorKey: '',
-                options: {
-                    width: 600,
-                    height: 600,
-                    margin: { top: 20, left: 20, bottom: 50, right: 20 },
-                    color: '#2980B9',
-                    gutter: 20,
-                    animate: {
-                        type: 'oneByOne',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    axisX: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'bottom',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
-                        }
-                    },
-                    axisY: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'left',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    accessorKey: { type: 'string' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            gutter: { type: 'number' },
+                            color: { type: 'colorPicker' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            },
+                            axisY: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            }
                         }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     }),
     Scatterplot: _underscore2['default'].extend(_chartsScatterplotVivusJs2['default'], {
         metaData: {
-            props: {
-                data: {},
-                xKey: '',
-                yKey: '',
-                options: {
-                    width: 600,
-                    height: 600,
-                    margin: { top: 40, left: 60, bottom: 30, right: 30 },
-                    fill: "#2980B9",
-                    stroke: "#3E90F0",
-                    animate: {
-                        type: 'delayed',
-                        duration: 200,
-                        fillTransition: 3
-                    },
-                    label: {
-                        fontFamily: 'Arial',
-                        fontSize: 14,
-                        bold: true,
-                        color: '#34495E'
-                    },
-                    axisX: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'bottom',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
-                        }
-                    },
-                    axisY: {
-                        showAxis: true,
-                        showLines: true,
-                        showLabels: true,
-                        showTicks: true,
-                        zeroAxis: false,
-                        orient: 'left',
-                        label: {
-                            fontFamily: 'Arial',
-                            fontSize: 14,
-                            bold: true,
-                            color: '#34495E'
+            settings: {
+                fields: {
+                    data: { type: 'plainJsonEditor' },
+                    xKey: { type: 'string' },
+                    yKey: { type: 'string' },
+                    options: {
+                        fields: {
+                            width: { type: 'number' },
+                            height: { type: 'number' },
+                            margin: { type: 'boxSizeEditor' },
+                            fill: { type: 'colorPicker' },
+                            stroke: { type: 'colorPicker' },
+                            label: { type: 'fontEditor' },
+                            animate: {
+                                fields: {
+                                    type: { type: 'select', settings: { options: ['delayed', 'async', 'oneByOne'] } },
+                                    duration: { type: 'number' },
+                                    fillTransition: { type: 'number' }
+                                }
+                            },
+
+                            axisY: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['left', 'right'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            },
+                            axisX: {
+                                fields: {
+                                    orient: { type: 'select', settings: { options: ['top', 'bottom'] } },
+                                    //tickValues: {type: 'tickValues'},
+                                    label: { type: 'fontEditor' },
+                                    showAxis: { type: 'boolean' },
+                                    showLines: { type: 'boolean' },
+                                    showLabels: { type: 'boolean' },
+                                    showTicks: { type: 'boolean' },
+                                    zeroAxis: { type: 'boolean' }
+                                }
+                            }
                         }
                     }
                 }
-            },
-            settings: settings
+            }
         }
     })
 };

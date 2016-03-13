@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Binder from 'react-binding';
 import _ from 'lodash';
 import PropertyEditor from 'react-property-editor';
@@ -290,4 +291,4 @@ class App extends React.Component
     }
 };
 
-React.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));
