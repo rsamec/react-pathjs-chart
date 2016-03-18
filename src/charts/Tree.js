@@ -77,3 +77,25 @@ export default class TreeChart extends React.Component {
         )
     }
 }
+TreeChart.defaultProps =   {
+
+    options: {
+        margin: {top: 20, left: 50, right: 80, bottom: 20},
+        width: 600,
+        height: 600,
+        fill: "#2980B9",
+        stroke: "#3E90F0",
+        r: 5,
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            fill: '#34495E'
+        }
+    }
+}

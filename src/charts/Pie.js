@@ -120,3 +120,25 @@
                 </div>
             )}
     };
+    PieChart.defaultProps = {
+        options: {
+            margin: {top: 20, left: 20, right: 20, bottom: 20},
+            width: 600,
+            height: 600,
+            color: '#2980B9',
+            r: 100,
+            R: 200,
+            legendPosition: 'topLeft',
+            animate: {
+                type: 'oneByOne',
+                duration: 200,
+                fillTransition: 3
+            },
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#ECF0F1'
+            }
+        }
+    }

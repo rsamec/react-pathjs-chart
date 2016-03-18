@@ -96,3 +96,55 @@ export default class Scatterplot extends React.Component {
         </svg>);
     }
 }
+
+
+Scatterplot.defaultProps= {
+    xKey:'',
+    yKey:'',
+    options: {
+        width: 600,
+        height: 600,
+        margin: {top: 40, left: 60, bottom: 30, right: 30},
+        fill: "#2980B9",
+        stroke: "#3E90F0",
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition:3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#34495E'
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
+    }
+}

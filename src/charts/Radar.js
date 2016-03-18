@@ -87,3 +87,27 @@ export default class RadarChart extends React.Component
         )
     }
 };
+
+RadarChart.defaultProps =    {
+    options: {
+        width: 600,
+        height: 600,
+        margin: {top: 20, left: 20, right: 20, bottom: 20},
+        r: 300,
+        max: 150,
+        fill: "#2980B9",
+        stroke: "#2980B9",
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition:3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#34495E'
+        }
+    }
+}
+

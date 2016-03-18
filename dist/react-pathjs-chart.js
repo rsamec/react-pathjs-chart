@@ -13732,2244 +13732,6 @@ module.exports = (function () {
 
 }).call(this)
 },{}],19:[function(require,module,exports){
-//     Underscore.js 1.4.4
-//     http://underscorejs.org
-//     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
-//     Underscore may be freely distributed under the MIT license.
-
-(function() {
-
-  // Baseline setup
-  // --------------
-
-  // Establish the root object, `window` in the browser, or `global` on the server.
-  var root = this;
-
-  // Save the previous value of the `_` variable.
-  var previousUnderscore = root._;
-
-  // Establish the object that gets returned to break out of a loop iteration.
-  var breaker = {};
-
-  // Save bytes in the minified (but not gzipped) version:
-  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
-
-  // Create quick reference variables for speed access to core prototypes.
-  var push             = ArrayProto.push,
-      slice            = ArrayProto.slice,
-      concat           = ArrayProto.concat,
-      toString         = ObjProto.toString,
-      hasOwnProperty   = ObjProto.hasOwnProperty;
-
-  // All **ECMAScript 5** native function implementations that we hope to use
-  // are declared here.
-  var
-    nativeForEach      = ArrayProto.forEach,
-    nativeMap          = ArrayProto.map,
-    nativeReduce       = ArrayProto.reduce,
-    nativeReduceRight  = ArrayProto.reduceRight,
-    nativeFilter       = ArrayProto.filter,
-    nativeEvery        = ArrayProto.every,
-    nativeSome         = ArrayProto.some,
-    nativeIndexOf      = ArrayProto.indexOf,
-    nativeLastIndexOf  = ArrayProto.lastIndexOf,
-    nativeIsArray      = Array.isArray,
-    nativeKeys         = Object.keys,
-    nativeBind         = FuncProto.bind;
-
-  // Create a safe reference to the Underscore object for use below.
-  var _ = function(obj) {
-    if (obj instanceof _) return obj;
-    if (!(this instanceof _)) return new _(obj);
-    this._wrapped = obj;
-  };
-
-  // Export the Underscore object for **Node.js**, with
-  // backwards-compatibility for the old `require()` API. If we're in
-  // the browser, add `_` as a global object via a string identifier,
-  // for Closure Compiler "advanced" mode.
-  if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-      exports = module.exports = _;
-    }
-    exports._ = _;
-  } else {
-    root._ = _;
-  }
-
-  // Current version.
-  _.VERSION = '1.4.4';
-
-  // Collection Functions
-  // --------------------
-
-  // The cornerstone, an `each` implementation, aka `forEach`.
-  // Handles objects with the built-in `forEach`, arrays, and raw objects.
-  // Delegates to **ECMAScript 5**'s native `forEach` if available.
-  var each = _.each = _.forEach = function(obj, iterator, context) {
-    if (obj == null) return;
-    if (nativeForEach && obj.forEach === nativeForEach) {
-      obj.forEach(iterator, context);
-    } else if (obj.length === +obj.length) {
-      for (var i = 0, l = obj.length; i < l; i++) {
-        if (iterator.call(context, obj[i], i, obj) === breaker) return;
-      }
-    } else {
-      for (var key in obj) {
-        if (_.has(obj, key)) {
-          if (iterator.call(context, obj[key], key, obj) === breaker) return;
-        }
-      }
-    }
-  };
-
-  // Return the results of applying the iterator to each element.
-  // Delegates to **ECMAScript 5**'s native `map` if available.
-  _.map = _.collect = function(obj, iterator, context) {
-    var results = [];
-    if (obj == null) return results;
-    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
-    each(obj, function(value, index, list) {
-      results[results.length] = iterator.call(context, value, index, list);
-    });
-    return results;
-  };
-
-  var reduceError = 'Reduce of empty array with no initial value';
-
-  // **Reduce** builds up a single result from a list of values, aka `inject`,
-  // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
-  _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
-    var initial = arguments.length > 2;
-    if (obj == null) obj = [];
-    if (nativeReduce && obj.reduce === nativeReduce) {
-      if (context) iterator = _.bind(iterator, context);
-      return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
-    }
-    each(obj, function(value, index, list) {
-      if (!initial) {
-        memo = value;
-        initial = true;
-      } else {
-        memo = iterator.call(context, memo, value, index, list);
-      }
-    });
-    if (!initial) throw new TypeError(reduceError);
-    return memo;
-  };
-
-  // The right-associative version of reduce, also known as `foldr`.
-  // Delegates to **ECMAScript 5**'s native `reduceRight` if available.
-  _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
-    var initial = arguments.length > 2;
-    if (obj == null) obj = [];
-    if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
-      if (context) iterator = _.bind(iterator, context);
-      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
-    }
-    var length = obj.length;
-    if (length !== +length) {
-      var keys = _.keys(obj);
-      length = keys.length;
-    }
-    each(obj, function(value, index, list) {
-      index = keys ? keys[--length] : --length;
-      if (!initial) {
-        memo = obj[index];
-        initial = true;
-      } else {
-        memo = iterator.call(context, memo, obj[index], index, list);
-      }
-    });
-    if (!initial) throw new TypeError(reduceError);
-    return memo;
-  };
-
-  // Return the first value which passes a truth test. Aliased as `detect`.
-  _.find = _.detect = function(obj, iterator, context) {
-    var result;
-    any(obj, function(value, index, list) {
-      if (iterator.call(context, value, index, list)) {
-        result = value;
-        return true;
-      }
-    });
-    return result;
-  };
-
-  // Return all the elements that pass a truth test.
-  // Delegates to **ECMAScript 5**'s native `filter` if available.
-  // Aliased as `select`.
-  _.filter = _.select = function(obj, iterator, context) {
-    var results = [];
-    if (obj == null) return results;
-    if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
-    each(obj, function(value, index, list) {
-      if (iterator.call(context, value, index, list)) results[results.length] = value;
-    });
-    return results;
-  };
-
-  // Return all the elements for which a truth test fails.
-  _.reject = function(obj, iterator, context) {
-    return _.filter(obj, function(value, index, list) {
-      return !iterator.call(context, value, index, list);
-    }, context);
-  };
-
-  // Determine whether all of the elements match a truth test.
-  // Delegates to **ECMAScript 5**'s native `every` if available.
-  // Aliased as `all`.
-  _.every = _.all = function(obj, iterator, context) {
-    iterator || (iterator = _.identity);
-    var result = true;
-    if (obj == null) return result;
-    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
-    each(obj, function(value, index, list) {
-      if (!(result = result && iterator.call(context, value, index, list))) return breaker;
-    });
-    return !!result;
-  };
-
-  // Determine if at least one element in the object matches a truth test.
-  // Delegates to **ECMAScript 5**'s native `some` if available.
-  // Aliased as `any`.
-  var any = _.some = _.any = function(obj, iterator, context) {
-    iterator || (iterator = _.identity);
-    var result = false;
-    if (obj == null) return result;
-    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
-    each(obj, function(value, index, list) {
-      if (result || (result = iterator.call(context, value, index, list))) return breaker;
-    });
-    return !!result;
-  };
-
-  // Determine if the array or object contains a given value (using `===`).
-  // Aliased as `include`.
-  _.contains = _.include = function(obj, target) {
-    if (obj == null) return false;
-    if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
-    return any(obj, function(value) {
-      return value === target;
-    });
-  };
-
-  // Invoke a method (with arguments) on every item in a collection.
-  _.invoke = function(obj, method) {
-    var args = slice.call(arguments, 2);
-    var isFunc = _.isFunction(method);
-    return _.map(obj, function(value) {
-      return (isFunc ? method : value[method]).apply(value, args);
-    });
-  };
-
-  // Convenience version of a common use case of `map`: fetching a property.
-  _.pluck = function(obj, key) {
-    return _.map(obj, function(value){ return value[key]; });
-  };
-
-  // Convenience version of a common use case of `filter`: selecting only objects
-  // containing specific `key:value` pairs.
-  _.where = function(obj, attrs, first) {
-    if (_.isEmpty(attrs)) return first ? null : [];
-    return _[first ? 'find' : 'filter'](obj, function(value) {
-      for (var key in attrs) {
-        if (attrs[key] !== value[key]) return false;
-      }
-      return true;
-    });
-  };
-
-  // Convenience version of a common use case of `find`: getting the first object
-  // containing specific `key:value` pairs.
-  _.findWhere = function(obj, attrs) {
-    return _.where(obj, attrs, true);
-  };
-
-  // Return the maximum element or (element-based computation).
-  // Can't optimize arrays of integers longer than 65,535 elements.
-  // See: https://bugs.webkit.org/show_bug.cgi?id=80797
-  _.max = function(obj, iterator, context) {
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
-      return Math.max.apply(Math, obj);
-    }
-    if (!iterator && _.isEmpty(obj)) return -Infinity;
-    var result = {computed : -Infinity, value: -Infinity};
-    each(obj, function(value, index, list) {
-      var computed = iterator ? iterator.call(context, value, index, list) : value;
-      computed >= result.computed && (result = {value : value, computed : computed});
-    });
-    return result.value;
-  };
-
-  // Return the minimum element (or element-based computation).
-  _.min = function(obj, iterator, context) {
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
-      return Math.min.apply(Math, obj);
-    }
-    if (!iterator && _.isEmpty(obj)) return Infinity;
-    var result = {computed : Infinity, value: Infinity};
-    each(obj, function(value, index, list) {
-      var computed = iterator ? iterator.call(context, value, index, list) : value;
-      computed < result.computed && (result = {value : value, computed : computed});
-    });
-    return result.value;
-  };
-
-  // Shuffle an array.
-  _.shuffle = function(obj) {
-    var rand;
-    var index = 0;
-    var shuffled = [];
-    each(obj, function(value) {
-      rand = _.random(index++);
-      shuffled[index - 1] = shuffled[rand];
-      shuffled[rand] = value;
-    });
-    return shuffled;
-  };
-
-  // An internal function to generate lookup iterators.
-  var lookupIterator = function(value) {
-    return _.isFunction(value) ? value : function(obj){ return obj[value]; };
-  };
-
-  // Sort the object's values by a criterion produced by an iterator.
-  _.sortBy = function(obj, value, context) {
-    var iterator = lookupIterator(value);
-    return _.pluck(_.map(obj, function(value, index, list) {
-      return {
-        value : value,
-        index : index,
-        criteria : iterator.call(context, value, index, list)
-      };
-    }).sort(function(left, right) {
-      var a = left.criteria;
-      var b = right.criteria;
-      if (a !== b) {
-        if (a > b || a === void 0) return 1;
-        if (a < b || b === void 0) return -1;
-      }
-      return left.index < right.index ? -1 : 1;
-    }), 'value');
-  };
-
-  // An internal function used for aggregate "group by" operations.
-  var group = function(obj, value, context, behavior) {
-    var result = {};
-    var iterator = lookupIterator(value || _.identity);
-    each(obj, function(value, index) {
-      var key = iterator.call(context, value, index, obj);
-      behavior(result, key, value);
-    });
-    return result;
-  };
-
-  // Groups the object's values by a criterion. Pass either a string attribute
-  // to group by, or a function that returns the criterion.
-  _.groupBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key, value) {
-      (_.has(result, key) ? result[key] : (result[key] = [])).push(value);
-    });
-  };
-
-  // Counts instances of an object that group by a certain criterion. Pass
-  // either a string attribute to count by, or a function that returns the
-  // criterion.
-  _.countBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key) {
-      if (!_.has(result, key)) result[key] = 0;
-      result[key]++;
-    });
-  };
-
-  // Use a comparator function to figure out the smallest index at which
-  // an object should be inserted so as to maintain order. Uses binary search.
-  _.sortedIndex = function(array, obj, iterator, context) {
-    iterator = iterator == null ? _.identity : lookupIterator(iterator);
-    var value = iterator.call(context, obj);
-    var low = 0, high = array.length;
-    while (low < high) {
-      var mid = (low + high) >>> 1;
-      iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;
-    }
-    return low;
-  };
-
-  // Safely convert anything iterable into a real, live array.
-  _.toArray = function(obj) {
-    if (!obj) return [];
-    if (_.isArray(obj)) return slice.call(obj);
-    if (obj.length === +obj.length) return _.map(obj, _.identity);
-    return _.values(obj);
-  };
-
-  // Return the number of elements in an object.
-  _.size = function(obj) {
-    if (obj == null) return 0;
-    return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
-  };
-
-  // Array Functions
-  // ---------------
-
-  // Get the first element of an array. Passing **n** will return the first N
-  // values in the array. Aliased as `head` and `take`. The **guard** check
-  // allows it to work with `_.map`.
-  _.first = _.head = _.take = function(array, n, guard) {
-    if (array == null) return void 0;
-    return (n != null) && !guard ? slice.call(array, 0, n) : array[0];
-  };
-
-  // Returns everything but the last entry of the array. Especially useful on
-  // the arguments object. Passing **n** will return all the values in
-  // the array, excluding the last N. The **guard** check allows it to work with
-  // `_.map`.
-  _.initial = function(array, n, guard) {
-    return slice.call(array, 0, array.length - ((n == null) || guard ? 1 : n));
-  };
-
-  // Get the last element of an array. Passing **n** will return the last N
-  // values in the array. The **guard** check allows it to work with `_.map`.
-  _.last = function(array, n, guard) {
-    if (array == null) return void 0;
-    if ((n != null) && !guard) {
-      return slice.call(array, Math.max(array.length - n, 0));
-    } else {
-      return array[array.length - 1];
-    }
-  };
-
-  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
-  // Especially useful on the arguments object. Passing an **n** will return
-  // the rest N values in the array. The **guard**
-  // check allows it to work with `_.map`.
-  _.rest = _.tail = _.drop = function(array, n, guard) {
-    return slice.call(array, (n == null) || guard ? 1 : n);
-  };
-
-  // Trim out all falsy values from an array.
-  _.compact = function(array) {
-    return _.filter(array, _.identity);
-  };
-
-  // Internal implementation of a recursive `flatten` function.
-  var flatten = function(input, shallow, output) {
-    each(input, function(value) {
-      if (_.isArray(value)) {
-        shallow ? push.apply(output, value) : flatten(value, shallow, output);
-      } else {
-        output.push(value);
-      }
-    });
-    return output;
-  };
-
-  // Return a completely flattened version of an array.
-  _.flatten = function(array, shallow) {
-    return flatten(array, shallow, []);
-  };
-
-  // Return a version of the array that does not contain the specified value(s).
-  _.without = function(array) {
-    return _.difference(array, slice.call(arguments, 1));
-  };
-
-  // Produce a duplicate-free version of the array. If the array has already
-  // been sorted, you have the option of using a faster algorithm.
-  // Aliased as `unique`.
-  _.uniq = _.unique = function(array, isSorted, iterator, context) {
-    if (_.isFunction(isSorted)) {
-      context = iterator;
-      iterator = isSorted;
-      isSorted = false;
-    }
-    var initial = iterator ? _.map(array, iterator, context) : array;
-    var results = [];
-    var seen = [];
-    each(initial, function(value, index) {
-      if (isSorted ? (!index || seen[seen.length - 1] !== value) : !_.contains(seen, value)) {
-        seen.push(value);
-        results.push(array[index]);
-      }
-    });
-    return results;
-  };
-
-  // Produce an array that contains the union: each distinct element from all of
-  // the passed-in arrays.
-  _.union = function() {
-    return _.uniq(concat.apply(ArrayProto, arguments));
-  };
-
-  // Produce an array that contains every item shared between all the
-  // passed-in arrays.
-  _.intersection = function(array) {
-    var rest = slice.call(arguments, 1);
-    return _.filter(_.uniq(array), function(item) {
-      return _.every(rest, function(other) {
-        return _.indexOf(other, item) >= 0;
-      });
-    });
-  };
-
-  // Take the difference between one array and a number of other arrays.
-  // Only the elements present in just the first array will remain.
-  _.difference = function(array) {
-    var rest = concat.apply(ArrayProto, slice.call(arguments, 1));
-    return _.filter(array, function(value){ return !_.contains(rest, value); });
-  };
-
-  // Zip together multiple lists into a single array -- elements that share
-  // an index go together.
-  _.zip = function() {
-    var args = slice.call(arguments);
-    var length = _.max(_.pluck(args, 'length'));
-    var results = new Array(length);
-    for (var i = 0; i < length; i++) {
-      results[i] = _.pluck(args, "" + i);
-    }
-    return results;
-  };
-
-  // Converts lists into objects. Pass either a single array of `[key, value]`
-  // pairs, or two parallel arrays of the same length -- one of keys, and one of
-  // the corresponding values.
-  _.object = function(list, values) {
-    if (list == null) return {};
-    var result = {};
-    for (var i = 0, l = list.length; i < l; i++) {
-      if (values) {
-        result[list[i]] = values[i];
-      } else {
-        result[list[i][0]] = list[i][1];
-      }
-    }
-    return result;
-  };
-
-  // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),
-  // we need this function. Return the position of the first occurrence of an
-  // item in an array, or -1 if the item is not included in the array.
-  // Delegates to **ECMAScript 5**'s native `indexOf` if available.
-  // If the array is large and already in sort order, pass `true`
-  // for **isSorted** to use binary search.
-  _.indexOf = function(array, item, isSorted) {
-    if (array == null) return -1;
-    var i = 0, l = array.length;
-    if (isSorted) {
-      if (typeof isSorted == 'number') {
-        i = (isSorted < 0 ? Math.max(0, l + isSorted) : isSorted);
-      } else {
-        i = _.sortedIndex(array, item);
-        return array[i] === item ? i : -1;
-      }
-    }
-    if (nativeIndexOf && array.indexOf === nativeIndexOf) return array.indexOf(item, isSorted);
-    for (; i < l; i++) if (array[i] === item) return i;
-    return -1;
-  };
-
-  // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
-  _.lastIndexOf = function(array, item, from) {
-    if (array == null) return -1;
-    var hasIndex = from != null;
-    if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
-      return hasIndex ? array.lastIndexOf(item, from) : array.lastIndexOf(item);
-    }
-    var i = (hasIndex ? from : array.length);
-    while (i--) if (array[i] === item) return i;
-    return -1;
-  };
-
-  // Generate an integer Array containing an arithmetic progression. A port of
-  // the native Python `range()` function. See
-  // [the Python documentation](http://docs.python.org/library/functions.html#range).
-  _.range = function(start, stop, step) {
-    if (arguments.length <= 1) {
-      stop = start || 0;
-      start = 0;
-    }
-    step = arguments[2] || 1;
-
-    var len = Math.max(Math.ceil((stop - start) / step), 0);
-    var idx = 0;
-    var range = new Array(len);
-
-    while(idx < len) {
-      range[idx++] = start;
-      start += step;
-    }
-
-    return range;
-  };
-
-  // Function (ahem) Functions
-  // ------------------
-
-  // Create a function bound to a given object (assigning `this`, and arguments,
-  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
-  // available.
-  _.bind = function(func, context) {
-    if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-    var args = slice.call(arguments, 2);
-    return function() {
-      return func.apply(context, args.concat(slice.call(arguments)));
-    };
-  };
-
-  // Partially apply a function by creating a version that has had some of its
-  // arguments pre-filled, without changing its dynamic `this` context.
-  _.partial = function(func) {
-    var args = slice.call(arguments, 1);
-    return function() {
-      return func.apply(this, args.concat(slice.call(arguments)));
-    };
-  };
-
-  // Bind all of an object's methods to that object. Useful for ensuring that
-  // all callbacks defined on an object belong to it.
-  _.bindAll = function(obj) {
-    var funcs = slice.call(arguments, 1);
-    if (funcs.length === 0) funcs = _.functions(obj);
-    each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });
-    return obj;
-  };
-
-  // Memoize an expensive function by storing its results.
-  _.memoize = function(func, hasher) {
-    var memo = {};
-    hasher || (hasher = _.identity);
-    return function() {
-      var key = hasher.apply(this, arguments);
-      return _.has(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));
-    };
-  };
-
-  // Delays a function for the given number of milliseconds, and then calls
-  // it with the arguments supplied.
-  _.delay = function(func, wait) {
-    var args = slice.call(arguments, 2);
-    return setTimeout(function(){ return func.apply(null, args); }, wait);
-  };
-
-  // Defers a function, scheduling it to run after the current call stack has
-  // cleared.
-  _.defer = function(func) {
-    return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));
-  };
-
-  // Returns a function, that, when invoked, will only be triggered at most once
-  // during a given window of time.
-  _.throttle = function(func, wait) {
-    var context, args, timeout, result;
-    var previous = 0;
-    var later = function() {
-      previous = new Date;
-      timeout = null;
-      result = func.apply(context, args);
-    };
-    return function() {
-      var now = new Date;
-      var remaining = wait - (now - previous);
-      context = this;
-      args = arguments;
-      if (remaining <= 0) {
-        clearTimeout(timeout);
-        timeout = null;
-        previous = now;
-        result = func.apply(context, args);
-      } else if (!timeout) {
-        timeout = setTimeout(later, remaining);
-      }
-      return result;
-    };
-  };
-
-  // Returns a function, that, as long as it continues to be invoked, will not
-  // be triggered. The function will be called after it stops being called for
-  // N milliseconds. If `immediate` is passed, trigger the function on the
-  // leading edge, instead of the trailing.
-  _.debounce = function(func, wait, immediate) {
-    var timeout, result;
-    return function() {
-      var context = this, args = arguments;
-      var later = function() {
-        timeout = null;
-        if (!immediate) result = func.apply(context, args);
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) result = func.apply(context, args);
-      return result;
-    };
-  };
-
-  // Returns a function that will be executed at most one time, no matter how
-  // often you call it. Useful for lazy initialization.
-  _.once = function(func) {
-    var ran = false, memo;
-    return function() {
-      if (ran) return memo;
-      ran = true;
-      memo = func.apply(this, arguments);
-      func = null;
-      return memo;
-    };
-  };
-
-  // Returns the first function passed as an argument to the second,
-  // allowing you to adjust arguments, run code before and after, and
-  // conditionally execute the original function.
-  _.wrap = function(func, wrapper) {
-    return function() {
-      var args = [func];
-      push.apply(args, arguments);
-      return wrapper.apply(this, args);
-    };
-  };
-
-  // Returns a function that is the composition of a list of functions, each
-  // consuming the return value of the function that follows.
-  _.compose = function() {
-    var funcs = arguments;
-    return function() {
-      var args = arguments;
-      for (var i = funcs.length - 1; i >= 0; i--) {
-        args = [funcs[i].apply(this, args)];
-      }
-      return args[0];
-    };
-  };
-
-  // Returns a function that will only be executed after being called N times.
-  _.after = function(times, func) {
-    if (times <= 0) return func();
-    return function() {
-      if (--times < 1) {
-        return func.apply(this, arguments);
-      }
-    };
-  };
-
-  // Object Functions
-  // ----------------
-
-  // Retrieve the names of an object's properties.
-  // Delegates to **ECMAScript 5**'s native `Object.keys`
-  _.keys = nativeKeys || function(obj) {
-    if (obj !== Object(obj)) throw new TypeError('Invalid object');
-    var keys = [];
-    for (var key in obj) if (_.has(obj, key)) keys[keys.length] = key;
-    return keys;
-  };
-
-  // Retrieve the values of an object's properties.
-  _.values = function(obj) {
-    var values = [];
-    for (var key in obj) if (_.has(obj, key)) values.push(obj[key]);
-    return values;
-  };
-
-  // Convert an object into a list of `[key, value]` pairs.
-  _.pairs = function(obj) {
-    var pairs = [];
-    for (var key in obj) if (_.has(obj, key)) pairs.push([key, obj[key]]);
-    return pairs;
-  };
-
-  // Invert the keys and values of an object. The values must be serializable.
-  _.invert = function(obj) {
-    var result = {};
-    for (var key in obj) if (_.has(obj, key)) result[obj[key]] = key;
-    return result;
-  };
-
-  // Return a sorted list of the function names available on the object.
-  // Aliased as `methods`
-  _.functions = _.methods = function(obj) {
-    var names = [];
-    for (var key in obj) {
-      if (_.isFunction(obj[key])) names.push(key);
-    }
-    return names.sort();
-  };
-
-  // Extend a given object with all the properties in passed-in object(s).
-  _.extend = function(obj) {
-    each(slice.call(arguments, 1), function(source) {
-      if (source) {
-        for (var prop in source) {
-          obj[prop] = source[prop];
-        }
-      }
-    });
-    return obj;
-  };
-
-  // Return a copy of the object only containing the whitelisted properties.
-  _.pick = function(obj) {
-    var copy = {};
-    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
-    each(keys, function(key) {
-      if (key in obj) copy[key] = obj[key];
-    });
-    return copy;
-  };
-
-   // Return a copy of the object without the blacklisted properties.
-  _.omit = function(obj) {
-    var copy = {};
-    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
-    for (var key in obj) {
-      if (!_.contains(keys, key)) copy[key] = obj[key];
-    }
-    return copy;
-  };
-
-  // Fill in a given object with default properties.
-  _.defaults = function(obj) {
-    each(slice.call(arguments, 1), function(source) {
-      if (source) {
-        for (var prop in source) {
-          if (obj[prop] == null) obj[prop] = source[prop];
-        }
-      }
-    });
-    return obj;
-  };
-
-  // Create a (shallow-cloned) duplicate of an object.
-  _.clone = function(obj) {
-    if (!_.isObject(obj)) return obj;
-    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
-  };
-
-  // Invokes interceptor with the obj, and then returns obj.
-  // The primary purpose of this method is to "tap into" a method chain, in
-  // order to perform operations on intermediate results within the chain.
-  _.tap = function(obj, interceptor) {
-    interceptor(obj);
-    return obj;
-  };
-
-  // Internal recursive comparison function for `isEqual`.
-  var eq = function(a, b, aStack, bStack) {
-    // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the Harmony `egal` proposal: http://wiki.ecmascript.org/doku.php?id=harmony:egal.
-    if (a === b) return a !== 0 || 1 / a == 1 / b;
-    // A strict comparison is necessary because `null == undefined`.
-    if (a == null || b == null) return a === b;
-    // Unwrap any wrapped objects.
-    if (a instanceof _) a = a._wrapped;
-    if (b instanceof _) b = b._wrapped;
-    // Compare `[[Class]]` names.
-    var className = toString.call(a);
-    if (className != toString.call(b)) return false;
-    switch (className) {
-      // Strings, numbers, dates, and booleans are compared by value.
-      case '[object String]':
-        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
-        // equivalent to `new String("5")`.
-        return a == String(b);
-      case '[object Number]':
-        // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
-        // other numeric values.
-        return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
-      case '[object Date]':
-      case '[object Boolean]':
-        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
-        // millisecond representations. Note that invalid dates with millisecond representations
-        // of `NaN` are not equivalent.
-        return +a == +b;
-      // RegExps are compared by their source patterns and flags.
-      case '[object RegExp]':
-        return a.source == b.source &&
-               a.global == b.global &&
-               a.multiline == b.multiline &&
-               a.ignoreCase == b.ignoreCase;
-    }
-    if (typeof a != 'object' || typeof b != 'object') return false;
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic
-    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
-    var length = aStack.length;
-    while (length--) {
-      // Linear search. Performance is inversely proportional to the number of
-      // unique nested structures.
-      if (aStack[length] == a) return bStack[length] == b;
-    }
-    // Add the first object to the stack of traversed objects.
-    aStack.push(a);
-    bStack.push(b);
-    var size = 0, result = true;
-    // Recursively compare objects and arrays.
-    if (className == '[object Array]') {
-      // Compare array lengths to determine if a deep comparison is necessary.
-      size = a.length;
-      result = size == b.length;
-      if (result) {
-        // Deep compare the contents, ignoring non-numeric properties.
-        while (size--) {
-          if (!(result = eq(a[size], b[size], aStack, bStack))) break;
-        }
-      }
-    } else {
-      // Objects with different constructors are not equivalent, but `Object`s
-      // from different frames are.
-      var aCtor = a.constructor, bCtor = b.constructor;
-      if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&
-                               _.isFunction(bCtor) && (bCtor instanceof bCtor))) {
-        return false;
-      }
-      // Deep compare objects.
-      for (var key in a) {
-        if (_.has(a, key)) {
-          // Count the expected number of properties.
-          size++;
-          // Deep compare each member.
-          if (!(result = _.has(b, key) && eq(a[key], b[key], aStack, bStack))) break;
-        }
-      }
-      // Ensure that both objects contain the same number of properties.
-      if (result) {
-        for (key in b) {
-          if (_.has(b, key) && !(size--)) break;
-        }
-        result = !size;
-      }
-    }
-    // Remove the first object from the stack of traversed objects.
-    aStack.pop();
-    bStack.pop();
-    return result;
-  };
-
-  // Perform a deep comparison to check if two objects are equal.
-  _.isEqual = function(a, b) {
-    return eq(a, b, [], []);
-  };
-
-  // Is a given array, string, or object empty?
-  // An "empty" object has no enumerable own-properties.
-  _.isEmpty = function(obj) {
-    if (obj == null) return true;
-    if (_.isArray(obj) || _.isString(obj)) return obj.length === 0;
-    for (var key in obj) if (_.has(obj, key)) return false;
-    return true;
-  };
-
-  // Is a given value a DOM element?
-  _.isElement = function(obj) {
-    return !!(obj && obj.nodeType === 1);
-  };
-
-  // Is a given value an array?
-  // Delegates to ECMA5's native Array.isArray
-  _.isArray = nativeIsArray || function(obj) {
-    return toString.call(obj) == '[object Array]';
-  };
-
-  // Is a given variable an object?
-  _.isObject = function(obj) {
-    return obj === Object(obj);
-  };
-
-  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
-    _['is' + name] = function(obj) {
-      return toString.call(obj) == '[object ' + name + ']';
-    };
-  });
-
-  // Define a fallback version of the method in browsers (ahem, IE), where
-  // there isn't any inspectable "Arguments" type.
-  if (!_.isArguments(arguments)) {
-    _.isArguments = function(obj) {
-      return !!(obj && _.has(obj, 'callee'));
-    };
-  }
-
-  // Optimize `isFunction` if appropriate.
-  if (typeof (/./) !== 'function') {
-    _.isFunction = function(obj) {
-      return typeof obj === 'function';
-    };
-  }
-
-  // Is a given object a finite number?
-  _.isFinite = function(obj) {
-    return isFinite(obj) && !isNaN(parseFloat(obj));
-  };
-
-  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
-  _.isNaN = function(obj) {
-    return _.isNumber(obj) && obj != +obj;
-  };
-
-  // Is a given value a boolean?
-  _.isBoolean = function(obj) {
-    return obj === true || obj === false || toString.call(obj) == '[object Boolean]';
-  };
-
-  // Is a given value equal to null?
-  _.isNull = function(obj) {
-    return obj === null;
-  };
-
-  // Is a given variable undefined?
-  _.isUndefined = function(obj) {
-    return obj === void 0;
-  };
-
-  // Shortcut function for checking if an object has a given property directly
-  // on itself (in other words, not on a prototype).
-  _.has = function(obj, key) {
-    return hasOwnProperty.call(obj, key);
-  };
-
-  // Utility Functions
-  // -----------------
-
-  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
-  // previous owner. Returns a reference to the Underscore object.
-  _.noConflict = function() {
-    root._ = previousUnderscore;
-    return this;
-  };
-
-  // Keep the identity function around for default iterators.
-  _.identity = function(value) {
-    return value;
-  };
-
-  // Run a function **n** times.
-  _.times = function(n, iterator, context) {
-    var accum = Array(n);
-    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);
-    return accum;
-  };
-
-  // Return a random integer between min and max (inclusive).
-  _.random = function(min, max) {
-    if (max == null) {
-      max = min;
-      min = 0;
-    }
-    return min + Math.floor(Math.random() * (max - min + 1));
-  };
-
-  // List of HTML entities for escaping.
-  var entityMap = {
-    escape: {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-      '/': '&#x2F;'
-    }
-  };
-  entityMap.unescape = _.invert(entityMap.escape);
-
-  // Regexes containing the keys and values listed immediately above.
-  var entityRegexes = {
-    escape:   new RegExp('[' + _.keys(entityMap.escape).join('') + ']', 'g'),
-    unescape: new RegExp('(' + _.keys(entityMap.unescape).join('|') + ')', 'g')
-  };
-
-  // Functions for escaping and unescaping strings to/from HTML interpolation.
-  _.each(['escape', 'unescape'], function(method) {
-    _[method] = function(string) {
-      if (string == null) return '';
-      return ('' + string).replace(entityRegexes[method], function(match) {
-        return entityMap[method][match];
-      });
-    };
-  });
-
-  // If the value of the named property is a function then invoke it;
-  // otherwise, return it.
-  _.result = function(object, property) {
-    if (object == null) return null;
-    var value = object[property];
-    return _.isFunction(value) ? value.call(object) : value;
-  };
-
-  // Add your own custom functions to the Underscore object.
-  _.mixin = function(obj) {
-    each(_.functions(obj), function(name){
-      var func = _[name] = obj[name];
-      _.prototype[name] = function() {
-        var args = [this._wrapped];
-        push.apply(args, arguments);
-        return result.call(this, func.apply(_, args));
-      };
-    });
-  };
-
-  // Generate a unique integer id (unique within the entire client session).
-  // Useful for temporary DOM ids.
-  var idCounter = 0;
-  _.uniqueId = function(prefix) {
-    var id = ++idCounter + '';
-    return prefix ? prefix + id : id;
-  };
-
-  // By default, Underscore uses ERB-style template delimiters, change the
-  // following template settings to use alternative delimiters.
-  _.templateSettings = {
-    evaluate    : /<%([\s\S]+?)%>/g,
-    interpolate : /<%=([\s\S]+?)%>/g,
-    escape      : /<%-([\s\S]+?)%>/g
-  };
-
-  // When customizing `templateSettings`, if you don't want to define an
-  // interpolation, evaluation or escaping regex, we need one that is
-  // guaranteed not to match.
-  var noMatch = /(.)^/;
-
-  // Certain characters need to be escaped so that they can be put into a
-  // string literal.
-  var escapes = {
-    "'":      "'",
-    '\\':     '\\',
-    '\r':     'r',
-    '\n':     'n',
-    '\t':     't',
-    '\u2028': 'u2028',
-    '\u2029': 'u2029'
-  };
-
-  var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
-
-  // JavaScript micro-templating, similar to John Resig's implementation.
-  // Underscore templating handles arbitrary delimiters, preserves whitespace,
-  // and correctly escapes quotes within interpolated code.
-  _.template = function(text, data, settings) {
-    var render;
-    settings = _.defaults({}, settings, _.templateSettings);
-
-    // Combine delimiters into one regular expression via alternation.
-    var matcher = new RegExp([
-      (settings.escape || noMatch).source,
-      (settings.interpolate || noMatch).source,
-      (settings.evaluate || noMatch).source
-    ].join('|') + '|$', 'g');
-
-    // Compile the template source, escaping string literals appropriately.
-    var index = 0;
-    var source = "__p+='";
-    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-      source += text.slice(index, offset)
-        .replace(escaper, function(match) { return '\\' + escapes[match]; });
-
-      if (escape) {
-        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
-      }
-      if (interpolate) {
-        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
-      }
-      if (evaluate) {
-        source += "';\n" + evaluate + "\n__p+='";
-      }
-      index = offset + match.length;
-      return match;
-    });
-    source += "';\n";
-
-    // If a variable is not specified, place data values in local scope.
-    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
-
-    source = "var __t,__p='',__j=Array.prototype.join," +
-      "print=function(){__p+=__j.call(arguments,'');};\n" +
-      source + "return __p;\n";
-
-    try {
-      render = new Function(settings.variable || 'obj', '_', source);
-    } catch (e) {
-      e.source = source;
-      throw e;
-    }
-
-    if (data) return render(data, _);
-    var template = function(data) {
-      return render.call(this, data, _);
-    };
-
-    // Provide the compiled function source as a convenience for precompilation.
-    template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';
-
-    return template;
-  };
-
-  // Add a "chain" function, which will delegate to the wrapper.
-  _.chain = function(obj) {
-    return _(obj).chain();
-  };
-
-  // OOP
-  // ---------------
-  // If Underscore is called as a function, it returns a wrapped object that
-  // can be used OO-style. This wrapper holds altered versions of all the
-  // underscore functions. Wrapped objects may be chained.
-
-  // Helper function to continue chaining intermediate results.
-  var result = function(obj) {
-    return this._chain ? _(obj).chain() : obj;
-  };
-
-  // Add all of the Underscore functions to the wrapper object.
-  _.mixin(_);
-
-  // Add all mutator Array functions to the wrapper.
-  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
-    var method = ArrayProto[name];
-    _.prototype[name] = function() {
-      var obj = this._wrapped;
-      method.apply(obj, arguments);
-      if ((name == 'shift' || name == 'splice') && obj.length === 0) delete obj[0];
-      return result.call(this, obj);
-    };
-  });
-
-  // Add all accessor Array functions to the wrapper.
-  each(['concat', 'join', 'slice'], function(name) {
-    var method = ArrayProto[name];
-    _.prototype[name] = function() {
-      return result.call(this, method.apply(this._wrapped, arguments));
-    };
-  });
-
-  _.extend(_.prototype, {
-
-    // Start chaining a wrapped Underscore object.
-    chain: function() {
-      this._chain = true;
-      return this;
-    },
-
-    // Extracts the result from a wrapped and chained object.
-    value: function() {
-      return this._wrapped;
-    }
-
-  });
-
-}).call(this);
-
-},{}],20:[function(require,module,exports){
-/**
- * vivus - JavaScript library to make drawing animation on SVG
- * @version v0.2.3
- * @link https://github.com/maxwellito/vivus
- * @license MIT
- */
-
-'use strict';
-
-(function (window, document) {
-
-  'use strict';
-
-/**
- * Pathformer
- * Beta version
- *
- * Take any SVG version 1.1 and transform
- * child elements to 'path' elements
- *
- * This code is purely forked from
- * https://github.com/Waest/SVGPathConverter
- */
-
-/**
- * Class constructor
- *
- * @param {DOM|String} element Dom element of the SVG or id of it
- */
-function Pathformer(element) {
-  // Test params
-  if (typeof element === 'undefined') {
-    throw new Error('Pathformer [constructor]: "element" parameter is required');
-  }
-
-  // Set the element
-  if (element.constructor === String) {
-    element = document.getElementById(element);
-    if (!element) {
-      throw new Error('Pathformer [constructor]: "element" parameter is not related to an existing ID');
-    }
-  }
-  if (element.constructor instanceof window.SVGElement || /^svg$/i.test(element.nodeName)) {
-    this.el = element;
-  } else {
-    throw new Error('Pathformer [constructor]: "element" parameter must be a string or a SVGelement');
-  }
-
-  // Start
-  this.scan(element);
-}
-
-/**
- * List of tags which can be transformed
- * to path elements
- *
- * @type {Array}
- */
-Pathformer.prototype.TYPES = ['line', 'ellipse', 'circle', 'polygon', 'polyline', 'rect'];
-
-/**
- * List of attribute names which contain
- * data. This array list them to check if
- * they contain bad values, like percentage. 
- *
- * @type {Array}
- */
-Pathformer.prototype.ATTR_WATCH = ['cx', 'cy', 'points', 'r', 'rx', 'ry', 'x', 'x1', 'x2', 'y', 'y1', 'y2'];
-
-/**
- * Finds the elements compatible for transform
- * and apply the liked method
- *
- * @param  {object} options Object from the constructor
- */
-Pathformer.prototype.scan = function (svg) {
-  var fn, element, pathData, pathDom,
-    elements = svg.querySelectorAll(this.TYPES.join(','));
-  for (var i = 0; i < elements.length; i++) {
-    element = elements[i];
-    fn = this[element.tagName.toLowerCase() + 'ToPath'];
-    pathData = fn(this.parseAttr(element.attributes));
-    pathDom = this.pathMaker(element, pathData);
-    element.parentNode.replaceChild(pathDom, element);
-  }
-};
-
-
-/**
- * Read `line` element to extract and transform
- * data, to make it ready for a `path` object.
- *
- * @param  {DOMelement} element Line element to transform
- * @return {object}             Data for a `path` element
- */
-Pathformer.prototype.lineToPath = function (element) {
-  var newElement = {};
-  newElement.d = 'M' + element.x1 + ',' + element.y1 + 'L' + element.x2 + ',' + element.y2;
-  return newElement;
-};
-
-/**
- * Read `rect` element to extract and transform
- * data, to make it ready for a `path` object.
- * The radius-border is not taken in charge yet.
- * (your help is more than welcomed)
- *
- * @param  {DOMelement} element Rect element to transform
- * @return {object}             Data for a `path` element
- */
-Pathformer.prototype.rectToPath = function (element) {
-  var newElement = {},
-    x = parseFloat(element.x) || 0,
-    y = parseFloat(element.y) || 0,
-    width = parseFloat(element.width) || 0,
-    height = parseFloat(element.height) || 0;
-  newElement.d  = 'M' + x + ' ' + y + ' ';
-  newElement.d += 'L' + (x + width) + ' ' + y + ' ';
-  newElement.d += 'L' + (x + width) + ' ' + (y + height) + ' ';
-  newElement.d += 'L' + x + ' ' + (y + height) + ' Z';
-  return newElement;
-};
-
-/**
- * Read `polyline` element to extract and transform
- * data, to make it ready for a `path` object.
- *
- * @param  {DOMelement} element Polyline element to transform
- * @return {object}             Data for a `path` element
- */
-Pathformer.prototype.polylineToPath = function (element) {
-  var i, path;
-  var newElement = {};
-  var points = element.points.trim().split(' ');
-  
-  // Reformatting if points are defined without commas
-  if (element.points.indexOf(',') === -1) {
-    var formattedPoints = [];
-    for (i = 0; i < points.length; i+=2) {
-      formattedPoints.push(points[i] + ',' + points[i+1]);
-    }
-    points = formattedPoints;
-  }
-
-  // Generate the path.d value
-  path = 'M' + points[0];
-  for(i = 1; i < points.length; i++) {
-    if (points[i].indexOf(',') !== -1) {
-      path += 'L' + points[i];
-    }
-  }
-  newElement.d = path;
-  return newElement;
-};
-
-/**
- * Read `polygon` element to extract and transform
- * data, to make it ready for a `path` object.
- * This method rely on polylineToPath, because the
- * logic is similar. The path created is just closed,
- * so it needs an 'Z' at the end.
- *
- * @param  {DOMelement} element Polygon element to transform
- * @return {object}             Data for a `path` element
- */
-Pathformer.prototype.polygonToPath = function (element) {
-  var newElement = Pathformer.prototype.polylineToPath(element);
-  newElement.d += 'Z';
-  return newElement;
-};
-
-/**
- * Read `ellipse` element to extract and transform
- * data, to make it ready for a `path` object.
- *
- * @param  {DOMelement} element ellipse element to transform
- * @return {object}             Data for a `path` element
- */
-Pathformer.prototype.ellipseToPath = function (element) {
-  var startX = element.cx - element.rx,
-      startY = element.cy;
-  var endX = parseFloat(element.cx) + parseFloat(element.rx),
-      endY = element.cy;
-
-  var newElement = {};
-  newElement.d = 'M' + startX + ',' + startY +
-                 'A' + element.rx + ',' + element.ry + ' 0,1,1 ' + endX + ',' + endY +
-                 'A' + element.rx + ',' + element.ry + ' 0,1,1 ' + startX + ',' + endY;
-  return newElement;
-};
-
-/**
- * Read `circle` element to extract and transform
- * data, to make it ready for a `path` object.
- *
- * @param  {DOMelement} element Circle element to transform
- * @return {object}             Data for a `path` element
- */
-Pathformer.prototype.circleToPath = function (element) {
-  var newElement = {};
-  var startX = element.cx - element.r,
-      startY = element.cy;
-  var endX = parseFloat(element.cx) + parseFloat(element.r),
-      endY = element.cy;
-  newElement.d =  'M' + startX + ',' + startY +
-                  'A' + element.r + ',' + element.r + ' 0,1,1 ' + endX + ',' + endY +
-                  'A' + element.r + ',' + element.r + ' 0,1,1 ' + startX + ',' + endY;
-  return newElement;
-};
-
-/**
- * Create `path` elements form original element
- * and prepared objects
- *
- * @param  {DOMelement} element  Original element to transform
- * @param  {object} pathData     Path data (from `toPath` methods)
- * @return {DOMelement}          Path element
- */
-Pathformer.prototype.pathMaker = function (element, pathData) {
-  var i, attr, pathTag = document.createElementNS('http://www.w3.org/2000/svg','path');
-  for(i = 0; i < element.attributes.length; i++) {
-    attr = element.attributes[i];
-    if (this.ATTR_WATCH.indexOf(attr.name) === -1) {
-      pathTag.setAttribute(attr.name, attr.value);
-    }
-  }
-  for(i in pathData) {
-    pathTag.setAttribute(i, pathData[i]);
-  }
-  return pathTag;
-};
-
-/**
- * Parse attributes of a DOM element to
- * get an object of attribute => value
- *
- * @param  {NamedNodeMap} attributes Attributes object from DOM element to parse
- * @return {object}                  Object of attributes
- */
-Pathformer.prototype.parseAttr = function (element) {
-  var attr, output = {};
-  for (var i = 0; i < element.length; i++) {
-    attr = element[i];
-    // Check if no data attribute contains '%', or the transformation is impossible
-    if (this.ATTR_WATCH.indexOf(attr.name) !== -1 && attr.value.indexOf('%') !== -1) {
-      throw new Error('Pathformer [parseAttr]: a SVG shape got values in percentage. This cannot be transformed into \'path\' tags. Please use \'viewBox\'.');
-    }
-    output[attr.name] = attr.value;
-  }
-  return output;
-};
-
-  'use strict';
-
-var requestAnimFrame, cancelAnimFrame, parsePositiveInt;
-
-/**
- * Vivus
- * Beta version
- *
- * Take any SVG and make the animation
- * to give give the impression of live drawing
- *
- * This in more than just inspired from codrops
- * At that point, it's a pure fork.
- */
-
-/**
- * Class constructor
- * option structure
- *   type: 'delayed'|'async'|'oneByOne'|'script' (to know if the item must be drawn asynchronously or not, default: delayed)
- *   duration: <int> (in frames)
- *   start: 'inViewport'|'manual'|'autostart' (start automatically the animation, default: inViewport)
- *   delay: <int> (delay between the drawing of first and last path)
- *   dashGap <integer> whitespace extra margin between dashes
- *   pathTimingFunction <function> timing animation function for each path element of the SVG
- *   animTimingFunction <function> timing animation function for the complete SVG
- *   forceRender <boolean> force the browser to re-render all updated path items
- *   selfDestroy <boolean> removes all extra styling on the SVG, and leaves it as original
- *
- * The attribute 'type' is by default on 'delayed'.
- *  - 'delayed'
- *    all paths are draw at the same time but with a
- *    little delay between them before start
- *  - 'async'
- *    all path are start and finish at the same time
- *  - 'oneByOne'
- *    only one path is draw at the time
- *    the end of the first one will trigger the draw
- *    of the next one
- *
- * All these values can be overwritten individually
- * for each path item in the SVG
- * The value of frames will always take the advantage of
- * the duration value.
- * If you fail somewhere, an error will be thrown.
- * Good luck.
- *
- * @constructor
- * @this {Vivus}
- * @param {DOM|String}   element  Dom element of the SVG or id of it
- * @param {Object}       options  Options about the animation
- * @param {Function}     callback Callback for the end of the animation
- */
-function Vivus (element, options, callback) {
-
-  // Setup
-  this.isReady = false;
-  this.setElement(element, options);
-  this.setOptions(options);
-  this.setCallback(callback);
-
-  if (this.isReady) {
-    this.init();
-  }
-}
-
-/**
- * Timing functions
- ************************************** 
- * 
- * Default functions to help developers.
- * It always take a number as parameter (between 0 to 1) then
- * return a number (between 0 and 1)
- */
-Vivus.LINEAR          = function (x) {return x;};
-Vivus.EASE            = function (x) {return -Math.cos(x * Math.PI) / 2 + 0.5;};
-Vivus.EASE_OUT        = function (x) {return 1 - Math.pow(1-x, 3);};
-Vivus.EASE_IN         = function (x) {return Math.pow(x, 3);};
-Vivus.EASE_OUT_BOUNCE = function (x) {
-  var base = -Math.cos(x * (0.5 * Math.PI)) + 1,
-    rate = Math.pow(base,1.5),
-    rateR = Math.pow(1 - x, 2),
-    progress = -Math.abs(Math.cos(rate * (2.5 * Math.PI) )) + 1;
-  return (1- rateR) + (progress * rateR);
-};
-
-
-/**
- * Setters
- **************************************
- */
-
-/**
- * Check and set the element in the instance
- * The method will not return anything, but will throw an
- * error if the parameter is invalid
- *
- * @param {DOM|String}   element  SVG Dom element or id of it
- */
-Vivus.prototype.setElement = function (element, options) {
-  // Basic check
-  if (typeof element === 'undefined') {
-    throw new Error('Vivus [constructor]: "element" parameter is required');
-  }
-
-  // Set the element
-  if (element.constructor === String) {
-    element = document.getElementById(element);
-    if (!element) {
-      throw new Error('Vivus [constructor]: "element" parameter is not related to an existing ID');
-    }
-  }
-  this.parentEl = element;
-
-  // Create the object element if the property `file` exists in the options object
-  if (options && options.file) {
-    var objElm = document.createElement('object');
-    objElm.setAttribute('type', 'image/svg+xml');
-    objElm.setAttribute('data', options.file);
-    objElm.setAttribute('width', '100%');
-    objElm.setAttribute('height', '100%');
-    element.appendChild(objElm);
-    element = objElm;
-  }
-
-  switch (element.constructor) {
-  case window.SVGSVGElement:
-  case window.SVGElement:
-    this.el = element;
-    this.isReady = true;
-    break;
-
-  case window.HTMLObjectElement:
-    // If the Object is already loaded
-    this.el = element.contentDocument && element.contentDocument.querySelector('svg');
-    if (this.el) {
-      this.isReady = true;
-      return;
-    }
-
-    // If we have to wait for it
-    var self = this;
-    element.addEventListener('load', function () {
-      self.el = element.contentDocument && element.contentDocument.querySelector('svg');
-      if (!self.el) {
-        throw new Error('Vivus [constructor]: object loaded does not contain any SVG');
-      }
-      else {
-        self.isReady = true;
-        self.init();
-      }
-    });
-    break;
-
-  default:
-    throw new Error('Vivus [constructor]: "element" parameter is not valid (or miss the "file" attribute)');
-  }
-};
-
-/**
- * Set up user option to the instance
- * The method will not return anything, but will throw an
- * error if the parameter is invalid
- *
- * @param  {object} options Object from the constructor
- */
-Vivus.prototype.setOptions = function (options) {
-  var allowedTypes = ['delayed', 'async', 'oneByOne', 'scenario', 'scenario-sync'];
-  var allowedStarts =  ['inViewport', 'manual', 'autostart'];
-
-  // Basic check
-  if (options !== undefined && options.constructor !== Object) {
-    throw new Error('Vivus [constructor]: "options" parameter must be an object');
-  }
-  else {
-    options = options || {};
-  }
-
-  // Set the animation type
-  if (options.type && allowedTypes.indexOf(options.type) === -1) {
-    throw new Error('Vivus [constructor]: ' + options.type + ' is not an existing animation `type`');
-  }
-  else {
-    this.type = options.type || allowedTypes[0];
-  }
-
-  // Set the start type
-  if (options.start && allowedStarts.indexOf(options.start) === -1) {
-    throw new Error('Vivus [constructor]: ' + options.start + ' is not an existing `start` option');
-  }
-  else {
-    this.start = options.start || allowedStarts[0];
-  }
-
-  this.isIE        = (window.navigator.userAgent.indexOf('MSIE') !== -1 || window.navigator.userAgent.indexOf('Trident/') !== -1 || window.navigator.userAgent.indexOf('Edge/') !== -1 );
-  this.duration    = parsePositiveInt(options.duration, 120);
-  this.delay       = parsePositiveInt(options.delay, null);
-  this.dashGap     = parsePositiveInt(options.dashGap, 2);
-  this.forceRender = options.hasOwnProperty('forceRender') ? !!options.forceRender : this.isIE;
-  this.selfDestroy = !!options.selfDestroy;
-  this.onReady     = options.onReady;
-
-  this.ignoreInvisible = options.hasOwnProperty('ignoreInvisible') ? !!options.ignoreInvisible : false;
-
-  this.animTimingFunction = options.animTimingFunction || Vivus.LINEAR;
-  this.pathTimingFunction = options.pathTimingFunction || Vivus.LINEAR;
-
-  if (this.delay >= this.duration) {
-    throw new Error('Vivus [constructor]: delay must be shorter than duration');
-  }
-};
-
-/**
- * Set up callback to the instance
- * The method will not return enything, but will throw an
- * error if the parameter is invalid
- *
- * @param  {Function} callback Callback for the animation end
- */
-Vivus.prototype.setCallback = function (callback) {
-  // Basic check
-  if (!!callback && callback.constructor !== Function) {
-    throw new Error('Vivus [constructor]: "callback" parameter must be a function');
-  }
-  this.callback = callback || function () {};
-};
-
-
-/**
- * Core
- **************************************
- */
-
-/**
- * Map the svg, path by path.
- * The method return nothing, it just fill the
- * `map` array. Each item in this array represent
- * a path element from the SVG, with informations for
- * the animation.
- *
- * ```
- * [
- *   {
- *     el: <DOMobj> the path element
- *     length: <number> length of the path line
- *     startAt: <number> time start of the path animation (in frames)
- *     duration: <number> path animation duration (in frames)
- *   },
- *   ...
- * ]
- * ```
- *
- */
-Vivus.prototype.mapping = function () {
-  var i, paths, path, pAttrs, pathObj, totalLength, lengthMeter, timePoint;
-  timePoint = totalLength = lengthMeter = 0;
-  paths = this.el.querySelectorAll('path');
-
-  for (i = 0; i < paths.length; i++) {
-    path = paths[i];
-    if (this.isInvisible(path)) {
-      continue;
-    }
-    pathObj = {
-      el: path,
-      length: Math.ceil(path.getTotalLength())
-    };
-    // Test if the path length is correct
-    if (isNaN(pathObj.length)) {
-      if (window.console && console.warn) {
-        console.warn('Vivus [mapping]: cannot retrieve a path element length', path);
-      }
-      continue;
-    }
-    totalLength += pathObj.length;
-    this.map.push(pathObj);
-    path.style.strokeDasharray  = pathObj.length + ' ' + (pathObj.length + this.dashGap);
-    path.style.strokeDashoffset = pathObj.length;
-
-    // Fix IE glitch
-    if (this.isIE) {
-      pathObj.length += this.dashGap;
-    }
-    this.renderPath(i);
-  }
-
-  totalLength = totalLength === 0 ? 1 : totalLength;
-  this.delay = this.delay === null ? this.duration / 3 : this.delay;
-  this.delayUnit = this.delay / (paths.length > 1 ? paths.length - 1 : 1);
-
-  for (i = 0; i < this.map.length; i++) {
-    pathObj = this.map[i];
-
-    switch (this.type) {
-    case 'delayed':
-      pathObj.startAt = this.delayUnit * i;
-      pathObj.duration = this.duration - this.delay;
-      break;
-
-    case 'oneByOne':
-      pathObj.startAt = lengthMeter / totalLength * this.duration;
-      pathObj.duration = pathObj.length / totalLength * this.duration;
-      break;
-
-    case 'async':
-      pathObj.startAt = 0;
-      pathObj.duration = this.duration;
-      break;
-
-    case 'scenario-sync':
-      path = paths[i];
-      pAttrs = this.parseAttr(path);
-      pathObj.startAt = timePoint + (parsePositiveInt(pAttrs['data-delay'], this.delayUnit) || 0);
-      pathObj.duration = parsePositiveInt(pAttrs['data-duration'], this.duration);
-      timePoint = pAttrs['data-async'] !== undefined ? pathObj.startAt : pathObj.startAt + pathObj.duration;
-      this.frameLength = Math.max(this.frameLength, (pathObj.startAt + pathObj.duration));
-      break;
-
-    case 'scenario':
-      path = paths[i];
-      pAttrs = this.parseAttr(path);
-      pathObj.startAt = parsePositiveInt(pAttrs['data-start'], this.delayUnit) || 0;
-      pathObj.duration = parsePositiveInt(pAttrs['data-duration'], this.duration);
-      this.frameLength = Math.max(this.frameLength, (pathObj.startAt + pathObj.duration));
-      break;
-    }
-    lengthMeter += pathObj.length;
-    this.frameLength = this.frameLength || this.duration;
-  }
-};
-
-/**
- * Interval method to draw the SVG from current
- * position of the animation. It update the value of
- * `currentFrame` and re-trace the SVG.
- *
- * It use this.handle to store the requestAnimationFrame
- * and clear it one the animation is stopped. So this
- * attribute can be used to know if the animation is
- * playing.
- *
- * Once the animation at the end, this method will
- * trigger the Vivus callback.
- *
- */
-Vivus.prototype.drawer = function () {
-  var self = this;
-  this.currentFrame += this.speed;
-
-  if (this.currentFrame <= 0) {
-    this.stop();
-    this.reset();
-    this.callback(this);
-  } else if (this.currentFrame >= this.frameLength) {
-    this.stop();
-    this.currentFrame = this.frameLength;
-    this.trace();
-    if (this.selfDestroy) {
-      this.destroy();
-    }
-    this.callback(this);
-  } else {
-    this.trace();
-    this.handle = requestAnimFrame(function () {
-      self.drawer();
-    });
-  }
-};
-
-/**
- * Draw the SVG at the current instant from the
- * `currentFrame` value. Here is where most of the magic is.
- * The trick is to use the `strokeDashoffset` style property.
- *
- * For optimisation reasons, a new property called `progress`
- * is added in each item of `map`. This one contain the current
- * progress of the path element. Only if the new value is different
- * the new value will be applied to the DOM element. This
- * method save a lot of resources to re-render the SVG. And could
- * be improved if the animation couldn't be played forward.
- *
- */
-Vivus.prototype.trace = function () {
-  var i, progress, path, currentFrame;
-  currentFrame = this.animTimingFunction(this.currentFrame / this.frameLength) * this.frameLength;
-  for (i = 0; i < this.map.length; i++) {
-    path = this.map[i];
-    progress = (currentFrame - path.startAt) / path.duration;
-    progress = this.pathTimingFunction(Math.max(0, Math.min(1, progress)));
-    if (path.progress !== progress) {
-      path.progress = progress;
-      path.el.style.strokeDashoffset = Math.floor(path.length * (1 - progress));
-      this.renderPath(i);
-    }
-  }
-};
-
-/**
- * Method forcing the browser to re-render a path element
- * from it's index in the map. Depending on the `forceRender`
- * value.
- * The trick is to replace the path element by it's clone.
- * This practice is not recommended because it's asking more
- * ressources, too much DOM manupulation..
- * but it's the only way to let the magic happen on IE.
- * By default, this fallback is only applied on IE.
- * 
- * @param  {Number} index Path index
- */
-Vivus.prototype.renderPath = function (index) {
-  if (this.forceRender && this.map && this.map[index]) {
-    var pathObj = this.map[index],
-        newPath = pathObj.el.cloneNode(true);
-    pathObj.el.parentNode.replaceChild(newPath, pathObj.el);
-    pathObj.el = newPath;
-  }
-};
-
-/**
- * When the SVG object is loaded and ready,
- * this method will continue the initialisation.
- *
- * This this mainly due to the case of passing an
- * object tag in the constructor. It will wait
- * the end of the loading to initialise.
- * 
- */
-Vivus.prototype.init = function () {
-  // Set object variables
-  this.frameLength = 0;
-  this.currentFrame = 0;
-  this.map = [];
-
-  // Start
-  new Pathformer(this.el);
-  this.mapping();
-  this.starter();
-
-  if (this.onReady) {
-    this.onReady(this);
-  }
-};
-
-/**
- * Trigger to start of the animation.
- * Depending on the `start` value, a different script
- * will be applied.
- *
- * If the `start` value is not valid, an error will be thrown.
- * Even if technically, this is impossible.
- *
- */
-Vivus.prototype.starter = function () {
-  switch (this.start) {
-  case 'manual':
-    return;
-
-  case 'autostart':
-    this.play();
-    break;
-
-  case 'inViewport':
-    var self = this,
-    listener = function () {
-      if (self.isInViewport(self.parentEl, 1)) {
-        self.play();
-        window.removeEventListener('scroll', listener);
-      }
-    };
-    window.addEventListener('scroll', listener);
-    listener();
-    break;
-  }
-};
-
-
-/**
- * Controls
- **************************************
- */
-
-/**
- * Get the current status of the animation between
- * three different states: 'start', 'progress', 'end'.
- * @return {string} Instance status
- */
-Vivus.prototype.getStatus = function () {
-  return this.currentFrame === 0 ? 'start' : this.currentFrame === this.frameLength ? 'end' : 'progress';
-};
-
-/**
- * Reset the instance to the initial state : undraw
- * Be careful, it just reset the animation, if you're
- * playing the animation, this won't stop it. But just
- * make it start from start.
- *
- */
-Vivus.prototype.reset = function () {
-  return this.setFrameProgress(0);
-};
-
-/**
- * Set the instance to the final state : drawn
- * Be careful, it just set the animation, if you're
- * playing the animation on rewind, this won't stop it.
- * But just make it start from the end.
- *
- */
-Vivus.prototype.finish = function () {
-  return this.setFrameProgress(1);
-};
-
-/**
- * Set the level of progress of the drawing.
- * 
- * @param {number} progress Level of progress to set
- */
-Vivus.prototype.setFrameProgress = function (progress) {
-  progress = Math.min(1, Math.max(0, progress));
-  this.currentFrame = Math.round(this.frameLength * progress);
-  this.trace();
-  return this;
-};
-
-/**
- * Play the animation at the desired speed.
- * Speed must be a valid number (no zero).
- * By default, the speed value is 1.
- * But a negative value is accepted to go forward.
- *
- * And works with float too.
- * But don't forget we are in JavaScript, se be nice
- * with him and give him a 1/2^x value.
- *
- * @param  {number} speed Animation speed [optional]
- */
-Vivus.prototype.play = function (speed) {
-  if (speed && typeof speed !== 'number') {
-    throw new Error('Vivus [play]: invalid speed');
-  }
-  this.speed = speed || 1;
-  if (!this.handle) {
-    this.drawer();
-  }
-  return this;
-};
-
-/**
- * Stop the current animation, if on progress.
- * Should not trigger any error.
- *
- */
-Vivus.prototype.stop = function () {
-  if (this.handle) {
-    cancelAnimFrame(this.handle);
-    delete this.handle;
-  }
-  return this;
-};
-
-/**
- * Destroy the instance.
- * Remove all bad styling attributes on all
- * path tags
- *
- */
-Vivus.prototype.destroy = function () {
-  var i, path;
-  for (i = 0; i < this.map.length; i++) {
-    path = this.map[i];
-    path.el.style.strokeDashoffset = null;
-    path.el.style.strokeDasharray = null;
-    this.renderPath(i);
-  }
-};
-
-
-/**
- * Utils methods
- * include methods from Codrops
- **************************************
- */
-
-/**
- * Method to best guess if a path should added into
- * the animation or not.
- *
- * 1. Use the `data-vivus-ignore` attribute if set
- * 2. Check if the instance must ignore invisible paths
- * 3. Check if the path is visible
- *
- * For now the visibility checking is unstable.
- * It will be used for a beta phase.
- *
- * Other improvments are planned. Like detecting
- * is the path got a stroke or a valid opacity.
- */
-Vivus.prototype.isInvisible = function (el) {
-  var rect,
-    ignoreAttr = el.getAttribute('data-ignore');
-
-  if (ignoreAttr !== null) {
-    return ignoreAttr !== 'false';
-  }
-
-  if (this.ignoreInvisible) {
-    rect = el.getBoundingClientRect();
-    return !rect.width && !rect.height;
-  }
-  else {
-    return false;
-  }
-};
-
-/**
- * Parse attributes of a DOM element to
- * get an object of {attributeName => attributeValue}
- *
- * @param  {object} element DOM element to parse
- * @return {object}         Object of attributes
- */
-Vivus.prototype.parseAttr = function (element) {
-  var attr, output = {};
-  if (element && element.attributes) {
-    for (var i = 0; i < element.attributes.length; i++) {
-      attr = element.attributes[i];
-      output[attr.name] = attr.value;
-    }
-  }
-  return output;
-};
-
-/**
- * Reply if an element is in the page viewport
- *
- * @param  {object} el Element to observe
- * @param  {number} h  Percentage of height
- * @return {boolean}
- */
-Vivus.prototype.isInViewport = function (el, h) {
-  var scrolled   = this.scrollY(),
-    viewed       = scrolled + this.getViewportH(),
-    elBCR        = el.getBoundingClientRect(),
-    elHeight     = elBCR.height,
-    elTop        = scrolled + elBCR.top,
-    elBottom     = elTop + elHeight;
-
-  // if 0, the element is considered in the viewport as soon as it enters.
-  // if 1, the element is considered in the viewport only when it's fully inside
-  // value in percentage (1 >= h >= 0)
-  h = h || 0;
-
-  return (elTop + elHeight * h) <= viewed && (elBottom) >= scrolled;
-};
-
-/**
- * Alias for document element
- *
- * @type {DOMelement}
- */
-Vivus.prototype.docElem = window.document.documentElement;
-
-/**
- * Get the viewport height in pixels
- *
- * @return {integer} Viewport height
- */
-Vivus.prototype.getViewportH = function () {
-  var client = this.docElem.clientHeight,
-    inner = window.innerHeight;
-
-  if (client < inner) {
-    return inner;
-  }
-  else {
-    return client;
-  }
-};
-
-/**
- * Get the page Y offset
- *
- * @return {integer} Page Y offset
- */
-Vivus.prototype.scrollY = function () {
-  return window.pageYOffset || this.docElem.scrollTop;
-};
-
-/**
- * Alias for `requestAnimationFrame` or
- * `setTimeout` function for deprecated browsers.
- *
- */
-requestAnimFrame = (function () {
-  return (
-    window.requestAnimationFrame       ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame    ||
-    window.oRequestAnimationFrame      ||
-    window.msRequestAnimationFrame     ||
-    function(/* function */ callback){
-      return window.setTimeout(callback, 1000 / 60);
-    }
-  );
-})();
-
-/**
- * Alias for `cancelAnimationFrame` or
- * `cancelTimeout` function for deprecated browsers.
- *
- */
-cancelAnimFrame = (function () {
-  return (
-    window.cancelAnimationFrame       ||
-    window.webkitCancelAnimationFrame ||
-    window.mozCancelAnimationFrame    ||
-    window.oCancelAnimationFrame      ||
-    window.msCancelAnimationFrame     ||
-    function(id){
-      return window.clearTimeout(id);
-    }
-  );
-})();
-
-/**
- * Parse string to integer.
- * If the number is not positive or null
- * the method will return the default value
- * or 0 if undefined
- *
- * @param {string} value String to parse
- * @param {*} defaultValue Value to return if the result parsed is invalid
- * @return {number}
- *
- */
-parsePositiveInt = function (value, defaultValue) {
-  var output = parseInt(value, 10);
-  return (output >= 0) ? output : defaultValue;
-};
-
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define([], function() {
-      return Vivus;
-    });
-  } else if (typeof exports === 'object') {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
-    module.exports = Vivus;
-  } else {
-    // Browser globals
-    window.Vivus = Vivus;
-  }
-
-}(window, document));
-
-},{}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -15978,293 +13740,48 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _underscore = require('underscore');
+var _lodash = require('lodash');
 
-var _underscore2 = _interopRequireDefault(_underscore);
+var _lodash2 = _interopRequireDefault(_lodash);
 
-//import Pie from './charts/Pie.js';
-//import Tree from './charts/Tree.js';
-//import Radar from './charts/Radar.js';
-//import Bar from './charts/Bar.js';
-//import SmoothLine from './charts/SmoothLine.js';
-//import StockLine from './charts/StockLine.js';
-//import Scatterplot from './charts/Scatterplot.js';
+var _chartsPieJs = require('./charts/Pie.js');
 
-var _chartsSmoothLineVivusJs = require('./charts/SmoothLineVivus.js');
+var _chartsPieJs2 = _interopRequireDefault(_chartsPieJs);
 
-var _chartsSmoothLineVivusJs2 = _interopRequireDefault(_chartsSmoothLineVivusJs);
+var _chartsTreeJs = require('./charts/Tree.js');
 
-var _chartsStockLineVivusJs = require('./charts/StockLineVivus.js');
+var _chartsTreeJs2 = _interopRequireDefault(_chartsTreeJs);
 
-var _chartsStockLineVivusJs2 = _interopRequireDefault(_chartsStockLineVivusJs);
+var _chartsRadarJs = require('./charts/Radar.js');
 
-var _chartsBarVivusJs = require('./charts/BarVivus.js');
+var _chartsRadarJs2 = _interopRequireDefault(_chartsRadarJs);
 
-var _chartsBarVivusJs2 = _interopRequireDefault(_chartsBarVivusJs);
+var _chartsBarJs = require('./charts/Bar.js');
 
-var _chartsPieVivusJs = require('./charts/PieVivus.js');
+var _chartsBarJs2 = _interopRequireDefault(_chartsBarJs);
 
-var _chartsPieVivusJs2 = _interopRequireDefault(_chartsPieVivusJs);
+var _chartsSmoothLineJs = require('./charts/SmoothLine.js');
 
-var _chartsRadarVivusJs = require('./charts/RadarVivus.js');
+var _chartsSmoothLineJs2 = _interopRequireDefault(_chartsSmoothLineJs);
 
-var _chartsRadarVivusJs2 = _interopRequireDefault(_chartsRadarVivusJs);
+var _chartsStockLineJs = require('./charts/StockLine.js');
 
-var _chartsTreeVivusJs = require('./charts/TreeVivus.js');
+var _chartsStockLineJs2 = _interopRequireDefault(_chartsStockLineJs);
 
-var _chartsTreeVivusJs2 = _interopRequireDefault(_chartsTreeVivusJs);
+var _chartsScatterplotJs = require('./charts/Scatterplot.js');
 
-var _chartsScatterplotVivusJs = require('./charts/ScatterplotVivus.js');
+var _chartsScatterplotJs2 = _interopRequireDefault(_chartsScatterplotJs);
 
-var _chartsScatterplotVivusJs2 = _interopRequireDefault(_chartsScatterplotVivusJs);
-
-_chartsPieVivusJs2['default'].defaultProps = {
-    options: {
-        margin: { top: 20, left: 20, right: 20, bottom: 20 },
-        width: 600,
-        height: 600,
-        color: '#2980B9',
-        r: 100,
-        R: 200,
-        legendPosition: 'topLeft',
-        animate: {
-            type: 'oneByOne',
-            duration: 200,
-            fillTransition: 3
-        },
-        label: {
-            fontFamily: 'Arial',
-            fontSize: 14,
-            bold: true,
-            color: '#ECF0F1'
-        }
-    }
-};
-_chartsTreeVivusJs2['default'].defaultProps = {
-
-    options: {
-        margin: { top: 20, left: 50, right: 80, bottom: 20 },
-        width: 600,
-        height: 600,
-        fill: "#2980B9",
-        stroke: "#3E90F0",
-        r: 5,
-        animate: {
-            type: 'oneByOne',
-            duration: 200,
-            fillTransition: 3
-        },
-        label: {
-            fontFamily: 'Arial',
-            fontSize: 14,
-            bold: true,
-            fill: '#34495E'
-        }
-    }
-};
-_chartsSmoothLineVivusJs2['default'].defaultProps = {
-
-    options: {
-        width: 600,
-        height: 600,
-        color: '#2980B9',
-        margin: { top: 40, left: 60, bottom: 50, right: 20 },
-        animate: {
-            type: 'delayed',
-            duration: 200,
-            fillTransition: 3
-        },
-        axisX: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'bottom',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        },
-        axisY: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'left',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        }
-    }
-};
-_chartsStockLineVivusJs2['default'].defaultProps = {
-    options: {
-        width: 600,
-        height: 600,
-        color: '#2980B9',
-        margin: { top: 40, left: 60, bottom: 50, right: 20 },
-        animate: {
-            type: 'delayed',
-            duration: 200,
-            fillTransition: 3
-        },
-        axisX: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'bottom',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        },
-        axisY: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'left',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        }
-    }
-};
-_chartsRadarVivusJs2['default'].defaultProps = {
-    options: {
-        width: 600,
-        height: 600,
-        margin: { top: 20, left: 20, right: 20, bottom: 20 },
-        r: 300,
-        max: 150,
-        fill: "#2980B9",
-        stroke: "#2980B9",
-        animate: {
-            type: 'oneByOne',
-            duration: 200,
-            fillTransition: 3
-        },
-        label: {
-            fontFamily: 'Arial',
-            fontSize: 14,
-            bold: true,
-            color: '#34495E'
-        }
-    }
-};
-
-_chartsBarVivusJs2['default'].defaultProps = {
-    accessorKey: '',
-    options: {
-        width: 600,
-        height: 600,
-        margin: { top: 20, left: 20, bottom: 50, right: 20 },
-        color: '#2980B9',
-        gutter: 20,
-        animate: {
-            type: 'oneByOne',
-            duration: 200,
-            fillTransition: 3
-        },
-        axisX: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'bottom',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        },
-        axisY: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'left',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        }
-    }
-};
-
-_chartsScatterplotVivusJs2['default'].defaultProps = {
-    xKey: '',
-    yKey: '',
-    options: {
-        width: 600,
-        height: 600,
-        margin: { top: 40, left: 60, bottom: 30, right: 30 },
-        fill: "#2980B9",
-        stroke: "#3E90F0",
-        animate: {
-            type: 'delayed',
-            duration: 200,
-            fillTransition: 3
-        },
-        label: {
-            fontFamily: 'Arial',
-            fontSize: 14,
-            bold: true,
-            color: '#34495E'
-        },
-        axisX: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'bottom',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        },
-        axisY: {
-            showAxis: true,
-            showLines: true,
-            showLabels: true,
-            showTicks: true,
-            zeroAxis: false,
-            orient: 'left',
-            label: {
-                fontFamily: 'Arial',
-                fontSize: 14,
-                bold: true,
-                color: '#34495E'
-            }
-        }
-    }
-};
+//import SmoothLine from './charts/SmoothLineVivus.js';
+//import StockLine from './charts/StockLineVivus.js';
+//import Bar from './charts/BarVivus.js';
+//import Pie from './charts/PieVivus.js';
+//import Radar from './charts/RadarVivus.js';
+//import Tree from './charts/TreeVivus.js';
+//import Scatterplot from './charts/ScatterplotVivus.js';
 
 exports['default'] = {
-    Pie: _underscore2['default'].extend(_chartsPieVivusJs2['default'], {
+    Pie: _lodash2['default'].extend(_chartsPieJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16296,7 +13813,7 @@ exports['default'] = {
             }
         }
     }),
-    Tree: _underscore2['default'].extend(_chartsTreeVivusJs2['default'], {
+    Tree: _lodash2['default'].extend(_chartsTreeJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16323,7 +13840,7 @@ exports['default'] = {
             }
         }
     }),
-    SmoothLine: _underscore2['default'].extend(_chartsSmoothLineVivusJs2['default'], {
+    SmoothLine: _lodash2['default'].extend(_chartsSmoothLineJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16374,7 +13891,7 @@ exports['default'] = {
             }
         }
     }),
-    StockLine: _underscore2['default'].extend(_chartsStockLineVivusJs2['default'], {
+    StockLine: _lodash2['default'].extend(_chartsStockLineJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16424,7 +13941,7 @@ exports['default'] = {
             }
         }
     }),
-    Radar: _underscore2['default'].extend(_chartsRadarVivusJs2['default'], {
+    Radar: _lodash2['default'].extend(_chartsRadarJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16452,7 +13969,7 @@ exports['default'] = {
             }
         }
     }),
-    Bar: _underscore2['default'].extend(_chartsBarVivusJs2['default'], {
+    Bar: _lodash2['default'].extend(_chartsBarJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16502,7 +14019,7 @@ exports['default'] = {
             }
         }
     }),
-    Scatterplot: _underscore2['default'].extend(_chartsScatterplotVivusJs2['default'], {
+    Scatterplot: _lodash2['default'].extend(_chartsScatterplotJs2['default'], {
         metaData: {
             settings: {
                 fields: {
@@ -16558,7 +14075,7 @@ exports['default'] = {
 };
 module.exports = exports['default'];
 
-},{"./charts/BarVivus.js":24,"./charts/PieVivus.js":27,"./charts/RadarVivus.js":29,"./charts/ScatterplotVivus.js":31,"./charts/SmoothLineVivus.js":33,"./charts/StockLineVivus.js":35,"./charts/TreeVivus.js":37,"underscore":19}],22:[function(require,module,exports){
+},{"./charts/Bar.js":21,"./charts/Pie.js":23,"./charts/Radar.js":24,"./charts/Scatterplot.js":25,"./charts/SmoothLine.js":26,"./charts/StockLine.js":27,"./charts/Tree.js":28,"lodash":1}],20:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -16731,7 +14248,7 @@ exports['default'] = {
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],23:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -16892,95 +14409,53 @@ var BarChart = (function (_React$Component) {
 
 exports['default'] = BarChart;
 ;
-module.exports = exports['default'];
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":38,"../component/Options.js":39,"../fontAdapter.js":40,"../pallete/Colors.js":41,"lodash":1,"paths-js/bar":2}],24:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _BarJs = require('./Bar.js');
-
-var _BarJs2 = _interopRequireDefault(_BarJs);
-
-var BarVivusChart = (function (_BarChart) {
-    _inherits(BarVivusChart, _BarChart);
-
-    function BarVivusChart(props) {
-        _classCallCheck(this, BarVivusChart);
-
-        _get(Object.getPrototypeOf(BarVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
+BarChart.defaultProps = {
+    accessorKey: '',
+    options: {
+        width: 600,
+        height: 600,
+        margin: { top: 20, left: 20, bottom: 50, right: 20 },
+        color: '#2980B9',
+        gutter: 20,
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
     }
-
-    _createClass(BarVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return BarVivusChart;
-})(_BarJs2['default']);
-
-exports['default'] = BarVivusChart;
+};
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Bar.js":23,"react-dom":undefined,"vivus":20}],25:[function(require,module,exports){
+},{"../component/Axis":29,"../component/Options.js":30,"../fontAdapter.js":31,"../pallete/Colors.js":32,"lodash":1,"paths-js/bar":2}],22:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -17130,7 +14605,7 @@ exports['default'] = LineChart;
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":38,"../component/Options.js":39,"../fontAdapter.js":40,"../pallete/Colors.js":41,"lodash":1,"paths-js/path":8}],26:[function(require,module,exports){
+},{"../component/Axis":29,"../component/Options.js":30,"../fontAdapter.js":31,"../pallete/Colors.js":32,"lodash":1,"paths-js/path":8}],23:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -17346,99 +14821,32 @@ var PieChart = (function (_React$Component) {
 
 exports['default'] = PieChart;
 ;
-module.exports = exports['default'];
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../animate.js":22,"../component/Options.js":39,"../fontAdapter.js":40,"../pallete/Colors.js":41,"lodash":1,"paths-js/pie":9}],27:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _PieJs = require('./Pie.js');
-
-var _PieJs2 = _interopRequireDefault(_PieJs);
-
-var PieVivusChart = (function (_PieChart) {
-    _inherits(PieVivusChart, _PieChart);
-
-    function PieVivusChart(props) {
-        _classCallCheck(this, PieVivusChart);
-
-        _get(Object.getPrototypeOf(PieVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = {
-            expanded: this.defaultRange,
-            finished: false
-        };
+PieChart.defaultProps = {
+    options: {
+        margin: { top: 20, left: 20, right: 20, bottom: 20 },
+        width: 600,
+        height: 600,
+        color: '#2980B9',
+        r: 100,
+        R: 200,
+        legendPosition: 'topLeft',
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#ECF0F1'
+        }
     }
-
-    _createClass(PieVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return PieVivusChart;
-})(_PieJs2['default']);
-
-exports['default'] = PieVivusChart;
+};
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Pie.js":26,"react-dom":undefined,"vivus":20}],28:[function(require,module,exports){
+},{"../animate.js":20,"../component/Options.js":30,"../fontAdapter.js":31,"../pallete/Colors.js":32,"lodash":1,"paths-js/pie":9}],24:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -17586,96 +14994,33 @@ var RadarChart = (function (_React$Component) {
 
 exports['default'] = RadarChart;
 ;
-module.exports = exports['default'];
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Options.js":39,"../fontAdapter.js":40,"../styleSvg.js":42,"lodash":1,"paths-js/radar":11}],29:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _RadarJs = require('./Radar.js');
-
-var _RadarJs2 = _interopRequireDefault(_RadarJs);
-
-var RadarVivusChart = (function (_RadarChart) {
-    _inherits(RadarVivusChart, _RadarChart);
-
-    function RadarVivusChart(props) {
-        _classCallCheck(this, RadarVivusChart);
-
-        _get(Object.getPrototypeOf(RadarVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
+RadarChart.defaultProps = {
+    options: {
+        width: 600,
+        height: 600,
+        margin: { top: 20, left: 20, right: 20, bottom: 20 },
+        r: 300,
+        max: 150,
+        fill: "#2980B9",
+        stroke: "#2980B9",
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#34495E'
+        }
     }
-
-    _createClass(RadarVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return RadarVivusChart;
-})(_RadarJs2['default']);
-
-exports['default'] = RadarVivusChart;
+};
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Radar.js":28,"react-dom":undefined,"vivus":20}],30:[function(require,module,exports){
+},{"../component/Options.js":30,"../fontAdapter.js":31,"../styleSvg.js":33,"lodash":1,"paths-js/radar":11}],25:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -17836,95 +15181,61 @@ var Scatterplot = (function (_React$Component) {
 })(_react2['default'].Component);
 
 exports['default'] = Scatterplot;
-module.exports = exports['default'];
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Axis":38,"../component/Options.js":39,"../fontAdapter.js":40,"../styleSvg":42,"lodash":1,"paths-js/path":8,"paths-js/stock":16}],31:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _ScatterplotJs = require('./Scatterplot.js');
-
-var _ScatterplotJs2 = _interopRequireDefault(_ScatterplotJs);
-
-var ScatterplotVivusChart = (function (_ScatterplotChart) {
-    _inherits(ScatterplotVivusChart, _ScatterplotChart);
-
-    function ScatterplotVivusChart(props) {
-        _classCallCheck(this, ScatterplotVivusChart);
-
-        _get(Object.getPrototypeOf(ScatterplotVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
+Scatterplot.defaultProps = {
+    xKey: '',
+    yKey: '',
+    options: {
+        width: 600,
+        height: 600,
+        margin: { top: 40, left: 60, bottom: 30, right: 30 },
+        fill: "#2980B9",
+        stroke: "#3E90F0",
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            color: '#34495E'
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
     }
-
-    _createClass(ScatterplotVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return ScatterplotVivusChart;
-})(_ScatterplotJs2['default']);
-
-exports['default'] = ScatterplotVivusChart;
+};
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Scatterplot.js":30,"react-dom":undefined,"vivus":20}],32:[function(require,module,exports){
+},{"../component/Axis":29,"../component/Options.js":30,"../fontAdapter.js":31,"../styleSvg":33,"lodash":1,"paths-js/path":8,"paths-js/stock":16}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -17958,94 +15269,52 @@ var SmoothLineChart = (function (_LineChart) {
 })(_LineJs2['default']);
 
 exports['default'] = SmoothLineChart;
-module.exports = exports['default'];
 
-},{"./Line.js":25,"paths-js/smooth-line":15}],33:[function(require,module,exports){
-(function (global){
-'use strict';
+SmoothLineChart.defaultProps = {
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _SmoothLineJs = require('./SmoothLine.js');
-
-var _SmoothLineJs2 = _interopRequireDefault(_SmoothLineJs);
-
-var SmoothLineVivusChart = (function (_SmoothLineChart) {
-    _inherits(SmoothLineVivusChart, _SmoothLineChart);
-
-    function SmoothLineVivusChart(props) {
-        _classCallCheck(this, SmoothLineVivusChart);
-
-        _get(Object.getPrototypeOf(SmoothLineVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
+    options: {
+        width: 600,
+        height: 600,
+        color: '#2980B9',
+        margin: { top: 40, left: 60, bottom: 50, right: 20 },
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
     }
-
-    _createClass(SmoothLineVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return SmoothLineVivusChart;
-})(_SmoothLineJs2['default']);
-
-exports['default'] = SmoothLineVivusChart;
+};
 module.exports = exports['default'];
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./SmoothLine.js":32,"react-dom":undefined,"vivus":20}],34:[function(require,module,exports){
+},{"./Line.js":22,"paths-js/smooth-line":15}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -18079,94 +15348,51 @@ var StockLineChart = (function (_LineChart) {
 })(_LineJs2['default']);
 
 exports['default'] = StockLineChart;
-module.exports = exports['default'];
 
-},{"./Line.js":25,"paths-js/stock":16}],35:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _StockLineJs = require('./StockLine.js');
-
-var _StockLineJs2 = _interopRequireDefault(_StockLineJs);
-
-var StockLineVivusChart = (function (_StockLineChart) {
-    _inherits(StockLineVivusChart, _StockLineChart);
-
-    function StockLineVivusChart(props) {
-        _classCallCheck(this, StockLineVivusChart);
-
-        _get(Object.getPrototypeOf(StockLineVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
+StockLineChart.defaultProps = {
+    options: {
+        width: 600,
+        height: 600,
+        color: '#2980B9',
+        margin: { top: 40, left: 60, bottom: 50, right: 20 },
+        animate: {
+            type: 'delayed',
+            duration: 200,
+            fillTransition: 3
+        },
+        axisX: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'bottom',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        },
+        axisY: {
+            showAxis: true,
+            showLines: true,
+            showLabels: true,
+            showTicks: true,
+            zeroAxis: false,
+            orient: 'left',
+            label: {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                bold: true,
+                color: '#34495E'
+            }
+        }
     }
-
-    _createClass(StockLineVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return StockLineVivusChart;
-})(_StockLineJs2['default']);
-
-exports['default'] = StockLineVivusChart;
+};
 module.exports = exports['default'];
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./StockLine.js":34,"react-dom":undefined,"vivus":20}],36:[function(require,module,exports){
+},{"./Line.js":22,"paths-js/stock":16}],28:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -18303,95 +15529,33 @@ var TreeChart = (function (_React$Component) {
 })(_react2['default'].Component);
 
 exports['default'] = TreeChart;
-module.exports = exports['default'];
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../component/Options.js":39,"../fontAdapter.js":40,"../styleSvg":42,"lodash":1,"paths-js/tree":17}],37:[function(require,module,exports){
-(function (global){
-'use strict';
+TreeChart.defaultProps = {
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _vivus = require('vivus');
-
-var _vivus2 = _interopRequireDefault(_vivus);
-
-var _TreeJs = require('./Tree.js');
-
-var _TreeJs2 = _interopRequireDefault(_TreeJs);
-
-var TreeVivusChart = (function (_TreeChart) {
-    _inherits(TreeVivusChart, _TreeChart);
-
-    function TreeVivusChart(props) {
-        _classCallCheck(this, TreeVivusChart);
-
-        _get(Object.getPrototypeOf(TreeVivusChart.prototype), 'constructor', this).call(this, props);
-        this.state = { finished: false };
+    options: {
+        margin: { top: 20, left: 50, right: 80, bottom: 20 },
+        width: 600,
+        height: 600,
+        fill: "#2980B9",
+        stroke: "#3E90F0",
+        r: 5,
+        animate: {
+            type: 'oneByOne',
+            duration: 200,
+            fillTransition: 3
+        },
+        label: {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            bold: true,
+            fill: '#34495E'
+        }
     }
-
-    _createClass(TreeVivusChart, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(nextProps) {
-            if (nextProps.replay !== this.props.replay) this.setState({ finished: false });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.run();
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevProps, prevState) {
-            if (!this.state.finished) this.run();
-        }
-    }, {
-        key: 'run',
-        value: function run() {
-            if (this.refs.vivus === undefined) return;
-            var animate = this.props.options && this.props.options.animate || {};
-            new _vivus2['default'](_reactDom2['default'].findDOMNode(this.refs.vivus), {
-                type: animate.type || 'delayed',
-                duration: animate.duration || 'delayed',
-                start: 'autostart',
-                selfDestroy: true
-            }, this.finish.bind(this));
-        }
-    }, {
-        key: 'finish',
-        value: function finish() {
-            this.setState({ finished: true });
-        }
-    }]);
-
-    return TreeVivusChart;
-})(_TreeJs2['default']);
-
-exports['default'] = TreeVivusChart;
+};
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Tree.js":36,"react-dom":undefined,"vivus":20}],38:[function(require,module,exports){
+},{"../component/Options.js":30,"../fontAdapter.js":31,"../styleSvg":33,"lodash":1,"paths-js/tree":17}],29:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -18581,7 +15745,7 @@ exports['default'] = Axis;
 module.exports = exports['default'];
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../fontAdapter.js":40,"lodash":1,"paths-js/path":8}],39:[function(require,module,exports){
+},{"../fontAdapter.js":31,"lodash":1,"paths-js/path":8}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -18663,7 +15827,7 @@ var ChartOptions = (function () {
 exports['default'] = ChartOptions;
 module.exports = exports['default'];
 
-},{}],40:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -18691,7 +15855,7 @@ function fontAdapt(fontProps) {
 
 module.exports = exports['default'];
 
-},{"lodash":1}],41:[function(require,module,exports){
+},{"lodash":1}],32:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18792,7 +15956,7 @@ var colour = new Colors();
 exports["default"] = colour;
 module.exports = exports["default"];
 
-},{}],42:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -18825,5 +15989,5 @@ function styleSvg(style, sourceProps) {
 
 module.exports = exports['default'];
 
-},{"lodash":1}]},{},[21])(21)
+},{"lodash":1}]},{},[19])(19)
 });
